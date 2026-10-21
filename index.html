@@ -239,6 +239,62 @@
       touch-action: manipulation;
     }
 
+    /* ⚡ DYNAMIC ANALYZING PROGRESS CARD */
+    .analyzing-card {
+      align-self: flex-start;
+      background: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border-top-left-radius: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      width: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border-left: 3.5px solid #008069;
+    }
+
+    .analyzing-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .analyzing-header .pct-badge {
+      background: #dcfce7;
+      color: #166534;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    .analyzing-status-text {
+      font-size: 11px;
+      color: #64748b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .analyzing-bar-track {
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .analyzing-bar-fill {
+      height: 100%;
+      width: 5%;
+      background: linear-gradient(90deg, #008069, #10b981);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     /* ATTACHMENT BAR */
     .attachment-preview-bar {
       padding: 8px 12px;
@@ -362,15 +418,6 @@
       background: #005c4b;
     }
 
-    .typing {
-      align-self: flex-start;
-      background: #ffffff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      color: #667781;
-    }
-
     /* MODAL */
     .modal-overlay {
       position: absolute;
@@ -470,7 +517,7 @@
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
       • <strong>+Manual</strong> se naya OEM document upload karein.<br>
-      • Ultra-fast 1-tap dispatch enabled.
+      • Real-time % diagnostic analysis active.
     </div>
   </div>
 
@@ -562,7 +609,7 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 30);
   }
 
-  /* 🎙️ NATIVE SPEECH-TO-TEXT ENGINE (HINDI / HINGLISH COMPATIBLE) */
+  /* 🎙️ NATIVE SPEECH ENGINE */
   function setupSpeechEngine() {
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -593,28 +640,18 @@
       document.getElementById('userInput').value = transcript;
     };
 
-    speechRecognizer.onerror = function() {
-      stopVoiceInput();
-    };
-
-    speechRecognizer.onend = function() {
-      stopVoiceInput();
-    };
+    speechRecognizer.onerror = function() { stopVoiceInput(); };
+    speechRecognizer.onend = function() { stopVoiceInput(); };
   }
 
   function toggleVoiceInput() {
+    if (!speechRecognizer) setupSpeechEngine();
     if (!speechRecognizer) {
-      setupSpeechEngine();
-    }
-    if (!speechRecognizer) {
-      alert("Aapke browser me speech recognition support available nahi hai.");
+      alert("Browser me speech recognition support nahi hai.");
       return;
     }
-    if (isRecognizing) {
-      speechRecognizer.stop();
-    } else {
-      speechRecognizer.start();
-    }
+    if (isRecognizing) speechRecognizer.stop();
+    else speechRecognizer.start();
   }
 
   function stopVoiceInput() {
@@ -874,7 +911,7 @@
   }
 
   /**
-   * ⚡ CORS-SAFE & REDIRECT-RESILIENT ONE-TAP DISPATCH ENGINE
+   * ⚡ REAL-TIME % PROGRESS ENGINE (NEVER FEELS FROZEN)
    */
   function executeOneTapSend() {
     var now = Date.now();
@@ -900,31 +937,59 @@
     userNode.textContent = display;
     box.appendChild(userNode);
 
+    // ⚡ CREATE DYNAMIC ANALYZING CARD WITH LIVE PROGRESS BAR & STATUS
     var typingId = "typ-" + Date.now();
-    var typingNode = document.createElement('div');
-    typingNode.className = 'typing';
-    typingNode.id = typingId;
-    typingNode.textContent = 'Analyzing...';
-    box.appendChild(typingNode);
+    var cardNode = document.createElement('div');
+    cardNode.className = 'analyzing-card';
+    cardNode.id = typingId;
+    cardNode.innerHTML = 
+      '<div class="analyzing-header">' +
+        '<span>🔍 Diagnostic Analyzer</span>' +
+        '<span class="pct-badge" id="' + typingId + '-pct">12%</span>' +
+      '</div>' +
+      '<div class="analyzing-bar-track">' +
+        '<div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 12%;"></div>' +
+      '</div>' +
+      '<div class="analyzing-status-text" id="' + typingId + '-txt">Scanning OEM Manuals...</div>';
+    box.appendChild(cardNode);
     scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
 
-    var safetyTimeout = setTimeout(function() {
-      var el = document.getElementById(typingId);
-      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server take time. Agla sawal pooch sakte hain.</div>';
-      scrollToBottom();
-    }, 12000);
+    // ⚡ REALISTIC MULTI-STAGE PROGRESS EMITTER
+    var currentPct = 12;
+    var progressInterval = setInterval(function() {
+      var pctEl = document.getElementById(typingId + '-pct');
+      var barEl = document.getElementById(typingId + '-bar');
+      var txtEl = document.getElementById(typingId + '-txt');
+      if (!pctEl || !barEl || !txtEl) {
+        clearInterval(progressInterval);
+        return;
+      }
 
-    // ⚡ CORS & 302 REDIRECT SAFE FETCH
+      if (currentPct < 96) {
+        if (currentPct < 35) {
+          currentPct += Math.floor(Math.random() * 8) + 6;
+          txtEl.innerText = "Accessing Subsystem Index...";
+        } else if (currentPct < 68) {
+          currentPct += Math.floor(Math.random() * 6) + 4;
+          txtEl.innerText = "Analyzing Schematics & Fault Logs...";
+        } else {
+          currentPct += Math.floor(Math.random() * 3) + 2;
+          txtEl.innerText = "Synthesizing Technical Directives...";
+        }
+        if (currentPct > 96) currentPct = 96;
+        pctEl.innerText = currentPct + "%";
+        barEl.style.width = currentPct + "%";
+      }
+    }, 380);
+
     fetch(BACKEND_API_URL, {
       method: "POST",
       mode: "cors",
       redirect: "follow",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
         action: "ask",
         query: currentText,
@@ -938,9 +1003,17 @@
       return response.text();
     })
     .then(function(textData) {
-      clearTimeout(safetyTimeout);
+      clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (!el) return;
+
+      // Finish bar to 100%
+      var pctEl = document.getElementById(typingId + '-pct');
+      var barEl = document.getElementById(typingId + '-bar');
+      if (pctEl && barEl) {
+        pctEl.innerText = "100%";
+        barEl.style.width = "100%";
+      }
 
       var res = null;
       try {
@@ -983,12 +1056,16 @@
         fpHtml += '</div>';
       }
 
-      el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
-      scrollToBottom();
-      triggerHaptic(30);
+      // Smooth transition from 100% to clean answer bubble
+      setTimeout(function() {
+        el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
+        scrollToBottom();
+        triggerHaptic(30);
+      }, 180);
+
     })
     .catch(function(err) {
-      clearTimeout(safetyTimeout);
+      clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Connection error: ' + escapeHtml(err.message || 'Network issue') + '. Kripya dobara bhejein.</div>';
       scrollToBottom();
