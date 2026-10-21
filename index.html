@@ -120,7 +120,7 @@
       color: #111827;
     }
 
-    /* 🚜 WHATSAPP-STYLE CHAT MESSAGES CONTAINER WITH EQUIPMENT WALLPAPER */
+    /* 🚜 WHATSAPP PATTERN WALLPAPER CONTAINER */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -133,7 +133,6 @@
       background-color: #efeae2;
     }
 
-    /* Seamless Pattern Overlay */
     .chat-messages::before {
       content: "";
       position: fixed;
@@ -144,7 +143,7 @@
       background-image: url('chat-bg.png');
       background-repeat: repeat;
       background-size: 420px auto;
-      opacity: 0.14; /* WhatsApp doodle subtle contrast */
+      opacity: 0.14;
       pointer-events: none;
       z-index: 1;
     }
@@ -260,7 +259,21 @@
       touch-action: manipulation;
     }
 
-    /* ⚡ REAL-TIME ANALYZING PROGRESS CARD */
+    /* ⚡ CASUAL CHAT SIMPLE TYPING BUBBLE (FOR GREETINGS/OK) */
+    .simple-typing {
+      align-self: flex-start;
+      background: #ffffff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      font-size: 12.5px;
+      color: #64748b;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ⚡ HEAVY DIAGNOSTIC ANALYZING PROGRESS CARD */
     .analyzing-card {
       align-self: flex-start;
       background: #ffffff;
@@ -541,7 +554,7 @@
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
       • <strong>+Manual</strong> se naya OEM document upload karein.<br>
-      • Real-time % diagnostic analysis active.
+      • Context continuity &amp; adaptive analysis active.
     </div>
   </div>
 
@@ -935,7 +948,16 @@
   }
 
   /**
-   * ⚡ REAL-TIME % PROGRESS ENGINE (NEVER FEELS FROZEN)
+   * ⚡ ADAPTIVE INTENT CHECK: Distinguishes casual talk vs heavy manual inspection
+   */
+  function isCasualQuery(text) {
+    if (!text) return false;
+    var clean = text.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    return /^(hi|hello|hey|namaste|pranam|ram\s*ram|hlo|hii|helo|ok|okk|okay|theek|thik|theek\s*hai|thik\s*h|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad|shukriya|accha|achha)$/i.test(clean);
+  }
+
+  /**
+   * ⚡ SMART DISPATCH ENGINE: Casual pe simple typing, technical pe % progress
    */
   function executeOneTapSend() {
     var now = Date.now();
@@ -961,53 +983,65 @@
     userNode.textContent = display;
     box.appendChild(userNode);
 
-    // ⚡ CREATE DYNAMIC ANALYZING CARD WITH LIVE PROGRESS BAR & STATUS
     var typingId = "typ-" + Date.now();
-    var cardNode = document.createElement('div');
-    cardNode.className = 'analyzing-card';
-    cardNode.id = typingId;
-    cardNode.innerHTML = 
-      '<div class="analyzing-header">' +
-        '<span>🔍 Diagnostic Analyzer</span>' +
-        '<span class="pct-badge" id="' + typingId + '-pct">12%</span>' +
-      '</div>' +
-      '<div class="analyzing-bar-track">' +
-        '<div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 12%;"></div>' +
-      '</div>' +
-      '<div class="analyzing-status-text" id="' + typingId + '-txt">Scanning OEM Manuals...</div>';
-    box.appendChild(cardNode);
+    var isCasual = isCasualQuery(currentText) && !activeAttachment;
+    var progressInterval = null;
+
+    if (isCasual) {
+      // 💬 SIMPLE WHATSAPP-STYLE TYPING FOR CASUAL TALK
+      var casualNode = document.createElement('div');
+      casualNode.className = 'simple-typing';
+      casualNode.id = typingId;
+      casualNode.innerText = 'Typing...';
+      box.appendChild(casualNode);
+    } else {
+      // 🔍 HEAVY REAL-TIME % PROGRESS ANALYZER ONLY FOR TECHNICAL QUERIES
+      var cardNode = document.createElement('div');
+      cardNode.className = 'analyzing-card';
+      cardNode.id = typingId;
+      cardNode.innerHTML = 
+        '<div class="analyzing-header">' +
+          '<span>🔍 Diagnostic Analyzer</span>' +
+          '<span class="pct-badge" id="' + typingId + '-pct">12%</span>' +
+        '</div>' +
+        '<div class="analyzing-bar-track">' +
+          '<div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 12%;"></div>' +
+        '</div>' +
+        '<div class="analyzing-status-text" id="' + typingId + '-txt">Scanning OEM Manuals...</div>';
+      box.appendChild(cardNode);
+
+      var currentPct = 12;
+      progressInterval = setInterval(function() {
+        var pctEl = document.getElementById(typingId + '-pct');
+        var barEl = document.getElementById(typingId + '-bar');
+        var txtEl = document.getElementById(typingId + '-txt');
+        if (!pctEl || !barEl || !txtEl) {
+          clearInterval(progressInterval);
+          return;
+        }
+
+        if (currentPct < 96) {
+          if (currentPct < 35) {
+            currentPct += Math.floor(Math.random() * 8) + 6;
+            txtEl.innerText = "Accessing Subsystem Index...";
+          } else if (currentPct < 68) {
+            currentPct += Math.floor(Math.random() * 6) + 4;
+            txtEl.innerText = "Analyzing Schematics & Fault Logs...";
+          } else {
+            currentPct += Math.floor(Math.random() * 3) + 2;
+            txtEl.innerText = "Synthesizing Technical Directives...";
+          }
+          if (currentPct > 96) currentPct = 96;
+          pctEl.innerText = currentPct + "%";
+          barEl.style.width = currentPct + "%";
+        }
+      }, 380);
+    }
+
     scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
-
-    // ⚡ REALISTIC MULTI-STAGE PROGRESS EMITTER
-    var currentPct = 12;
-    var progressInterval = setInterval(function() {
-      var pctEl = document.getElementById(typingId + '-pct');
-      var barEl = document.getElementById(typingId + '-bar');
-      var txtEl = document.getElementById(typingId + '-txt');
-      if (!pctEl || !barEl || !txtEl) {
-        clearInterval(progressInterval);
-        return;
-      }
-
-      if (currentPct < 96) {
-        if (currentPct < 35) {
-          currentPct += Math.floor(Math.random() * 8) + 6;
-          txtEl.innerText = "Accessing Subsystem Index...";
-        } else if (currentPct < 68) {
-          currentPct += Math.floor(Math.random() * 6) + 4;
-          txtEl.innerText = "Analyzing Schematics & Fault Logs...";
-        } else {
-          currentPct += Math.floor(Math.random() * 3) + 2;
-          txtEl.innerText = "Synthesizing Technical Directives...";
-        }
-        if (currentPct > 96) currentPct = 96;
-        pctEl.innerText = currentPct + "%";
-        barEl.style.width = currentPct + "%";
-      }
-    }, 380);
 
     fetch(BACKEND_API_URL, {
       method: "POST",
@@ -1027,15 +1061,17 @@
       return response.text();
     })
     .then(function(textData) {
-      clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (!el) return;
 
-      var pctEl = document.getElementById(typingId + '-pct');
-      var barEl = document.getElementById(typingId + '-bar');
-      if (pctEl && barEl) {
-        pctEl.innerText = "100%";
-        barEl.style.width = "100%";
+      if (!isCasual) {
+        var pctEl = document.getElementById(typingId + '-pct');
+        var barEl = document.getElementById(typingId + '-bar');
+        if (pctEl && barEl) {
+          pctEl.innerText = "100%";
+          barEl.style.width = "100%";
+        }
       }
 
       var res = null;
@@ -1079,15 +1115,16 @@
         fpHtml += '</div>';
       }
 
+      var delayTime = isCasual ? 40 : 180;
       setTimeout(function() {
         el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
         scrollToBottom();
         triggerHaptic(30);
-      }, 180);
+      }, delayTime);
 
     })
     .catch(function(err) {
-      clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Connection error: ' + escapeHtml(err.message || 'Network issue') + '. Kripya dobara bhejein.</div>';
       scrollToBottom();
