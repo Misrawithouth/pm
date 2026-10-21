@@ -12,16 +12,16 @@
   "description": "Plant & Machinery Technical Support and Troubleshooting Desk",
   "icons": [
     {
-      "src": "pm-logo.png",
+      "src": "pm-logo.png?v=3",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "pm-logo.png",
+      "src": "pm-logo.png?v=3",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
