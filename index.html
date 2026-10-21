@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <!-- PWA & Mobile Web App Meta Configuration -->
+  <!-- App Icon & Favicon Configuration -->
+  <link rel="icon" type="image/png" href="pm-logo.png">
+  <link rel="apple-touch-icon" href="pm-logo.png">
   <link rel="manifest" href="manifest.json">
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="P&amp;M Desk">
+  <meta name="apple-mobile-web-app-title" content="P&amp;M Assistant">
   <meta name="theme-color" content="#008069">
 
   <style>
@@ -63,17 +66,25 @@
       overflow: hidden;
     }
 
+    /* 🚜 HIGH-RES CIRCULAR EMBLEM AVATAR */
     .header-avatar {
-      font-size: 20px;
-      background: #ffffff;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .header-info h3 {
@@ -120,7 +131,7 @@
       color: #111827;
     }
 
-    /* 🚜 WHATSAPP PATTERN WALLPAPER CONTAINER */
+    /* 🚜 WHATSAPP HEAVY EQUIPMENT SEAMLESS BACKGROUND */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -131,21 +142,10 @@
       gap: 10px;
       position: relative;
       background-color: #efeae2;
-    }
-
-    .chat-messages::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('chat-bg.png');
+      background-image: linear-gradient(rgba(239, 234, 226, 0.86), rgba(239, 234, 226, 0.86)), url('chat-bg.png');
       background-repeat: repeat;
-      background-size: 420px auto;
-      opacity: 0.14;
-      pointer-events: none;
-      z-index: 1;
+      background-size: 380px auto;
+      background-attachment: local;
     }
 
     .chat-messages::-webkit-scrollbar {
@@ -259,7 +259,7 @@
       touch-action: manipulation;
     }
 
-    /* ⚡ CASUAL CHAT SIMPLE TYPING BUBBLE (FOR GREETINGS/OK) */
+    /* 💬 SIMPLE TYPING FOR CASUAL CONVERSATION */
     .simple-typing {
       align-self: flex-start;
       background: #ffffff;
@@ -273,7 +273,7 @@
       z-index: 2;
     }
 
-    /* ⚡ HEAVY DIAGNOSTIC ANALYZING PROGRESS CARD */
+    /* 🔍 HEAVY TECHNICAL PROGRESS ANALYZER */
     .analyzing-card {
       align-self: flex-start;
       background: #ffffff;
@@ -535,7 +535,10 @@
 <div id="appContainer">
   <div class="chat-header">
     <div class="header-left">
-      <div class="header-avatar">🚜</div>
+      <!-- 🚜 EMBLEM PROFILE LOGO -->
+      <div class="header-avatar">
+        <img src="pm-logo.png" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+      </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
         <p id="activeMachineStatus">P&amp;M Technical Desk • Dev: Nitin Misra</p>
@@ -622,7 +625,6 @@
 </div>
 
 <script>
-  // ⚡ LINKED APPS SCRIPT BACKEND URL
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
 
   var currentMachine = "";
@@ -947,18 +949,12 @@
     executeOneTapSend();
   }
 
-  /**
-   * ⚡ ADAPTIVE INTENT CHECK: Distinguishes casual talk vs heavy manual inspection
-   */
   function isCasualQuery(text) {
     if (!text) return false;
     var clean = text.toLowerCase().replace(/[.,!?;:]/g, "").trim();
     return /^(hi|hello|hey|namaste|pranam|ram\s*ram|hlo|hii|helo|ok|okk|okay|theek|thik|theek\s*hai|thik\s*h|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad|shukriya|accha|achha)$/i.test(clean);
   }
 
-  /**
-   * ⚡ SMART DISPATCH ENGINE: Casual pe simple typing, technical pe % progress
-   */
   function executeOneTapSend() {
     var now = Date.now();
     if (now - lastSentTimestamp < 250) return;
@@ -988,14 +984,12 @@
     var progressInterval = null;
 
     if (isCasual) {
-      // 💬 SIMPLE WHATSAPP-STYLE TYPING FOR CASUAL TALK
       var casualNode = document.createElement('div');
       casualNode.className = 'simple-typing';
       casualNode.id = typingId;
       casualNode.innerText = 'Typing...';
       box.appendChild(casualNode);
     } else {
-      // 🔍 HEAVY REAL-TIME % PROGRESS ANALYZER ONLY FOR TECHNICAL QUERIES
       var cardNode = document.createElement('div');
       cardNode.className = 'analyzing-card';
       cardNode.id = typingId;
