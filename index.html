@@ -3,37 +3,886 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>P&M Support Desk</title>
-
-  <link rel="manifest" href="manifest.json">
+  <title>P&amp;M Technical Support Desk</title>
+  
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="P&M Support">
   <meta name="theme-color" content="#008069">
 
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2855/2855581.png">
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2855/2855581.png">
-
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; height: 100dvh; overflow: hidden; background-color: #008069; }
-    iframe { width: 100%; height: 100%; height: 100dvh; border: none; display: block; }
-  </style>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
-  </script>
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #efeae2;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #appContainer {
+      width: 100%;
+      max-width: 640px;
+      height: 100%;
+      margin: 0 auto;
+      background: #efeae2;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* HEADER */
+    .chat-header {
+      background: #008069;
+      color: #ffffff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 20;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .header-avatar {
+      font-size: 20px;
+      background: #ffffff;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    .header-info h3 {
+      font-size: 14.5px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .header-info p {
+      font-size: 10.5px;
+      color: #a7f3d0;
+      line-height: 1.2;
+      margin-top: 2px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .mode-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 5px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .mode-btn.active {
+      background: #fbbf24;
+      border-color: #f59e0b;
+      color: #111827;
+    }
+
+    /* CHAT MESSAGES */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+    }
+
+    .msg {
+      max-width: 88%;
+      padding: 10px 13px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      line-height: 1.52;
+      word-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap;
+      position: relative;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    .bot-msg {
+      align-self: flex-start;
+      background: #ffffff;
+      color: #111b21;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .user-msg {
+      align-self: flex-end;
+      background: #d9fdd3;
+      color: #111b21;
+      border-top-right-radius: 0;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .user-msg.with-attachment {
+      background: #cbf7c3;
+    }
+
+    .onboarding-card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 13px;
+      border-left: 4px solid #008069;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    .followup-container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .followup-chip {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .followup-chip:active {
+      background: #dcfce7;
+      border-color: #4ade80;
+    }
+
+    .pdf-card {
+      margin-top: 10px;
+      background: #0f172a;
+      color: #ffffff;
+      border: 1.5px solid #0284c7;
+      border-radius: 8px;
+      padding: 11px;
+      font-size: 12px;
+    }
+
+    .pdf-card strong {
+      color: #38bdf8;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .pdf-btn {
+      display: inline-block;
+      margin-top: 8px;
+      background: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 12px;
+      touch-action: manipulation;
+    }
+
+    /* ATTACHMENT BAR */
+    .attachment-preview-bar {
+      padding: 8px 12px;
+      background: #f1f5f9;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .attachment-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .upload-status-tag {
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-family: monospace;
+    }
+
+    .status-uploading { background: #fef08a; color: #854d0e; }
+    .status-ready { background: #bbf7d0; color: #166534; }
+    .status-error { background: #fecaca; color: #991b1b; }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #008069;
+      transition: width 0.2s ease-out;
+    }
+
+    .progress-fill.done { background: #16a34a; }
+
+    /* INPUT BAR */
+    .chat-input-bar {
+      padding: 8px 10px;
+      background: #f0f2f5;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+      border-top: 1px solid #e2e8f0;
+      z-index: 30;
+    }
+
+    .attach-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      border: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #475569;
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+
+    .chat-input-bar input {
+      flex: 1;
+      height: 42px;
+      border: none;
+      border-radius: 21px;
+      padding: 0 15px;
+      font-size: 14.5px;
+      outline: none;
+      background: #ffffff;
+      color: #111b21;
+    }
+
+    .send-btn {
+      height: 42px;
+      padding: 0 18px;
+      background: #008069;
+      color: #ffffff;
+      border: none;
+      border-radius: 21px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      user-select: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .send-btn:active {
+      background: #005c4b;
+    }
+
+    .typing {
+      align-self: flex-start;
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #667781;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-card h4 {
+      font-size: 15.5px;
+      color: #008069;
+      margin-bottom: 14px;
+    }
+
+    .modal-field { margin-bottom: 13px; }
+    .modal-field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+
+    .modal-field input, .modal-field select {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0 11px;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .modal-btn-cancel {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-btn-submit {
+      background: #008069;
+      color: #ffffff;
+      border: none;
+      padding: 9px 17px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec" 
-    allow="geolocation; camera; microphone; clipboard-read; clipboard-write;"
-    sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-downloads">
-  </iframe>
+
+<div id="appContainer">
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="header-avatar">🚜</div>
+      <div class="header-info">
+        <h3>P&amp;M Technical Support</h3>
+        <p id="activeMachineStatus">P&amp;M Technical Desk • Dev: Nitin Misra</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="mode-btn" onclick="openManualModal()">📂 +Manual</button>
+      <button type="button" class="mode-btn" id="generalModeBtn" onclick="toggleGeneralMode()">💬 General</button>
+      <button type="button" class="mode-btn" onclick="resetChat()">🔄</button>
+    </div>
+  </div>
+
+  <div class="chat-messages" id="chatBox">
+    <div class="onboarding-card">
+      <strong>📌 P&amp;M Technical Desk Active (GitHub CDN)</strong>
+      • Direct machine part, fault ya drawing poochhein.<br>
+      • <strong>+Manual</strong> se naya OEM document upload karein.<br>
+      • Ultra-fast 1-tap dispatch enabled.
+    </div>
+  </div>
+
+  <div class="attachment-preview-bar" id="attachmentBar" style="display: none;">
+    <div class="attachment-header-row">
+      <span id="attachmentFileName" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">📎 file.jpg</span>
+      <div>
+        <span class="upload-status-tag status-uploading" id="uploadStatusTag">0%</span>
+        <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-weight:bold;font-size:15px;cursor:pointer;">✕</button>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div class="chat-input-bar">
+    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()">📎</button>
+    
+    <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="*/*">
+    <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
+
+    <input type="text" id="userInput" placeholder="Sawal likhein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
+    
+    <button type="button" class="send-btn" id="sendBtn"
+            onpointerdown="handleTouchSend(event);"
+            onclick="executeOneTapSend();">Send</button>
+  </div>
+
+  <!-- MODAL: MANUAL -->
+  <div class="modal-overlay" id="manualModal">
+    <div class="modal-card">
+      <h4>📂 Upload New OEM Manual</h4>
+      <div class="modal-field">
+        <label>Manual Title / Machine Model</label>
+        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / MAN Tipper CLA 25">
+      </div>
+      <div class="modal-field">
+        <label>Category / Document Type</label>
+        <select id="manualCategoryInput" onchange="checkCustomCategory(this.value)">
+          <option value="Spare Parts Manual">Spare Parts Manual</option>
+          <option value="Operation Manual">Operation Manual</option>
+          <option value="Hydraulic Circuit / Schematic">Hydraulic Circuit / Schematic</option>
+          <option value="Electrical Wiring Diagram">Electrical Wiring Diagram</option>
+          <option value="Workshop Service Manual">Workshop Service Manual</option>
+          <option value="Lubrication & Greasing Schedule">Lubrication & Greasing Schedule</option>
+          <option value="__CUSTOM__">➕ Add New Category (Custom)...</option>
+        </select>
+      </div>
+      
+      <div class="modal-field" id="customCategoryBox" style="display: none;">
+        <label>Specify Custom Category Name</label>
+        <input type="text" id="customCategoryInput" placeholder="e.g. Brochure, Technical Leaflet, Inspection Sheet">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="modal-btn-cancel" onclick="closeManualModal()">Cancel</button>
+        <button type="button" class="modal-btn-submit" onclick="proceedToSelectPDF()">Select PDF 📄</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ⚡ LINKED LIVE BACKEND APPS SCRIPT URL
+  var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
+
+  var currentMachine = "";
+  var currentMachineName = "";
+  var isGeneral = false;
+  var activeAttachment = null;
+  var uploadProgressTimer = null;
+  var lastSentTimestamp = 0;
+  var activeTopicMemory = "";
+
+  function scrollToBottom() {
+    var box = document.getElementById('chatBox');
+    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 30);
+  }
+
+  function openManualModal() {
+    document.getElementById('manualTitleInput').value = "";
+    document.getElementById('manualCategoryInput').value = "Spare Parts Manual";
+    document.getElementById('customCategoryBox').style.display = "none";
+    document.getElementById('customCategoryInput').value = "";
+    document.getElementById('manualModal').style.display = "flex";
+  }
+
+  function closeManualModal() {
+    document.getElementById('manualModal').style.display = "none";
+  }
+
+  function checkCustomCategory(val) {
+    var box = document.getElementById('customCategoryBox');
+    if (val === "__CUSTOM__") {
+      box.style.display = "block";
+      document.getElementById('customCategoryInput').focus();
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  function proceedToSelectPDF() {
+    var title = document.getElementById('manualTitleInput').value.trim();
+    if (!title) { alert("Title zaroor likhein."); return; }
+
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    if (catSelect === "__CUSTOM__") {
+      var customName = document.getElementById('customCategoryInput').value.trim();
+      if (!customName) {
+        alert("Kripya custom category ka naam likhein.");
+        return;
+      }
+    }
+
+    closeManualModal();
+    document.getElementById('manualFileInput').click();
+  }
+
+  function executeManualUpload(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var customTitle = document.getElementById('manualTitleInput').value.trim() || file.name;
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    var categoryDesc = catSelect;
+    if (catSelect === "__CUSTOM__") {
+      categoryDesc = document.getElementById('customCategoryInput').value.trim() || "Brochure / Other Document";
+    }
+
+    var attachBar = document.getElementById('attachmentBar');
+    var fileNameEl = document.getElementById('attachmentFileName');
+    var statusTag = document.getElementById('uploadStatusTag');
+    var progressFill = document.getElementById('progressFill');
+
+    clearInterval(uploadProgressTimer);
+    progressFill.className = "progress-fill";
+    progressFill.style.width = "20%";
+    statusTag.className = "upload-status-tag status-uploading";
+    statusTag.innerText = "20%";
+    fileNameEl.innerText = "📄 " + customTitle;
+    attachBar.style.display = "flex";
+
+    var currentPercent = 25;
+    uploadProgressTimer = setInterval(function() {
+      if (currentPercent < 85) {
+        currentPercent += 15;
+        progressFill.style.width = currentPercent + "%";
+        statusTag.innerText = currentPercent + "%";
+      }
+    }, 120);
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64Data = e.target.result.split(',')[1];
+      
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "upload",
+          base64: base64Data,
+          fileName: file.name,
+          mimeType: "application/pdf",
+          isPermanent: true,
+          customTitle: customTitle,
+          categoryDesc: categoryDesc
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        clearInterval(uploadProgressTimer);
+        if (res && res.status === "success") {
+          progressFill.style.width = "100%";
+          progressFill.classList.add("done");
+          statusTag.className = "upload-status-tag status-ready";
+          statusTag.innerText = "✓ Uploaded";
+
+          var box = document.getElementById('chatBox');
+          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Uploaded Successfully!</strong><br>' +
+            '• Document: <strong>' + escapeHtml(customTitle) + '</strong> (' + escapeHtml(categoryDesc) + ')<br>' +
+            '• Nitin Misra ji ke email par approval link bhej di gayi hai.</div>';
+          scrollToBottom();
+        } else {
+          statusTag.className = "upload-status-tag status-error";
+          statusTag.innerText = "Error";
+        }
+      })
+      .catch(function() {
+        clearInterval(uploadProgressTimer);
+        statusTag.className = "upload-status-tag status-error";
+        statusTag.innerText = "Error";
+      });
+    };
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  }
+
+  function compressImageClient(file, callback) {
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+      var r = new FileReader();
+      r.onload = function(e) { callback(e.target.result.split(',')[1], file.type || 'application/octet-stream'); };
+      r.readAsDataURL(file);
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var max_dim = 480;
+        var w = img.width;
+        var h = img.height;
+        if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
+        else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.45);
+        callback(dataUrl.split(',')[1], 'image/jpeg');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleFileSelect(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var attachBar = document.getElementById('attachmentBar');
+    var fileNameEl = document.getElementById('attachmentFileName');
+    var statusTag = document.getElementById('uploadStatusTag');
+    var progressFill = document.getElementById('progressFill');
+
+    clearInterval(uploadProgressTimer);
+    progressFill.className = "progress-fill";
+    progressFill.style.width = "40%";
+    statusTag.className = "upload-status-tag status-uploading";
+    statusTag.innerText = "40%";
+    fileNameEl.innerText = "📎 " + file.name;
+    attachBar.style.display = "flex";
+
+    compressImageClient(file, function(cleanBase64, mimeType) {
+      activeAttachment = {
+        fileName: file.name,
+        mimeType: mimeType,
+        base64: cleanBase64,
+        isUploaded: false
+      };
+      progressFill.style.width = "100%";
+      progressFill.classList.add("done");
+      statusTag.className = "upload-status-tag status-ready";
+      statusTag.innerText = "✓ Ready";
+
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "upload",
+          base64: cleanBase64,
+          fileName: file.name,
+          mimeType: mimeType,
+          isPermanent: false,
+          customTitle: "",
+          categoryDesc: ""
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (res && res.status === "success") {
+          statusTag.innerText = "✓ Uploaded";
+          activeAttachment.isUploaded = true;
+        }
+      })
+      .catch(function() {});
+    });
+  }
+
+  function clearAttachment() {
+    clearInterval(uploadProgressTimer);
+    activeAttachment = null;
+    document.getElementById('fileUploadInput').value = "";
+    document.getElementById('attachmentBar').style.display = "none";
+    document.getElementById('progressFill').style.width = "0%";
+  }
+
+  function toggleGeneralMode() {
+    isGeneral = !isGeneral;
+    var btn = document.getElementById('generalModeBtn');
+    if (isGeneral) {
+      btn.classList.add('active');
+      btn.innerText = "⚡ General ON";
+    } else {
+      btn.classList.remove('active');
+      btn.innerText = "💬 General";
+    }
+  }
+
+  function resetChat() {
+    currentMachine = "";
+    currentMachineName = "";
+    activeTopicMemory = "";
+    clearAttachment();
+    document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
+    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
+  }
+
+  function handleFollowUp(text) {
+    document.getElementById('userInput').value = text;
+    executeOneTapSend();
+  }
+
+  function handleTouchSend(e) {
+    if (e && e.cancelable) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    executeOneTapSend();
+  }
+
+  function executeOneTapSend() {
+    var now = Date.now();
+    if (now - lastSentTimestamp < 250) return;
+    lastSentTimestamp = now;
+
+    var input = document.getElementById('userInput');
+    var q = (input.value || '').trim();
+    if (!q && !activeAttachment) return;
+
+    var currentText = q;
+    input.value = '';
+    input.blur();
+
+    var box = document.getElementById('chatBox');
+    var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
+    var attachClass = activeAttachment ? " with-attachment" : "";
+
+    var userNode = document.createElement('div');
+    userNode.className = 'msg user-msg' + attachClass;
+    userNode.textContent = display;
+    box.appendChild(userNode);
+
+    var typingId = "typ-" + Date.now();
+    var typingNode = document.createElement('div');
+    typingNode.className = 'typing';
+    typingNode.id = typingId;
+    typingNode.textContent = 'Analyzing...';
+    box.appendChild(typingNode);
+    scrollToBottom();
+
+    var toSendAttach = activeAttachment;
+    clearAttachment();
+
+    var safetyTimeout = setTimeout(function() {
+      var el = document.getElementById(typingId);
+      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server take time. Agla sawal pooch sakte hain.</div>';
+      scrollToBottom();
+    }, 9000);
+
+    // ⚡ NATIVE FETCH API (NO IFRAME DEADLOCK)
+    fetch(BACKEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "ask",
+        query: currentText,
+        machineKey: currentMachine,
+        isGeneral: isGeneral,
+        contextSummary: activeTopicMemory,
+        attachment: toSendAttach
+      })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(res) {
+      clearTimeout(safetyTimeout);
+      var el = document.getElementById(typingId);
+      if (!el) return;
+
+      if (res && res.machineKey && res.machineName) {
+        currentMachine = res.machineKey;
+        currentMachineName = res.machineName;
+        document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
+      }
+
+      if (res && res.reply) {
+        if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure/i.test(currentText + " " + res.reply)) {
+          activeTopicMemory = "Current Component / Fault: " + currentText + " | Details: " + res.reply.substring(0, 180);
+        }
+      }
+
+      var replyText = escapeHtml(res ? res.reply : '')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      var cardHtml = '';
+      if (res && res.card) {
+        cardHtml = '<div class="pdf-card">' +
+          '<strong>📄 ' + escapeHtml(res.card.title) + ' (Pg ' + res.card.page + ')</strong>' +
+          '<p>Section: ' + escapeHtml(res.card.section) + ' | ' + escapeHtml(res.card.partNo) + '</p>' +
+          '<a href="' + res.card.url + '" target="_blank" class="pdf-btn">Open Drawing ↗</a>' +
+          '</div>';
+      }
+
+      var fpHtml = '';
+      if (res && res.followUps && res.followUps.length > 0) {
+        fpHtml = '<div class="followup-container">';
+        for (var i = 0; i < res.followUps.length; i++) {
+          fpHtml += '<button type="button" class="followup-chip" onclick="handleFollowUp(\'' + escapeHtmlAttr(res.followUps[i]) + '\')">👉 ' + escapeHtml(res.followUps[i]) + '</button>';
+        }
+        fpHtml += '</div>';
+      }
+
+      el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
+      scrollToBottom();
+    })
+    .catch(function(err) {
+      clearTimeout(safetyTimeout);
+      var el = document.getElementById(typingId);
+      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Connection error. Kripya dobara bhejein.</div>';
+      scrollToBottom();
+    });
+  }
+
+  function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+</script>
+
 </body>
 </html>
