@@ -470,7 +470,7 @@
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
       • <strong>+Manual</strong> se naya OEM document upload karein.<br>
-      • Context continuity &amp; 1-tap dispatch enabled.
+      • Ultra-fast 1-tap dispatch enabled.
     </div>
   </div>
 
@@ -487,7 +487,7 @@
     </div>
   </div>
 
-  <!-- INPUT BAR (WITH NATIVE VOICE MIC) -->
+  <!-- INPUT BAR -->
   <div class="chat-input-bar">
     <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo / Document">📎</button>
     
@@ -496,7 +496,6 @@
 
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
     
-    <!-- 🎙️ NATIVE VOICE TO TEXT TRIGGER -->
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
 
     <button type="button" class="send-btn" id="sendBtn"
@@ -575,7 +574,7 @@
     speechRecognizer = new SpeechRecognition();
     speechRecognizer.continuous = false;
     speechRecognizer.interimResults = true;
-    speechRecognizer.lang = 'hi-IN'; // Recognizes Hindi, English and mixed Hinglish perfectly
+    speechRecognizer.lang = 'hi-IN';
 
     speechRecognizer.onstart = function() {
       isRecognizing = true;
@@ -706,6 +705,8 @@
       
       fetch(BACKEND_API_URL, {
         method: "POST",
+        mode: "cors",
+        redirect: "follow",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "upload",
@@ -806,6 +807,8 @@
 
       fetch(BACKEND_API_URL, {
         method: "POST",
+        mode: "cors",
+        redirect: "follow",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "upload",
@@ -870,6 +873,9 @@
     executeOneTapSend();
   }
 
+  /**
+   * ⚡ CORS-SAFE & REDIRECT-RESILIENT ONE-TAP DISPATCH ENGINE
+   */
   function executeOneTapSend() {
     var now = Date.now();
     if (now - lastSentTimestamp < 250) return;
@@ -909,11 +915,16 @@
       var el = document.getElementById(typingId);
       if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server take time. Agla sawal pooch sakte hain.</div>';
       scrollToBottom();
-    }, 9000);
+    }, 12000);
 
+    // ⚡ CORS & 302 REDIRECT SAFE FETCH
     fetch(BACKEND_API_URL, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
       body: JSON.stringify({
         action: "ask",
         query: currentText,
@@ -923,11 +934,20 @@
         attachment: toSendAttach
       })
     })
-    .then(function(res) { return res.json(); })
-    .then(function(res) {
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(textData) {
       clearTimeout(safetyTimeout);
       var el = document.getElementById(typingId);
       if (!el) return;
+
+      var res = null;
+      try {
+        res = JSON.parse(textData);
+      } catch (e) {
+        throw new Error("Invalid response format");
+      }
 
       if (res && res.machineKey && res.machineName) {
         currentMachine = res.machineKey;
@@ -970,7 +990,7 @@
     .catch(function(err) {
       clearTimeout(safetyTimeout);
       var el = document.getElementById(typingId);
-      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Connection error. Kripya dobara bhejein.</div>';
+      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Connection error: ' + escapeHtml(err.message || 'Network issue') + '. Kripya dobara bhejein.</div>';
       scrollToBottom();
     });
   }
@@ -978,7 +998,6 @@
   function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
-  // Auto initialize voice module on load
   window.addEventListener('DOMContentLoaded', function() {
     setupSpeechEngine();
   });
