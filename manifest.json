@@ -1,23 +1,21 @@
 {
-  "name": "P&M Technical Support",
+  "name": "P&M Technical Support Desk",
   "short_name": "P&M Desk",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#efeae2",
+  "background_color": "#008069",
   "theme_color": "#008069",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2855/2855581.png",
+      "src": "https://img.icons8.com/color/192/tractor.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2855/2855581.png",
+      "src": "https://img.icons8.com/color/512/tractor.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
