@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
+  <!-- PWA & Mobile Web App Meta Configuration -->
+  <link rel="manifest" href="manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="P&amp;M Desk">
   <meta name="theme-color" content="#008069">
 
   <style>
@@ -295,9 +298,9 @@
       z-index: 30;
     }
 
-    .attach-btn {
+    .attach-btn, .mic-btn {
       width: 40px;
-      height: 40px;
+      height: 42px;
       border-radius: 50%;
       background: #e2e8f0;
       border: none;
@@ -309,6 +312,19 @@
       color: #475569;
       flex-shrink: 0;
       touch-action: manipulation;
+      transition: all 0.2s ease;
+    }
+
+    .mic-btn.listening {
+      background: #ef4444;
+      color: #ffffff;
+      animation: micPulse 1.2s infinite;
+    }
+
+    @keyframes micPulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
     }
 
     .chat-input-bar input {
@@ -325,7 +341,7 @@
 
     .send-btn {
       height: 42px;
-      padding: 0 18px;
+      padding: 0 16px;
       background: #008069;
       color: #ffffff;
       border: none;
@@ -452,8 +468,9 @@
     <div class="onboarding-card">
       <strong>📌 P&amp;M Technical Desk Active (GitHub CDN)</strong>
       • Direct machine part, fault ya drawing poochhein.<br>
+      • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
       • <strong>+Manual</strong> se naya OEM document upload karein.<br>
-      • Ultra-fast 1-tap dispatch enabled.
+      • Context continuity &amp; 1-tap dispatch enabled.
     </div>
   </div>
 
@@ -470,15 +487,18 @@
     </div>
   </div>
 
-  <!-- INPUT BAR -->
+  <!-- INPUT BAR (WITH NATIVE VOICE MIC) -->
   <div class="chat-input-bar">
-    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()">📎</button>
+    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo / Document">📎</button>
     
     <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="*/*">
     <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
 
-    <input type="text" id="userInput" placeholder="Sawal likhein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
+    <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
     
+    <!-- 🎙️ NATIVE VOICE TO TEXT TRIGGER -->
+    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
+
     <button type="button" class="send-btn" id="sendBtn"
             onpointerdown="handleTouchSend(event);"
             onclick="executeOneTapSend();">Send</button>
@@ -519,7 +539,7 @@
 </div>
 
 <script>
-  // ⚡ LINKED LIVE BACKEND APPS SCRIPT URL
+  // ⚡ LINKED APPS SCRIPT BACKEND URL
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
 
   var currentMachine = "";
@@ -529,10 +549,83 @@
   var uploadProgressTimer = null;
   var lastSentTimestamp = 0;
   var activeTopicMemory = "";
+  var isRecognizing = false;
+  var speechRecognizer = null;
+
+  function triggerHaptic(duration) {
+    if (window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate(duration || 35);
+    }
+  }
 
   function scrollToBottom() {
     var box = document.getElementById('chatBox');
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 30);
+  }
+
+  /* 🎙️ NATIVE SPEECH-TO-TEXT ENGINE (HINDI / HINGLISH COMPATIBLE) */
+  function setupSpeechEngine() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      var micBtn = document.getElementById('micBtn');
+      if (micBtn) micBtn.style.display = 'none';
+      return;
+    }
+
+    speechRecognizer = new SpeechRecognition();
+    speechRecognizer.continuous = false;
+    speechRecognizer.interimResults = true;
+    speechRecognizer.lang = 'hi-IN'; // Recognizes Hindi, English and mixed Hinglish perfectly
+
+    speechRecognizer.onstart = function() {
+      isRecognizing = true;
+      triggerHaptic(50);
+      var micBtn = document.getElementById('micBtn');
+      micBtn.classList.add('listening');
+      micBtn.innerText = '🔴';
+      document.getElementById('userInput').placeholder = 'Sun raha hoon... bolyein';
+    };
+
+    speechRecognizer.onresult = function(event) {
+      var transcript = '';
+      for (var i = event.resultIndex; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      document.getElementById('userInput').value = transcript;
+    };
+
+    speechRecognizer.onerror = function() {
+      stopVoiceInput();
+    };
+
+    speechRecognizer.onend = function() {
+      stopVoiceInput();
+    };
+  }
+
+  function toggleVoiceInput() {
+    if (!speechRecognizer) {
+      setupSpeechEngine();
+    }
+    if (!speechRecognizer) {
+      alert("Aapke browser me speech recognition support available nahi hai.");
+      return;
+    }
+    if (isRecognizing) {
+      speechRecognizer.stop();
+    } else {
+      speechRecognizer.start();
+    }
+  }
+
+  function stopVoiceInput() {
+    isRecognizing = false;
+    var micBtn = document.getElementById('micBtn');
+    if (micBtn) {
+      micBtn.classList.remove('listening');
+      micBtn.innerText = '🎙️';
+    }
+    document.getElementById('userInput').placeholder = 'Sawal likhein ya bolkar batayein...';
   }
 
   function openManualModal() {
@@ -786,6 +879,8 @@
     var q = (input.value || '').trim();
     if (!q && !activeAttachment) return;
 
+    triggerHaptic(40);
+
     var currentText = q;
     input.value = '';
     input.blur();
@@ -816,7 +911,6 @@
       scrollToBottom();
     }, 9000);
 
-    // ⚡ NATIVE FETCH API (NO IFRAME DEADLOCK)
     fetch(BACKEND_API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -871,6 +965,7 @@
 
       el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
       scrollToBottom();
+      triggerHaptic(30);
     })
     .catch(function(err) {
       clearTimeout(safetyTimeout);
@@ -882,6 +977,11 @@
 
   function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+  // Auto initialize voice module on load
+  window.addEventListener('DOMContentLoaded', function() {
+    setupSpeechEngine();
+  });
 </script>
 
 </body>
