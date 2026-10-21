@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <!-- App Icon & Favicon Configuration (Cache-Busted v=2) -->
   <link rel="icon" type="image/png" href="pm-logo.png?v=2">
   <link rel="apple-touch-icon" href="pm-logo.png?v=2">
   <link rel="manifest" href="manifest.json?v=2">
@@ -16,518 +15,94 @@
   <meta name="apple-mobile-web-app-title" content="P&amp;M Assistant">
   <meta name="theme-color" content="#008069">
 
+  <!-- ⚡ CDN: Markdown Parser & KaTeX Formula Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; height: 100%; background: #efeae2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 0; overflow: hidden; }
+    #appContainer { width: 100%; max-width: 640px; height: 100%; margin: 0 auto; background: #efeae2; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0, 0, 0, 0.08); }
+    
+    .chat-header { background: #008069; color: #ffffff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+    .header-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+    .header-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.6); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); }
+    .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .header-info h3 { font-size: 14.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .header-info p { font-size: 10.5px; color: #a7f3d0; line-height: 1.2; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+    .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: #efeae2;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
+    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 10px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.86), rgba(239, 234, 226, 0.86)), url('chat-bg.png?v=2'); background-repeat: repeat; background-size: 380px auto; background-attachment: local; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 2px; }
 
-    #appContainer {
-      width: 100%;
-      max-width: 640px;
-      height: 100%;
-      margin: 0 auto;
-      background: #efeae2;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-    }
+    .msg { max-width: 90%; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; line-height: 1.55; word-wrap: break-word; word-break: break-word; position: relative; z-index: 2; max-height: none !important; overflow: visible !important; }
+    .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
+    .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
+    .user-msg.with-attachment { background: #cbf7c3; }
 
-    /* HEADER */
-    .chat-header {
-      background: #008069;
-      color: #ffffff;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      z-index: 20;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    }
+    /* 📊 PROFESSIONAL TABLE FORMATTING */
+    .bot-msg table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12.5px; background: #f8fafc; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; }
+    .bot-msg th, .bot-msg td { padding: 8px 10px; text-align: left; border: 1px solid #e2e8f0; }
+    .bot-msg th { background: #008069; color: #ffffff; font-weight: 600; }
+    .bot-msg tr:nth-child(even) { background: #f1f5f9; }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      overflow: hidden;
-    }
+    /* 📐 FORMULA & CODE BLOCKS */
+    .bot-msg .katex-display { margin: 8px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+    .bot-msg pre { background: #1e293b; color: #f8fafc; padding: 10px; border-radius: 6px; overflow-x: auto; margin: 8px 0; font-size: 12px; }
+    .bot-msg code { font-family: monospace; background: rgba(0,0,0,0.06); padding: 2px 4px; border-radius: 3px; font-size: 12px; }
+    .bot-msg pre code { background: transparent; padding: 0; }
+    .bot-msg ul, .bot-msg ol { margin: 6px 0 6px 20px; }
+    .bot-msg li { margin-bottom: 4px; }
+    .bot-msg h1, .bot-msg h2, .bot-msg h3, .bot-msg h4 { margin: 8px 0 4px; color: #0f172a; font-size: 14.5px; }
 
-    /* 🚜 HIGH-RES CIRCULAR EMBLEM AVATAR */
-    .header-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      overflow: hidden;
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    }
+    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 13px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); font-size: 12.5px; line-height: 1.6; color: #334155; position: relative; z-index: 2; }
+    .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
+    .followup-chip:active { background: #dcfce7; border-color: #4ade80; }
 
-    .header-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .pdf-card { margin-top: 10px; background: #0f172a; color: #ffffff; border: 1.5px solid #0284c7; border-radius: 8px; padding: 11px; font-size: 12px; }
+    .pdf-card strong { color: #38bdf8; display: block; margin-bottom: 3px; }
+    .pdf-btn { display: inline-block; margin-top: 8px; background: #0284c7; color: #ffffff; text-decoration: none; padding: 7px 12px; border-radius: 5px; font-weight: bold; font-size: 12px; touch-action: manipulation; }
 
-    .header-info h3 {
-      font-size: 14.5px;
-      font-weight: 600;
-      line-height: 1.2;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
+    .simple-typing { align-self: flex-start; background: #ffffff; padding: 8px 14px; border-radius: 8px; border-top-left-radius: 0; font-size: 12.5px; color: #64748b; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); position: relative; z-index: 2; }
+    .analyzing-card { align-self: flex-start; background: #ffffff; padding: 12px 14px; border-radius: 10px; border-top-left-radius: 0; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); width: 250px; display: flex; flex-direction: column; gap: 7px; border-left: 3.5px solid #008069; position: relative; z-index: 2; }
+    .analyzing-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #0f172a; }
+    .analyzing-header .pct-badge { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
+    .analyzing-status-text { font-size: 11px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .analyzing-bar-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .analyzing-bar-fill { height: 100%; width: 5%; background: linear-gradient(90deg, #008069, #10b981); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-    .header-info p {
-      font-size: 10.5px;
-      color: #a7f3d0;
-      line-height: 1.2;
-      margin-top: 2px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .mode-btn {
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      padding: 5px 9px;
-      border-radius: 14px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .mode-btn.active {
-      background: #fbbf24;
-      border-color: #f59e0b;
-      color: #111827;
-    }
-
-    /* 🚜 WHATSAPP HEAVY EQUIPMENT SEAMLESS BACKGROUND */
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      position: relative;
-      background-color: #efeae2;
-      background-image: linear-gradient(rgba(239, 234, 226, 0.86), rgba(239, 234, 226, 0.86)), url('chat-bg.png?v=2');
-      background-repeat: repeat;
-      background-size: 380px auto;
-      background-attachment: local;
-    }
-
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.15);
-      border-radius: 2px;
-    }
-
-    .msg {
-      max-width: 88%;
-      padding: 10px 13px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      line-height: 1.52;
-      word-wrap: break-word;
-      word-break: break-word;
-      white-space: pre-wrap;
-      position: relative;
-      z-index: 2;
-      max-height: none !important;
-      overflow: visible !important;
-    }
-
-    .bot-msg {
-      align-self: flex-start;
-      background: #ffffff;
-      color: #111b21;
-      border-top-left-radius: 0;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-    }
-
-    .user-msg {
-      align-self: flex-end;
-      background: #d9fdd3;
-      color: #111b21;
-      border-top-right-radius: 0;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-    }
-
-    .user-msg.with-attachment {
-      background: #cbf7c3;
-    }
-
-    .onboarding-card {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 13px;
-      border-left: 4px solid #008069;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-      font-size: 12.5px;
-      line-height: 1.6;
-      color: #334155;
-      position: relative;
-      z-index: 2;
-    }
-
-    .followup-container {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .followup-chip {
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      color: #166534;
-      padding: 7px 11px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .followup-chip:active {
-      background: #dcfce7;
-      border-color: #4ade80;
-    }
-
-    .pdf-card {
-      margin-top: 10px;
-      background: #0f172a;
-      color: #ffffff;
-      border: 1.5px solid #0284c7;
-      border-radius: 8px;
-      padding: 11px;
-      font-size: 12px;
-    }
-
-    .pdf-card strong {
-      color: #38bdf8;
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    .pdf-btn {
-      display: inline-block;
-      margin-top: 8px;
-      background: #0284c7;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 7px 12px;
-      border-radius: 5px;
-      font-weight: bold;
-      font-size: 12px;
-      touch-action: manipulation;
-    }
-
-    /* 💬 SIMPLE TYPING FOR CASUAL CONVERSATION */
-    .simple-typing {
-      align-self: flex-start;
-      background: #ffffff;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border-top-left-radius: 0;
-      font-size: 12.5px;
-      color: #64748b;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-      position: relative;
-      z-index: 2;
-    }
-
-    /* 🔍 HEAVY TECHNICAL PROGRESS ANALYZER */
-    .analyzing-card {
-      align-self: flex-start;
-      background: #ffffff;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border-top-left-radius: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      width: 250px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      border-left: 3.5px solid #008069;
-      position: relative;
-      z-index: 2;
-    }
-
-    .analyzing-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    .analyzing-header .pct-badge {
-      background: #dcfce7;
-      color: #166534;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 11px;
-    }
-
-    .analyzing-status-text {
-      font-size: 11px;
-      color: #64748b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .analyzing-bar-track {
-      width: 100%;
-      height: 4px;
-      background: #e2e8f0;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .analyzing-bar-fill {
-      height: 100%;
-      width: 5%;
-      background: linear-gradient(90deg, #008069, #10b981);
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ATTACHMENT BAR */
-    .attachment-preview-bar {
-      padding: 8px 12px;
-      background: #f1f5f9;
-      border-top: 1px solid #cbd5e1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      flex-shrink: 0;
-      z-index: 25;
-    }
-
-    .attachment-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-    }
-
-    .upload-status-tag {
-      font-size: 10.5px;
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-family: monospace;
-    }
-
+    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; z-index: 25; }
+    .attachment-header-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+    .upload-status-tag { font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: bold; font-family: monospace; }
     .status-uploading { background: #fef08a; color: #854d0e; }
     .status-ready { background: #bbf7d0; color: #166534; }
     .status-error { background: #fecaca; color: #991b1b; }
-
-    .progress-track {
-      width: 100%;
-      height: 3px;
-      background: #e2e8f0;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #008069;
-      transition: width 0.2s ease-out;
-    }
-
+    .progress-track { width: 100%; height: 3px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: #008069; transition: width 0.2s ease-out; }
     .progress-fill.done { background: #16a34a; }
 
-    /* INPUT BAR */
-    .chat-input-bar {
-      padding: 8px 10px;
-      background: #f0f2f5;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-shrink: 0;
-      border-top: 1px solid #e2e8f0;
-      z-index: 30;
-    }
+    .chat-input-bar { padding: 8px 10px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
+    .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #475569; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
+    .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
+    @keyframes micPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 15px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
+    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; user-select: none; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .send-btn:active { background: #005c4b; }
 
-    .attach-btn, .mic-btn {
-      width: 40px;
-      height: 42px;
-      border-radius: 50%;
-      background: #e2e8f0;
-      border: none;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #475569;
-      flex-shrink: 0;
-      touch-action: manipulation;
-      transition: all 0.2s ease;
-    }
-
-    .mic-btn.listening {
-      background: #ef4444;
-      color: #ffffff;
-      animation: micPulse 1.2s infinite;
-    }
-
-    @keyframes micPulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-
-    .chat-input-bar input {
-      flex: 1;
-      height: 42px;
-      border: none;
-      border-radius: 21px;
-      padding: 0 15px;
-      font-size: 14.5px;
-      outline: none;
-      background: #ffffff;
-      color: #111b21;
-    }
-
-    .send-btn {
-      height: 42px;
-      padding: 0 16px;
-      background: #008069;
-      color: #ffffff;
-      border: none;
-      border-radius: 21px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      touch-action: manipulation;
-      user-select: none;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-
-    .send-btn:active {
-      background: #005c4b;
-    }
-
-    /* MODAL */
-    .modal-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.65);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      padding: 16px;
-    }
-
-    .modal-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      width: 100%;
-      max-width: 380px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .modal-card h4 {
-      font-size: 15.5px;
-      color: #008069;
-      margin-bottom: 14px;
-    }
-
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+    .modal-card { background: #ffffff; border-radius: 12px; padding: 20px; width: 100%; max-width: 380px; display: flex; flex-direction: column; }
+    .modal-card h4 { font-size: 15.5px; color: #008069; margin-bottom: 14px; }
     .modal-field { margin-bottom: 13px; }
-    .modal-field label {
-      display: block;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 5px;
-    }
-
-    .modal-field input, .modal-field select {
-      width: 100%;
-      height: 40px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 0 11px;
-      font-size: 13.5px;
-      outline: none;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .modal-btn-cancel {
-      background: #e2e8f0;
-      color: #334155;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .modal-btn-submit {
-      background: #008069;
-      color: #ffffff;
-      border: none;
-      padding: 9px 17px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+    .modal-field label { display: block; font-size: 11.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
+    .modal-field input, .modal-field select { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 11px; font-size: 13.5px; outline: none; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .modal-btn-cancel { background: #e2e8f0; color: #334155; border: none; padding: 9px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .modal-btn-submit { background: #008069; color: #ffffff; border: none; padding: 9px 17px; border-radius: 6px; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -535,7 +110,6 @@
 <div id="appContainer">
   <div class="chat-header">
     <div class="header-left">
-      <!-- 🚜 EMBLEM PROFILE LOGO -->
       <div class="header-avatar">
         <img src="pm-logo.png?v=2" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
@@ -556,8 +130,7 @@
       <strong>📌 P&amp;M Technical Desk Active (GitHub CDN)</strong>
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • <strong>+Manual</strong> se naya OEM document upload karein.<br>
-      • Context continuity &amp; adaptive analysis active.
+      • Formulas, Tables aur custom format support active.
     </div>
   </div>
 
@@ -574,23 +147,15 @@
     </div>
   </div>
 
-  <!-- INPUT BAR -->
   <div class="chat-input-bar">
     <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo / Document">📎</button>
-    
     <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="*/*">
     <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
-
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
-    
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
-
-    <button type="button" class="send-btn" id="sendBtn"
-            onpointerdown="handleTouchSend(event);"
-            onclick="executeOneTapSend();">Send</button>
+    <button type="button" class="send-btn" id="sendBtn" onpointerdown="handleTouchSend(event);" onclick="executeOneTapSend();">Send</button>
   </div>
 
-  <!-- MODAL: MANUAL -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h4>📂 Upload New OEM Manual</h4>
@@ -610,12 +175,10 @@
           <option value="__CUSTOM__">➕ Add New Category (Custom)...</option>
         </select>
       </div>
-      
       <div class="modal-field" id="customCategoryBox" style="display: none;">
         <label>Specify Custom Category Name</label>
         <input type="text" id="customCategoryInput" placeholder="e.g. Brochure, Technical Leaflet, Inspection Sheet">
       </div>
-
       <div class="modal-actions">
         <button type="button" class="modal-btn-cancel" onclick="closeManualModal()">Cancel</button>
         <button type="button" class="modal-btn-submit" onclick="proceedToSelectPDF()">Select PDF 📄</button>
@@ -638,9 +201,7 @@
   var speechRecognizer = null;
 
   function triggerHaptic(duration) {
-    if (window.navigator && window.navigator.vibrate) {
-      window.navigator.vibrate(duration || 35);
-    }
+    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 35);
   }
 
   function scrollToBottom() {
@@ -648,7 +209,36 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 30);
   }
 
-  /* 🎙️ NATIVE SPEECH ENGINE */
+  /* ⚡ HYBRID FORMATTER: KaTeX Formulas + Marked.js Tables & Formatting */
+  function renderRichContent(rawText) {
+    if (!rawText) return "";
+
+    // 1. Process Display Math ($$...$$)
+    var textWithMath = rawText.replace(/\$\$([\s\S]+?)\$\$/g, function(match, math) {
+      try {
+        return '<div class="katex-display">' + katex.renderToString(math.trim(), { displayMode: true, throwOnError: false }) + '</div>';
+      } catch (e) {
+        return match;
+      }
+    });
+
+    // 2. Process Inline Math ($...$)
+    textWithMath = textWithMath.replace(/\$([^\$\n]+?)\$/g, function(match, math) {
+      try {
+        return katex.renderToString(math.trim(), { displayMode: false, throwOnError: false });
+      } catch (e) {
+        return match;
+      }
+    });
+
+    // 3. Render Markdown Tables, Lists, Headings
+    if (window.marked) {
+      marked.setOptions({ gfm: true, breaks: true });
+      return marked.parse(textWithMath);
+    }
+    return textWithMath;
+  }
+
   function setupSpeechEngine() {
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -656,7 +246,6 @@
       if (micBtn) micBtn.style.display = 'none';
       return;
     }
-
     speechRecognizer = new SpeechRecognition();
     speechRecognizer.continuous = false;
     speechRecognizer.interimResults = true;
@@ -728,7 +317,6 @@
   function proceedToSelectPDF() {
     var title = document.getElementById('manualTitleInput').value.trim();
     if (!title) { alert("Title zaroor likhein."); return; }
-
     var catSelect = document.getElementById('manualCategoryInput').value;
     if (catSelect === "__CUSTOM__") {
       var customName = document.getElementById('customCategoryInput').value.trim();
@@ -737,7 +325,6 @@
         return;
       }
     }
-
     closeManualModal();
     document.getElementById('manualFileInput').click();
   }
@@ -921,9 +508,14 @@
     if (isGeneral) {
       btn.classList.add('active');
       btn.innerText = "⚡ General ON";
+      currentMachine = "";
+      currentMachineName = "";
+      activeTopicMemory = "";
+      document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering";
     } else {
       btn.classList.remove('active');
       btn.innerText = "💬 General";
+      document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
     }
   }
 
@@ -1001,7 +593,7 @@
         '<div class="analyzing-bar-track">' +
           '<div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 12%;"></div>' +
         '</div>' +
-        '<div class="analyzing-status-text" id="' + typingId + '-txt">Scanning OEM Manuals...</div>';
+        '<div class="analyzing-status-text" id="' + typingId + '-txt">' + (isGeneral ? 'Processing Universal Engineering Logic...' : 'Scanning OEM Manuals...') + '</div>';
       box.appendChild(cardNode);
 
       var currentPct = 12;
@@ -1017,13 +609,13 @@
         if (currentPct < 96) {
           if (currentPct < 35) {
             currentPct += Math.floor(Math.random() * 8) + 6;
-            txtEl.innerText = "Accessing Subsystem Index...";
+            txtEl.innerText = isGeneral ? "Accessing Standard Formulas..." : "Accessing Subsystem Index...";
           } else if (currentPct < 68) {
             currentPct += Math.floor(Math.random() * 6) + 4;
-            txtEl.innerText = "Analyzing Schematics & Fault Logs...";
+            txtEl.innerText = isGeneral ? "Applying Fluid Mechanics Principles..." : "Analyzing Schematics & Fault Logs...";
           } else {
             currentPct += Math.floor(Math.random() * 3) + 2;
-            txtEl.innerText = "Synthesizing Technical Directives...";
+            txtEl.innerText = "Formatting Output...";
           }
           if (currentPct > 96) currentPct = 96;
           pctEl.innerText = currentPct + "%";
@@ -1045,15 +637,13 @@
       body: JSON.stringify({
         action: "ask",
         query: currentText,
-        machineKey: currentMachine,
+        machineKey: isGeneral ? "" : currentMachine,
         isGeneral: isGeneral,
-        contextSummary: activeTopicMemory,
+        contextSummary: isGeneral ? "" : activeTopicMemory,
         attachment: toSendAttach
       })
     })
-    .then(function(response) {
-      return response.text();
-    })
+    .then(function(response) { return response.text(); })
     .then(function(textData) {
       if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
@@ -1069,30 +659,25 @@
       }
 
       var res = null;
-      try {
-        res = JSON.parse(textData);
-      } catch (e) {
-        throw new Error("Invalid response format");
-      }
+      try { res = JSON.parse(textData); } catch (e) { throw new Error("Invalid response format"); }
 
-      if (res && res.machineKey && res.machineName) {
+      if (!isGeneral && res && res.machineKey && res.machineName) {
         currentMachine = res.machineKey;
         currentMachineName = res.machineName;
         document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
       }
 
-      if (res && res.reply) {
+      if (!isGeneral && res && res.reply) {
         if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure/i.test(currentText + " " + res.reply)) {
           activeTopicMemory = "Current Component / Fault: " + currentText + " | Details: " + res.reply.substring(0, 180);
         }
       }
 
-      var replyText = escapeHtml(res ? res.reply : '')
-        .replace(/\n/g, '<br>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // ⚡ RENDER FULL MARKDOWN & KATEX FORMULAS
+      var replyHtml = renderRichContent(res ? res.reply : '');
 
       var cardHtml = '';
-      if (res && res.card) {
+      if (!isGeneral && res && res.card) {
         cardHtml = '<div class="pdf-card">' +
           '<strong>📄 ' + escapeHtml(res.card.title) + ' (Pg ' + res.card.page + ')</strong>' +
           '<p>Section: ' + escapeHtml(res.card.section) + ' | ' + escapeHtml(res.card.partNo) + '</p>' +
@@ -1111,7 +696,7 @@
 
       var delayTime = isCasual ? 40 : 180;
       setTimeout(function() {
-        el.outerHTML = '<div class="msg bot-msg">' + replyText + cardHtml + fpHtml + '</div>';
+        el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + '</div>';
         scrollToBottom();
         triggerHaptic(30);
       }, delayTime);
