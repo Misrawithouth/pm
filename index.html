@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=50">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=50">
-  <link rel="manifest" href="manifest.json?v=50">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=55">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=55">
+  <link rel="manifest" href="manifest.json?v=55">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -120,7 +120,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=50" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=55" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -247,7 +247,7 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 ZERO-CORS DIRECT PREVIEW (Bypasses Mozilla CORS Block & Opens Official Google Viewer)
+  // 🟢 DIRECT NATIVE OFFICIAL VIEWER (Zero Blank Screens, Direct Open)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
@@ -255,8 +255,8 @@
     }
     var targetP = parseInt(page, 10) || 1;
     
-    // Official direct preview link without third-party CORS blocks
-    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP;
+    // Official Google Drive direct view URL
+    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/view#page=" + targetP;
 
     window.open(directViewerUrl, '_blank', 'noopener,noreferrer');
   }
@@ -670,7 +670,7 @@
       var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
       var replyHtml = renderRichContent(rawReply);
 
-      // 🟢 SMART CONDITIONAL ACTION CARDS (Separates View Page vs Full Download)
+      // 🟢 SMART CONDITIONAL ACTION CARDS (Direct Open vs Full Download)
       var cardHtml = "";
       if (res && res.card && res.card.id) {
         var c = res.card;
@@ -681,7 +681,7 @@
         if (c.mode === "download_only") {
           buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download Complete PDF (' + (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'Manual') + ')</a>';
         } else {
-          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Directly at Page ' + targetP + ' ↗</button>';
+          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Drawing at Page ' + targetP + ' ↗</button>';
         }
 
         cardHtml = 
