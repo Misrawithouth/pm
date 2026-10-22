@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=28">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=28">
-  <link rel="manifest" href="manifest.json?v=28">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=29">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=29">
+  <link rel="manifest" href="manifest.json?v=29">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,18 +38,22 @@
 
     .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=3'); background-repeat: repeat; background-size: 380px auto; }
 
-    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); cursor: pointer; }
+    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
-    /* Quoted Message Box inside Bubble */
+    /* Reply Action Tag on Message Header */
+    .msg-reply-trigger { float: right; margin-left: 8px; margin-bottom: 2px; font-size: 11px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; cursor: pointer; color: #008069; font-weight: 600; user-select: none; }
+    .msg-reply-trigger:active { background: rgba(0,0,0,0.15); }
+
+    /* Quoted Box inside Bubble */
     .quoted-box-bubble { background: rgba(0,0,0,0.06); border-left: 4px solid #008069; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; }
     .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
     .quoted-box-bubble .q-text { color: #334155; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; }
+    .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
     .bubble-file-chip { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.06); padding: 7px 10px; border-radius: 6px; font-size: 12.5px; margin-bottom: 4px; }
-    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; }
+    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
     .wa-typing-bubble { align-self: flex-start; background: #ffffff; padding: 10px 14px; border-radius: 7.5px; border-top-left-radius: 0; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); display: inline-flex; align-items: center; gap: 5px; }
@@ -58,10 +62,10 @@
     .wa-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
 
-    /* Reply Context Bar (Appears above input) */
+    /* Sticky WhatsApp Reply Tray */
     .reply-context-tray { background: #f0fdf4; border-top: 1px solid #cbd5e1; border-left: 5px solid #008069; padding: 6px 12px; display: none; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; z-index: 24; }
     .reply-details { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-    .reply-thumb-mini { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; border: 1px solid #86efac; }
+    .reply-thumb-mini { width: 34px; height: 34px; border-radius: 4px; object-fit: cover; border: 1px solid #86efac; flex-shrink: 0; }
     .reply-texts { overflow: hidden; }
     .reply-texts strong { font-size: 11.5px; color: #008069; display: block; }
     .reply-texts span { font-size: 11.5px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
@@ -113,7 +117,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=28" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=29" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -131,7 +135,7 @@
     <div class="onboarding-card">
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
-      • <strong>💡 Kisi bhi purani photo ya message par tap karke uska Reply kar sakte hain.</strong>
+      • <strong>💡 Har message aur photo ke upar ↩️ Reply button hai jisse context wapas jud jayega.</strong>
     </div>
   </div>
 
@@ -222,7 +226,7 @@
   var isBusyProcessing = false;
 
   // Replying context memory
-  var currentReplyingContext = null; // { msgId, text, dataUrl, base64, mimeType }
+  var currentReplyingContext = null; 
   var messageHistoryStore = {}; // msgId -> { text, dataUrl, base64, mimeType }
 
   function triggerHaptic(duration) {
@@ -259,7 +263,7 @@
   function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
   function triggerDocPicker() { document.getElementById('docInput').click(); }
 
-  // Set message reply context on tap
+  // WhatsApp-style reply binding
   function setReplyContext(msgId) {
     var item = messageHistoryStore[msgId];
     if (!item) return;
@@ -595,7 +599,7 @@
     return Promise.race([
       fetch(url, options),
       new Promise(function(_, reject) {
-        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 35000);
+        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 45000);
       })
     ]);
   }
@@ -633,12 +637,12 @@
       userBubbleThumb = activeAttachment.dataUrl;
       userBubbleName = activeAttachment.fileName;
     } else if (currentReplyingContext && currentReplyingContext.base64) {
-      // User is replying directly to a previous photo!
       toSendAttach = {
         fileName: "quoted_image.jpg",
         mimeType: currentReplyingContext.mimeType || "image/jpeg",
         base64: currentReplyingContext.base64
       };
+      userBubbleThumb = currentReplyingContext.dataUrl;
     }
 
     if (currentReplyingContext) {
@@ -663,8 +667,9 @@
     var box = document.getElementById('chatBox');
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
-    userNode.setAttribute('onclick', 'setReplyContext("' + currentMsgId + '")');
-    userNode.title = "Tap to reply to this message";
+    userNode.id = currentMsgId;
+
+    var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">↩️ Reply</span>';
 
     var quotedHtml = '';
     if (capturedReplySnapshot) {
@@ -675,13 +680,13 @@
 
     var mediaHtml = '';
     if (userBubbleThumb) {
-      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo"></div>';
+      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
     } else if (userBubbleName) {
       mediaHtml = '<div class="bubble-media-container"><div class="bubble-file-chip">📁 ' + escapeHtml(userBubbleName) + '</div></div>';
     }
 
     var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (toSendAttach ? '<i>[Media attached for inspection]</i>' : '');
-    userNode.innerHTML = quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
+    userNode.innerHTML = replyBtnHtml + quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
@@ -706,7 +711,7 @@
         attachment: toSendAttach,
         quotedContext: quotedContextToSend
       })
-    }, 35000)
+    }, 45000)
     .then(function(response) { return response.text(); })
     .then(function(textData) {
       var el = document.getElementById(typingId);
@@ -731,6 +736,8 @@
         base64: null
       };
 
+      var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">↩️ Reply</span>';
+
       var fpHtml = '';
       if (res && res.followUps && res.followUps.length > 0) {
         fpHtml = '<div class="followup-container">';
@@ -741,7 +748,7 @@
       }
 
       var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
-      el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '" onclick="setReplyContext(\'' + botMsgId + '\')" title="Tap to reply">' + replyHtml + fpHtml + timeHtml + '</div>';
+      el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + fpHtml + timeHtml + '</div>';
       scrollToBottom();
       triggerHaptic(20);
       setInputLocked(false);
