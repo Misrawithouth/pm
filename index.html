@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=99">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=99">
-  <link rel="manifest" href="manifest.json?v=99">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=101">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=101">
+  <link rel="manifest" href="manifest.json?v=101">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,7 +36,7 @@
     .mode-btn { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.22); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=99'); background-repeat: repeat; background-size: 380px auto; }
+    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=101'); background-repeat: repeat; background-size: 380px auto; }
 
     .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
@@ -120,7 +120,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=99" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=101" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -247,14 +247,16 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 DIRECT OFFICIAL DRIVE VIEWER (Zero Modals / Direct Tab Jump)
+  // 🟢 CLEAN STREAM PREVIEW (Zero Server-side Timeout / Clean Stream)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
       return;
     }
     var targetP = parseInt(page, 10) || 1;
-    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/view#page=" + targetP;
+    
+    // Official Google Drive direct preview stream (Skips memory-heavy full web app)
+    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP;
     window.open(directViewerUrl, '_blank', 'noopener,noreferrer');
   }
 
@@ -667,7 +669,7 @@
       var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
       var replyHtml = renderRichContent(rawReply);
 
-      // 🟢 SMART CONDITIONAL ACTION CARDS (Direct Open vs Full Download)
+      // 🟢 SMART CONDITIONAL ACTION CARDS
       var cardHtml = "";
       if (res && res.card && res.card.id) {
         var c = res.card;
