@@ -748,3 +748,26 @@
 
 </body>
 </html>
+// 🟢 WHATSAPP STYLE DOCUMENT CARD INJECTION (100% Guaranteed)
+      var cardHtml = "";
+      if (res && res.card && res.card.title) {
+        var c = res.card;
+        var downloadHref = c.downloadUrl || ("https://drive.google.com/uc?export=download&id=" + (c.id || ""));
+        var viewHref = c.viewUrl || ("https://drive.google.com/file/d/" + (c.id || "") + "/preview#page=" + (c.page || 1));
+        var targetP = c.page || 1;
+
+        cardHtml = 
+          '<div class="wa-doc-box">' +
+            '<div class="wa-doc-header">' +
+              '<div class="wa-doc-icon">PDF</div>' +
+              '<div class="wa-doc-meta">' +
+                '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
+                '<div class="wa-doc-sub">Target: <strong>Page ' + targetP + '</strong> • ' + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'OEM Manual') + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="wa-doc-actions">' +
+              '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + viewHref + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">👁️ View (Page ' + targetP + ')</button>' +
+              '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download</a>' +
+            '</div>' +
+          '</div>';
+      }
