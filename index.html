@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=25">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=25">
-  <link rel="manifest" href="manifest.json?v=25">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=26">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=26">
+  <link rel="manifest" href="manifest.json?v=26">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -155,7 +155,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=25" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=26" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -245,7 +245,7 @@
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
-  var activeAttachment = null; // Holds { fileName, mimeType, base64, dataUrl, textExtract }
+  var activeAttachment = null;
   var lastSentTimestamp = 0;
   var activeTopicMemory = "";
   var isRecognizing = false;
@@ -394,7 +394,7 @@
     document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
-  // Universal File Ingestion
+  // Optimized Ingestion: Scale image down to 800px at 0.60 quality (~180 KB payload budget)
   function handleUniversalFile(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -406,7 +406,7 @@
     trayTitle.innerText = file.name;
     trayBar.style.display = 'flex';
 
-    var mime = file.type || "";
+    var mime = (file.type || "").toLowerCase();
     var isImage = mime.indexOf("image/") === 0;
     var isTextDoc = /text|json|xml|csv|log|ini/i.test(mime) || /\.(txt|csv|json|xml|log|ini|cfg)$/i.test(file.name);
 
@@ -416,7 +416,7 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement('canvas');
-          var max_dim = 1024;
+          var max_dim = 800; // Optimal payload ceiling for mobile networks and Apps Script
           var w = img.width;
           var h = img.height;
           if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
@@ -424,7 +424,7 @@
           canvas.width = w; canvas.height = h;
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          var dataUrl = canvas.toDataURL('image/jpeg', 0.68);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.60);
 
           activeAttachment = {
             fileName: file.name,
@@ -467,7 +467,7 @@
     }
 
     var input = document.getElementById('userInput');
-    input.placeholder = "Is attachment se related sawal likhein (optional)...";
+    input.placeholder = "Is photo se related sawal likhein (optional)...";
     input.focus();
     event.target.value = "";
   }
@@ -599,7 +599,7 @@
     return Promise.race([
       fetch(url, options),
       new Promise(function(_, reject) {
-        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 45000);
+        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 35000);
       })
     ]);
   }
@@ -621,7 +621,7 @@
     var currentText = q;
     input.value = '';
 
-    // Snapshot attachment data locally before clearing tray
+    // Snapshot attachment data into an immutable local scope before clearing UI
     var toSendAttach = null;
     var userBubbleThumb = null;
     var userBubbleName = null;
@@ -675,7 +675,7 @@
         contextSummary: isGeneral ? "" : activeTopicMemory,
         attachment: toSendAttach
       })
-    }, 45000)
+    }, 35000)
     .then(function(response) { return response.text(); })
     .then(function(textData) {
       var el = document.getElementById(typingId);
