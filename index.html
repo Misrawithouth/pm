@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=10">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=10">
-  <link rel="manifest" href="manifest.json?v=10">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=12">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=12">
+  <link rel="manifest" href="manifest.json?v=12">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +57,7 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (ZERO LOADING CARDS) */
+    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (DEFAULT FOR CASUAL/QUICK CHAT) */
     .wa-typing-bubble {
       align-self: flex-start;
       background: #ffffff;
@@ -81,6 +81,27 @@
     .wa-dot:nth-child(2) { animation-delay: 0.2s; }
     .wa-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+    /* 🔍 DIAGNOSTIC ANALYZER CARD (STRICTLY TRIGGERED ONLY ON DEEP OEM SEARCH) */
+    .diag-analyzer-card {
+      align-self: flex-start;
+      background: #ffffff;
+      padding: 10px 13px;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 2px rgba(11,20,26,.12);
+      width: 235px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-left: 3.5px solid #008069;
+      z-index: 2;
+    }
+    .diag-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 600; color: #0f172a; }
+    .diag-badge { background: #dcfce7; color: #166534; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 10.5px; }
+    .diag-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .diag-fill { height: 100%; width: 25%; background: linear-gradient(90deg, #008069, #10b981); transition: width 0.3s ease; }
+    .diag-status { font-size: 10.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* 📄 WHATSAPP ATTACHMENT CARD WITH IN-APP VIEWER TOGGLE */
     .wa-doc-card {
@@ -132,14 +153,19 @@
     .progress-fill { height: 100%; width: 0%; background: #008069; transition: width 0.2s ease-out; }
     .progress-fill.done { background: #16a34a; }
 
-    /* INPUT BAR */
+    /* INPUT BAR (WITH LOCK STATE) */
     .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
     .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
     @keyframes micPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 16px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
-    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
+    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; transition: all 0.2s ease; }
     .send-btn:active { background: #005c4b; }
+
+    /* 🔒 LOCKED INPUT STATE */
+    .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; cursor: not-allowed; }
+    .chat-input-bar.locked .send-btn { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
+    .chat-input-bar.locked .attach-btn, .chat-input-bar.locked .mic-btn { opacity: 0.5; pointer-events: none; }
 
     /* MODAL */
     .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
@@ -159,7 +185,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=10" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=12" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -178,7 +204,7 @@
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • Strict verified OEM data engine active.
+      • Natural chat &amp; verified OEM data active.
     </div>
   </div>
 
@@ -195,8 +221,8 @@
     </div>
   </div>
 
-  <div class="chat-input-bar">
-    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo">📎</button>
+  <div class="chat-input-bar" id="chatInputBar">
+    <button type="button" class="attach-btn" id="attachBtn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo">📎</button>
     <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="*/*">
     <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
@@ -240,6 +266,7 @@
   var activeTopicMemory = "";
   var isRecognizing = false;
   var speechRecognizer = null;
+  var isBusyProcessing = false;
 
   function triggerHaptic(duration) {
     if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
@@ -260,6 +287,29 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
+  function setInputLocked(locked) {
+    isBusyProcessing = locked;
+    var bar = document.getElementById('chatInputBar');
+    var input = document.getElementById('userInput');
+    var sendBtn = document.getElementById('sendBtn');
+    if (locked) {
+      if (bar) bar.classList.add('locked');
+      if (input) {
+        input.disabled = true;
+        input.placeholder = "⏳ Processing query... please wait";
+      }
+      if (sendBtn) sendBtn.disabled = true;
+    } else {
+      if (bar) bar.classList.remove('locked');
+      if (input) {
+        input.disabled = false;
+        input.placeholder = "Sawal likhein ya bolkar batayein...";
+        input.focus();
+      }
+      if (sendBtn) sendBtn.disabled = false;
+    }
+  }
+
   function toggleInAppDrawing(id, url) {
     var frame = document.getElementById(id);
     if (!frame) return;
@@ -273,7 +323,7 @@
   }
 
   function renderRichContent(rawText) {
-    if (!rawText) return "";
+    if (!rawText || !rawText.trim()) return "";
 
     var textWithMath = rawText.replace(/\$\$([\s\S]+?)\$\$/g, function(match, math) {
       try {
@@ -331,6 +381,7 @@
   }
 
   function toggleVoiceInput() {
+    if (isBusyProcessing) return;
     if (!speechRecognizer) setupSpeechEngine();
     if (!speechRecognizer) { alert("Speech recognition browser me support nahi hai."); return; }
     if (isRecognizing) speechRecognizer.stop();
@@ -341,7 +392,7 @@
     isRecognizing = false;
     var micBtn = document.getElementById('micBtn');
     if (micBtn) { micBtn.classList.remove('listening'); micBtn.innerText = '🎙️'; }
-    document.getElementById('userInput').placeholder = 'Sawal likhein ya bolkar batayein...';
+    document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing query... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
   function openManualModal() {
@@ -547,6 +598,7 @@
   }
 
   function resetChat() {
+    if (isBusyProcessing) return;
     currentMachine = "";
     currentMachineName = "";
     activeTopicMemory = "";
@@ -556,8 +608,16 @@
   }
 
   function handleFollowUp(text) {
+    if (isBusyProcessing) return;
     document.getElementById('userInput').value = text;
     executeOneTapSend();
+  }
+
+  // ⚡ DEEP OEM DIAGNOSTIC CHECK (Processing Bar sirf tabhi aayega jab sach me deep scan ho)
+  function isDeepDiagnosticQuery(text) {
+    if (!text) return false;
+    var clean = text.toLowerCase();
+    return /(?:drawing|circuit|schematic|diagram|catalog|manual\s*khol|deep\s*scan|parts\s*book|hydraulic\s*sheet)/i.test(clean);
   }
 
   function fetchWithRetry(url, options, maxRetries) {
@@ -579,18 +639,21 @@
   }
 
   function executeOneTapSend() {
+    if (isBusyProcessing) return;
+
     var now = Date.now();
-    if (now - lastSentTimestamp < 250) return;
+    if (now - lastSentTimestamp < 300) return;
     lastSentTimestamp = now;
 
     var input = document.getElementById('userInput');
     var q = (input.value || '').trim();
     if (!q && !activeAttachment) return;
 
+    setInputLocked(true);
     triggerHaptic(25);
+
     var currentText = q;
     input.value = '';
-    input.blur();
 
     var box = document.getElementById('chatBox');
     var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
@@ -602,28 +665,57 @@
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
+    var isDeep = isDeepDiagnosticQuery(currentText);
+    var progressInterval = null;
 
-    // 💬 PURE WHATSAPP 3-DOT BUBBLE
-    var bubbleNode = document.createElement('div');
-    bubbleNode.className = 'wa-typing-bubble';
-    bubbleNode.id = typingId;
-    bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
-    box.appendChild(bubbleNode);
+    if (isDeep) {
+      // 🔍 SIRF DEEP SEARCH ME PROCESSING / ANALYZING CARD AAYEGA
+      var cardNode = document.createElement('div');
+      cardNode.className = 'diag-analyzer-card';
+      cardNode.id = typingId;
+      cardNode.innerHTML = 
+        '<div class="diag-header"><span>Scanning Manual...</span><span class="diag-badge" id="' + typingId + '-pct">25%</span></div>' +
+        '<div class="diag-track"><div class="diag-fill" id="' + typingId + '-bar" style="width: 25%;"></div></div>' +
+        '<div class="diag-status" id="' + typingId + '-txt">Targeting OEM Drawings...</div>';
+      box.appendChild(cardNode);
+
+      var pct = 25;
+      progressInterval = setInterval(function() {
+        var pctEl = document.getElementById(typingId + '-pct');
+        var barEl = document.getElementById(typingId + '-bar');
+        var txtEl = document.getElementById(typingId + '-txt');
+        if (pctEl && barEl) {
+          pct = Math.min(pct + Math.floor(Math.random() * 10) + 7, 95);
+          pctEl.innerText = pct + "%";
+          barEl.style.width = pct + "%";
+          if (pct > 65 && txtEl) txtEl.innerText = "Extracting Schematic Sheets...";
+        }
+      }, 250);
+    } else {
+      // 💬 BAAKI SABHI QUERIES / TAFRI ME PURE WHATSAPP 3-DOT BUBBLE
+      var bubbleNode = document.createElement('div');
+      bubbleNode.className = 'wa-typing-bubble';
+      bubbleNode.id = typingId;
+      bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
+      box.appendChild(bubbleNode);
+    }
+
     scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
 
-    // ⚡ INSTANT LOCAL ACKNOWLEDGEMENT FOR SIMPLE CONFIRMATIONS
+    // Fast local acknowledgement for simple casual statements
     var cleanQ = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
     if (/^(ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad)$/i.test(cleanQ) && !toSendAttach) {
       setTimeout(function() {
+        if (progressInterval) clearInterval(progressInterval);
         var el = document.getElementById(typingId);
         if (el) {
           var ackReplies = [
             "Theek hai bhai! Agla point ya drawing check batayein.",
-            "Got it! Agla step ya component check batao.",
-            "Sahi hai! Aur koi breakdown ya part check karna hai?"
+            "Got it bhai! Agla kya check karna hai?",
+            "Sahi hai! Aur koi fault ya part dekhna ho toh batao."
           ];
           var chosen = ackReplies[Math.floor(Math.random() * ackReplies.length)];
           var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
@@ -631,6 +723,7 @@
           scrollToBottom();
           triggerHaptic(20);
         }
+        setInputLocked(false);
       }, 250);
       return;
     }
@@ -650,8 +743,9 @@
       })
     }, 2)
     .then(function(textData) {
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
-      if (!el) return;
+      if (!el) { setInputLocked(false); return; }
 
       var res = null;
       try { res = JSON.parse(textData); } catch (e) { throw new Error("Invalid response format"); }
@@ -668,7 +762,12 @@
         }
       }
 
-      var replyHtml = renderRichContent(res ? res.reply : '');
+      var rawReply = (res && res.reply) ? res.reply.trim() : "";
+      if (!rawReply) {
+        rawReply = "Bhai, response empty mila. Kripya dobara bhejein.";
+      }
+
+      var replyHtml = renderRichContent(rawReply);
 
       // 📄 WHATSAPP ATTACHMENT CARD
       var cardHtml = '';
@@ -705,11 +804,16 @@
       el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + timeHtml + '</div>';
       scrollToBottom();
       triggerHaptic(20);
+      setInputLocked(false);
     })
-    .catch(function() {
+    .catch(function(err) {
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
-      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server response timeout. Kripya dubara bhejein.</div>';
+      if (el) {
+        el.outerHTML = '<div class="msg bot-msg">⚠️ Server timeout. Kripya dubara try karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+      }
       scrollToBottom();
+      setInputLocked(false);
     });
   }
 
