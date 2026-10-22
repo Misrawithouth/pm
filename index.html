@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=22">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=22">
-  <link rel="manifest" href="manifest.json?v=22">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=23">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=23">
+  <link rel="manifest" href="manifest.json?v=23">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,12 +53,12 @@
     .chat-bubble-thumb {
       display: block;
       width: 100%;
-      max-width: 240px;
-      max-height: 180px;
+      max-width: 250px;
+      max-height: 190px;
       object-fit: cover;
       border-radius: 6px;
       margin-bottom: 6px;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
@@ -125,9 +125,9 @@
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
     .followup-chip:active { background: #dcfce7; }
 
-    /* Visual Tray Preview */
+    /* Visual Tray Preview (WhatsApp Style) */
     .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; align-items: center; gap: 10px; flex-shrink: 0; z-index: 25; }
-    .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #fff; }
+    .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; }
     .tray-details { flex: 1; overflow: hidden; }
     .tray-title { font-size: 12px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tray-hint { font-size: 11px; color: #008069; margin-top: 1px; }
@@ -161,7 +161,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=22" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=23" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -203,6 +203,7 @@
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 
+  <!-- DYNAMIC OEM MANUAL MODAL -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h4>📂 Upload OEM Manual</h4>
@@ -238,7 +239,7 @@
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
-  var activeAttachment = null; // Holds { fileName, mimeType, base64, dataUrl }
+  var activeAttachment = null; // Stores { fileName, mimeType, base64, dataUrl }
   var lastSentTimestamp = 0;
   var activeTopicMemory = "";
   var isRecognizing = false;
@@ -459,7 +460,7 @@
       var img = new Image();
       img.onload = function() {
         var canvas = document.createElement('canvas');
-        var max_dim = 600; // Optimal for inspection
+        var max_dim = 600; // Optimal balance for visual clarity and fast payload transfer
         var w = img.width;
         var h = img.height;
         if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
@@ -568,7 +569,7 @@
 
     var box = document.getElementById('chatBox');
     
-    // VISUAL THUMBNAIL IN CHAT BUBBLE
+    // VISUAL IMAGE PREVIEW IN USER CHAT BUBBLE
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     
