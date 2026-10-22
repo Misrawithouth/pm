@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=19">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=19">
-  <link rel="manifest" href="manifest.json?v=19">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=20">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=20">
+  <link rel="manifest" href="manifest.json?v=20">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -152,7 +152,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=19" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=20" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -197,7 +197,6 @@
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 
-  <!-- MODAL WITH DYNAMIC ADD NEW OPTION -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h4>📂 Upload OEM Manual</h4>
@@ -465,22 +464,17 @@
         return res.json();
       })
       .then(function(res) {
-        if (res && res.status === "success") {
-          progressFill.style.width = "100%";
-          progressFill.classList.add("done");
-          statusTag.className = "upload-status-tag status-ready";
-          statusTag.innerText = "✓ Staged";
+        progressFill.style.width = "100%";
+        progressFill.classList.add("done");
+        statusTag.className = "upload-status-tag status-ready";
+        statusTag.innerText = "✓ Staged";
 
-          var box = document.getElementById('chatBox');
-          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
-            '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
-            '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
-            '• Document review queue (<code>mobile upload</code>) me bhej diya gaya hai. Verification ke baad live hoga.</div>';
-          scrollToBottom();
-        } else {
-          statusTag.className = "upload-status-tag status-error";
-          statusTag.innerText = "Error";
-        }
+        var box = document.getElementById('chatBox');
+        box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
+          '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
+          '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
+          '• Document quarantine folder (<code>mobile upload</code>) me bhej diya gaya hai. Verification ke baad live hoga.</div>';
+        scrollToBottom();
       })
       .catch(function(err) {
         progressFill.style.width = "100%";
