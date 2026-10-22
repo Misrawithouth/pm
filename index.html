@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=23">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=23">
-  <link rel="manifest" href="manifest.json?v=23">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=24">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=24">
+  <link rel="manifest" href="manifest.json?v=24">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,17 +49,10 @@
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
-    /* Visual Bubble Image Thumbnail */
-    .chat-bubble-thumb {
-      display: block;
-      width: 100%;
-      max-width: 250px;
-      max-height: 190px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-    }
+    /* Visual Media Cards in Chat Bubbles */
+    .bubble-media-container { margin-bottom: 6px; }
+    .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); }
+    .bubble-file-chip { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.06); padding: 7px 10px; border-radius: 6px; font-size: 12.5px; font-weight: 500; }
 
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
     .status-tick { color: #53bdeb; font-size: 11px; }
@@ -116,21 +109,22 @@
     .bot-msg th { background: #008069; color: #ffffff; font-weight: 600; white-space: nowrap; }
     .bot-msg tr:nth-child(even) { background: #f8fafc; }
 
-    .bot-msg .katex-display { margin: 8px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
-    .bot-msg ul, .bot-msg ol { margin: 6px 0 6px 18px; }
-    .bot-msg li { margin-bottom: 3px; }
-
     .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
     .followup-chip:active { background: #dcfce7; }
 
-    /* Visual Tray Preview (WhatsApp Style) */
-    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; align-items: center; gap: 10px; flex-shrink: 0; z-index: 25; }
-    .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; }
+    /* Visual Multi-Attachment Preview Bar */
+    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: none; align-items: center; gap: 10px; flex-shrink: 0; z-index: 25; }
+    .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .tray-details { flex: 1; overflow: hidden; }
-    .tray-title { font-size: 12px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tray-title { font-size: 12.5px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tray-hint { font-size: 11px; color: #008069; margin-top: 1px; }
+
+    /* Action Sheet Attachment Menu */
+    .media-sheet { position: absolute; bottom: 58px; left: 10px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: 1px solid #e2e8f0; padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 40; width: 175px; }
+    .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; color: #1e293b; cursor: pointer; text-decoration: none; border: none; background: transparent; width: 100%; text-align: left; }
+    .media-opt:active { background: #f1f5f9; }
 
     .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
@@ -161,7 +155,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=23" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=24" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -179,31 +173,44 @@
     <div class="onboarding-card">
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
-      • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • Natural chat &amp; verified OEM data active.
+      • <strong>📷 Live Camera &amp; 📎 File Attachment</strong> support active.<br>
+      • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong>
     </div>
   </div>
 
-  <!-- WHATSAPP STYLE ATTACHMENT TRAY -->
-  <div class="attachment-preview-bar" id="attachmentBar" style="display: none;">
-    <img id="trayThumbnail" class="tray-thumb" src="" alt="Preview">
+  <!-- MEDIA ATTACHMENT TRAY PREVIEW -->
+  <div class="attachment-preview-bar" id="attachmentBar">
+    <div id="trayPreviewSlot" class="tray-thumb">📎</div>
     <div class="tray-details">
-      <div class="tray-title" id="attachmentFileName">photo.jpg</div>
+      <div class="tray-title" id="attachmentFileName">file.jpg</div>
       <div class="tray-hint">💡 Question/Caption likhein aur Send dabayein.</div>
     </div>
     <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;padding:4px;">✕</button>
   </div>
 
+  <!-- ACTION SHEET MENU (Camera, Gallery, Docs) -->
+  <div class="media-sheet" id="mediaSheet">
+    <button type="button" class="media-opt" onclick="triggerCameraCapture()">📷 Camera</button>
+    <button type="button" class="media-opt" onclick="triggerGalleryPicker()">🖼️ Photos/Gallery</button>
+    <button type="button" class="media-opt" onclick="triggerDocPicker()">📄 Document/File</button>
+  </div>
+
+  <!-- CHAT INPUT BAR -->
   <div class="chat-input-bar" id="chatInputBar">
-    <button type="button" class="attach-btn" id="attachBtn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo">📎</button>
-    <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="image/*">
-    <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
+    <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
+    
+    <!-- Hidden Specialized HTML5 Inputs -->
+    <input type="file" id="cameraInput" style="display: none;" accept="image/*" capture="environment" onchange="handleUniversalFile(event)">
+    <input type="file" id="galleryInput" style="display: none;" accept="image/*,video/*" onchange="handleUniversalFile(event)">
+    <input type="file" id="docInput" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.json,.xml" onchange="handleUniversalFile(event)">
+    <input type="file" id="manualFileInput" style="display: none;" accept="application/pdf" onchange="executeManualUpload(event)">
+    
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 
-  <!-- DYNAMIC OEM MANUAL MODAL -->
+  <!-- DYNAMIC MANUAL UPLOAD MODAL -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h4>📂 Upload OEM Manual</h4>
@@ -239,7 +246,7 @@
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
-  var activeAttachment = null; // Stores { fileName, mimeType, base64, dataUrl }
+  var activeAttachment = null; // Stores { fileName, mimeType, base64, dataUrl, textExtract }
   var lastSentTimestamp = 0;
   var activeTopicMemory = "";
   var isRecognizing = false;
@@ -263,6 +270,29 @@
   function scrollToBottom() {
     var box = document.getElementById('chatBox');
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
+  }
+
+  function toggleMediaMenu(e) {
+    e.stopPropagation();
+    var sheet = document.getElementById('mediaSheet');
+    sheet.style.display = (sheet.style.display === 'flex') ? 'none' : 'flex';
+  }
+
+  document.addEventListener('click', function() {
+    var sheet = document.getElementById('mediaSheet');
+    if (sheet) sheet.style.display = 'none';
+  });
+
+  function triggerCameraCapture() {
+    document.getElementById('cameraInput').click();
+  }
+
+  function triggerGalleryPicker() {
+    document.getElementById('galleryInput').click();
+  }
+
+  function triggerDocPicker() {
+    document.getElementById('docInput').click();
   }
 
   function setInputLocked(locked) {
@@ -361,7 +391,7 @@
   function toggleVoiceInput() {
     if (isBusyProcessing) return;
     if (!speechRecognizer) setupSpeechEngine();
-    if (!speechRecognizer) { alert("Speech recognition browser me support nahi hai."); return; }
+    if (!speechRecognizer) { alert("Speech recognition is not supported in this browser."); return; }
     if (isRecognizing) speechRecognizer.stop();
     else speechRecognizer.start();
   }
@@ -371,6 +401,94 @@
     var micBtn = document.getElementById('micBtn');
     if (micBtn) { micBtn.classList.remove('listening'); micBtn.innerText = '🎙️'; }
     document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing... please wait' : 'Sawal likhein ya bolkar batayein...';
+  }
+
+  // Universal File Ingestion (Camera, Images, Documents, Audio, Video)
+  function handleUniversalFile(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var previewSlot = document.getElementById('trayPreviewSlot');
+    var trayTitle = document.getElementById('attachmentFileName');
+    var trayBar = document.getElementById('attachmentBar');
+
+    trayTitle.innerText = file.name;
+    trayBar.style.display = 'flex';
+
+    var mime = file.type || "";
+    var isImage = mime.indexOf("image/") === 0;
+    var isTextDoc = /text|json|xml|csv|log|ini/i.test(mime) || /\.(txt|csv|json|xml|log|ini|cfg)$/i.test(file.name);
+
+    if (isImage) {
+      // Compress camera and gallery photos to prevent payload bloat while keeping 1024px clarity
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var max_dim = 1024;
+          var w = img.width;
+          var h = img.height;
+          if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
+          else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+
+          activeAttachment = {
+            fileName: file.name,
+            mimeType: "image/jpeg",
+            base64: dataUrl.split(',')[1],
+            dataUrl: dataUrl
+          };
+
+          previewSlot.innerHTML = '<img src="' + dataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else if (isTextDoc) {
+      // Read text content directly on client
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        activeAttachment = {
+          fileName: file.name,
+          mimeType: mime || "text/plain",
+          textExtract: e.target.result,
+          base64: null,
+          dataUrl: null
+        };
+        previewSlot.innerHTML = '📄';
+      };
+      reader.readAsText(file);
+    } else {
+      // Read binary documents (PDF, Audio, Video, Office)
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        activeAttachment = {
+          fileName: file.name,
+          mimeType: mime || "application/octet-stream",
+          base64: e.target.result.split(',')[1],
+          textExtract: null,
+          dataUrl: null
+        };
+        previewSlot.innerHTML = mime.indexOf("video") === 0 ? '🎥' : (mime.indexOf("audio") === 0 ? '🎵' : '📁');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    var input = document.getElementById('userInput');
+    input.placeholder = "Is attachment se related sawal likhein (optional)...";
+    input.focus();
+    event.target.value = "";
+  }
+
+  function clearAttachment() {
+    activeAttachment = null;
+    document.getElementById('attachmentBar').style.display = "none";
+    document.getElementById('trayPreviewSlot').innerHTML = '📎';
+    document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
   }
 
   function handleCategoryChange(val) {
@@ -454,58 +572,6 @@
     event.target.value = "";
   }
 
-  function compressImageClient(file, callback) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var img = new Image();
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var max_dim = 600; // Optimal balance for visual clarity and fast payload transfer
-        var w = img.width;
-        var h = img.height;
-        if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
-        else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
-        canvas.width = w; canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.65);
-        callback(dataUrl.split(',')[1], 'image/jpeg', dataUrl);
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleFileSelect(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    compressImageClient(file, function(cleanBase64, mimeType, fullDataUrl) {
-      activeAttachment = {
-        fileName: file.name,
-        mimeType: mimeType,
-        base64: cleanBase64,
-        dataUrl: fullDataUrl
-      };
-
-      document.getElementById('trayThumbnail').src = fullDataUrl;
-      document.getElementById('attachmentFileName').innerText = file.name;
-      document.getElementById('attachmentBar').style.display = "flex";
-
-      var input = document.getElementById('userInput');
-      input.placeholder = "Is photo se related sawal likhein (optional)...";
-      input.focus();
-    });
-    event.target.value = "";
-  }
-
-  function clearAttachment() {
-    activeAttachment = null;
-    document.getElementById('attachmentBar').style.display = "none";
-    document.getElementById('trayThumbnail').src = "";
-    document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
-  }
-
   function toggleGeneralMode() {
     isGeneral = !isGeneral;
     var btn = document.getElementById('generalModeBtn');
@@ -569,14 +635,21 @@
 
     var box = document.getElementById('chatBox');
     
-    // VISUAL IMAGE PREVIEW IN USER CHAT BUBBLE
+    // VISUAL CHAT BUBBLE RENDERING
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     
-    var thumbHtml = activeAttachment ? '<img class="chat-bubble-thumb" src="' + activeAttachment.dataUrl + '" alt="Attachment">' : '';
-    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (activeAttachment ? '<i>[Photo attached for analysis]</i>' : '');
-    
-    userNode.innerHTML = thumbHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
+    var mediaHtml = '';
+    if (activeAttachment) {
+      if (activeAttachment.dataUrl) {
+        mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + activeAttachment.dataUrl + '" alt="Photo"></div>';
+      } else {
+        mediaHtml = '<div class="bubble-media-container"><div class="bubble-file-chip">📁 ' + escapeHtml(activeAttachment.fileName) + '</div></div>';
+      }
+    }
+
+    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (activeAttachment ? '<i>[Media attached for analysis]</i>' : '');
+    userNode.innerHTML = mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
@@ -590,7 +663,8 @@
     var toSendAttach = activeAttachment ? {
       fileName: activeAttachment.fileName,
       mimeType: activeAttachment.mimeType,
-      base64: activeAttachment.base64
+      base64: activeAttachment.base64,
+      textExtract: activeAttachment.textExtract
     } : null;
 
     clearAttachment();
@@ -623,7 +697,7 @@
         document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
       }
 
-      var rawReply = (res && res.reply) ? res.reply.trim() : "Bhai, response empty mila. Dobara poochein.";
+      var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai. Dobara poochein.";
       var replyHtml = renderRichContent(rawReply);
 
       var cardHtml = '';
@@ -661,10 +735,10 @@
       triggerHaptic(20);
       setInputLocked(false);
     })
-    .catch(function() {
+    .catch(function(err) {
       var el = document.getElementById(typingId);
       if (el) {
-        el.outerHTML = '<div class="msg bot-msg">⚠️ Server connection slow ya busy hai. Kripya dubara bhej kar dekhein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+        el.outerHTML = '<div class="msg bot-msg">⚠️ Network connection drop ho gayi hai. Kripya connectivity check karke dobara tap karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       }
       scrollToBottom();
       setInputLocked(false);
