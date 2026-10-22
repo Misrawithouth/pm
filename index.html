@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=12">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=12">
-  <link rel="manifest" href="manifest.json?v=12">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=14">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=14">
+  <link rel="manifest" href="manifest.json?v=14">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,6 @@
   <meta name="apple-mobile-web-app-title" content="P&amp;M Assistant">
   <meta name="theme-color" content="#008069">
 
-  <!-- CDN: Markdown Parser & KaTeX Engine -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -26,11 +25,9 @@
     
     #appContainer { width: 100%; max-width: 640px; height: 100%; margin: 0 auto; background: #efeae2; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 24px rgba(0,0,0,0.12); }
 
-    /* HEADER */
     .chat-header { background: #008069; color: #ffffff; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
     .header-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
 
-    /* 🚜 FULL-BLEED ZERO-WHITE EMBLEM AVATAR */
     .header-avatar {
       width: 42px; height: 42px; border-radius: 50%; background: #005c4b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
@@ -44,12 +41,10 @@
     .mode-btn:active { background: rgba(255, 255, 255, 0.28); }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    /* CHAT AREA */
     .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=3'); background-repeat: repeat; background-size: 380px auto; }
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 2px; }
 
-    /* WHATSAPP MESSAGE BUBBLES */
     .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
@@ -57,7 +52,6 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (DEFAULT FOR CASUAL/QUICK CHAT) */
     .wa-typing-bubble {
       align-self: flex-start;
       background: #ffffff;
@@ -82,28 +76,6 @@
     .wa-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
 
-    /* 🔍 DIAGNOSTIC ANALYZER CARD (STRICTLY TRIGGERED ONLY ON DEEP OEM SEARCH) */
-    .diag-analyzer-card {
-      align-self: flex-start;
-      background: #ffffff;
-      padding: 10px 13px;
-      border-radius: 8px;
-      border-top-left-radius: 0;
-      box-shadow: 0 1px 2px rgba(11,20,26,.12);
-      width: 235px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      border-left: 3.5px solid #008069;
-      z-index: 2;
-    }
-    .diag-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 600; color: #0f172a; }
-    .diag-badge { background: #dcfce7; color: #166534; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 10.5px; }
-    .diag-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
-    .diag-fill { height: 100%; width: 25%; background: linear-gradient(90deg, #008069, #10b981); transition: width 0.3s ease; }
-    .diag-status { font-size: 10.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* 📄 WHATSAPP ATTACHMENT CARD WITH IN-APP VIEWER TOGGLE */
     .wa-doc-card {
       margin-top: 8px;
       background: #f8fafc;
@@ -124,7 +96,6 @@
     .wa-btn-sec { background: #e2e8f0; color: #334155; }
     .pdf-viewer-frame { width: 100%; height: 340px; border: 1px solid #cbd5e1; border-radius: 6px; display: none; background: #ffffff; margin-top: 6px; }
 
-    /* 📊 RESPONSIVE SCROLLABLE TABLE */
     .table-responsive-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; }
     .table-responsive-wrapper::-webkit-scrollbar { height: 4px; }
     .table-responsive-wrapper::-webkit-scrollbar-thumb { background: #008069; border-radius: 2px; }
@@ -142,7 +113,6 @@
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
     .followup-chip:active { background: #dcfce7; }
 
-    /* PREVIEW & PROGRESS BAR FOR UPLOADS */
     .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; z-index: 25; }
     .attachment-header-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
     .upload-status-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace; }
@@ -153,7 +123,6 @@
     .progress-fill { height: 100%; width: 0%; background: #008069; transition: width 0.2s ease-out; }
     .progress-fill.done { background: #16a34a; }
 
-    /* INPUT BAR (WITH LOCK STATE) */
     .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
     .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
@@ -162,12 +131,10 @@
     .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; transition: all 0.2s ease; }
     .send-btn:active { background: #005c4b; }
 
-    /* 🔒 LOCKED INPUT STATE */
     .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; cursor: not-allowed; }
     .chat-input-bar.locked .send-btn { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
     .chat-input-bar.locked .attach-btn, .chat-input-bar.locked .mic-btn { opacity: 0.5; pointer-events: none; }
 
-    /* MODAL */
     .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
     .modal-card { background: #ffffff; border-radius: 12px; padding: 20px; width: 100%; max-width: 380px; display: flex; flex-direction: column; }
     .modal-card h4 { font-size: 15.5px; color: #008069; margin-bottom: 14px; }
@@ -185,7 +152,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=12" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=14" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -598,44 +565,30 @@
   }
 
   function resetChat() {
-    if (isBusyProcessing) return;
     currentMachine = "";
     currentMachineName = "";
     activeTopicMemory = "";
     clearAttachment();
+    setInputLocked(false);
     document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
     document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
   }
 
   function handleFollowUp(text) {
     if (isBusyProcessing) return;
+    if (text.indexOf("Reset") !== -1) { resetChat(); return; }
+    if (text.indexOf("General Mode") !== -1) { toggleGeneralMode(); return; }
     document.getElementById('userInput').value = text;
     executeOneTapSend();
   }
 
-  // ⚡ DEEP OEM DIAGNOSTIC CHECK (Processing Bar sirf tabhi aayega jab sach me deep scan ho)
-  function isDeepDiagnosticQuery(text) {
-    if (!text) return false;
-    var clean = text.toLowerCase();
-    return /(?:drawing|circuit|schematic|diagram|catalog|manual\s*khol|deep\s*scan|parts\s*book|hydraulic\s*sheet)/i.test(clean);
-  }
-
-  function fetchWithRetry(url, options, maxRetries) {
-    return new Promise(function(resolve, reject) {
-      function attempt(retriesLeft) {
-        fetch(url, options)
-          .then(function(response) {
-            if (!response.ok && response.type !== 'opaque') throw new Error("HTTP " + response.status);
-            return response.text();
-          })
-          .then(resolve)
-          .catch(function(err) {
-            if (retriesLeft > 0) setTimeout(function() { attempt(retriesLeft - 1); }, 1000);
-            else reject(err);
-          });
-      }
-      attempt(maxRetries);
-    });
+  function fetchWithTimeout(url, options, timeoutMs) {
+    return Promise.race([
+      fetch(url, options),
+      new Promise(function(_, reject) {
+        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 25000);
+      })
+    ]);
   }
 
   function executeOneTapSend() {
@@ -658,77 +611,23 @@
     var box = document.getElementById('chatBox');
     var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
 
-    // USER MESSAGE
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     userNode.innerHTML = escapeHtml(display) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
-    var isDeep = isDeepDiagnosticQuery(currentText);
-    var progressInterval = null;
-
-    if (isDeep) {
-      // 🔍 SIRF DEEP SEARCH ME PROCESSING / ANALYZING CARD AAYEGA
-      var cardNode = document.createElement('div');
-      cardNode.className = 'diag-analyzer-card';
-      cardNode.id = typingId;
-      cardNode.innerHTML = 
-        '<div class="diag-header"><span>Scanning Manual...</span><span class="diag-badge" id="' + typingId + '-pct">25%</span></div>' +
-        '<div class="diag-track"><div class="diag-fill" id="' + typingId + '-bar" style="width: 25%;"></div></div>' +
-        '<div class="diag-status" id="' + typingId + '-txt">Targeting OEM Drawings...</div>';
-      box.appendChild(cardNode);
-
-      var pct = 25;
-      progressInterval = setInterval(function() {
-        var pctEl = document.getElementById(typingId + '-pct');
-        var barEl = document.getElementById(typingId + '-bar');
-        var txtEl = document.getElementById(typingId + '-txt');
-        if (pctEl && barEl) {
-          pct = Math.min(pct + Math.floor(Math.random() * 10) + 7, 95);
-          pctEl.innerText = pct + "%";
-          barEl.style.width = pct + "%";
-          if (pct > 65 && txtEl) txtEl.innerText = "Extracting Schematic Sheets...";
-        }
-      }, 250);
-    } else {
-      // 💬 BAAKI SABHI QUERIES / TAFRI ME PURE WHATSAPP 3-DOT BUBBLE
-      var bubbleNode = document.createElement('div');
-      bubbleNode.className = 'wa-typing-bubble';
-      bubbleNode.id = typingId;
-      bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
-      box.appendChild(bubbleNode);
-    }
-
+    var bubbleNode = document.createElement('div');
+    bubbleNode.className = 'wa-typing-bubble';
+    bubbleNode.id = typingId;
+    bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
+    box.appendChild(bubbleNode);
     scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
 
-    // Fast local acknowledgement for simple casual statements
-    var cleanQ = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    if (/^(ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad)$/i.test(cleanQ) && !toSendAttach) {
-      setTimeout(function() {
-        if (progressInterval) clearInterval(progressInterval);
-        var el = document.getElementById(typingId);
-        if (el) {
-          var ackReplies = [
-            "Theek hai bhai! Agla point ya drawing check batayein.",
-            "Got it bhai! Agla kya check karna hai?",
-            "Sahi hai! Aur koi fault ya part dekhna ho toh batao."
-          ];
-          var chosen = ackReplies[Math.floor(Math.random() * ackReplies.length)];
-          var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
-          el.outerHTML = '<div class="msg bot-msg">' + chosen + timeHtml + '</div>';
-          scrollToBottom();
-          triggerHaptic(20);
-        }
-        setInputLocked(false);
-      }, 250);
-      return;
-    }
-
-    fetchWithRetry(BACKEND_API_URL, {
+    fetchWithTimeout(BACKEND_API_URL, {
       method: "POST",
       mode: "cors",
       redirect: "follow",
@@ -741,14 +640,14 @@
         contextSummary: isGeneral ? "" : activeTopicMemory,
         attachment: toSendAttach
       })
-    }, 2)
+    }, 28000)
+    .then(function(response) { return response.text(); })
     .then(function(textData) {
-      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (!el) { setInputLocked(false); return; }
 
       var res = null;
-      try { res = JSON.parse(textData); } catch (e) { throw new Error("Invalid response format"); }
+      try { res = JSON.parse(textData); } catch (e) { throw new Error("JSON Parse Error"); }
 
       if (!isGeneral && res && res.machineKey && res.machineName) {
         currentMachine = res.machineKey;
@@ -756,20 +655,9 @@
         document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
       }
 
-      if (!isGeneral && res && res.reply) {
-        if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure|filter|turbo|guide|beam/i.test(currentText + " " + res.reply)) {
-          activeTopicMemory = "Current Component / Fault: " + currentText + " | Details: " + res.reply.substring(0, 180);
-        }
-      }
-
-      var rawReply = (res && res.reply) ? res.reply.trim() : "";
-      if (!rawReply) {
-        rawReply = "Bhai, response empty mila. Kripya dobara bhejein.";
-      }
-
+      var rawReply = (res && res.reply) ? res.reply.trim() : "Bhai, response empty mila. Dobara poochein.";
       var replyHtml = renderRichContent(rawReply);
 
-      // 📄 WHATSAPP ATTACHMENT CARD
       var cardHtml = '';
       if (res && res.card) {
         var frameId = "frame-" + Date.now();
@@ -800,17 +688,15 @@
       }
 
       var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
-
       el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + timeHtml + '</div>';
       scrollToBottom();
       triggerHaptic(20);
       setInputLocked(false);
     })
-    .catch(function(err) {
-      if (progressInterval) clearInterval(progressInterval);
+    .catch(function() {
       var el = document.getElementById(typingId);
       if (el) {
-        el.outerHTML = '<div class="msg bot-msg">⚠️ Server timeout. Kripya dubara try karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+        el.outerHTML = '<div class="msg bot-msg">⚠️ Server connection slow ya busy hai. Kripya dubara bhej kar dekhein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       }
       scrollToBottom();
       setInputLocked(false);
