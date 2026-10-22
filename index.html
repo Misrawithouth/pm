@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=24">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=24">
-  <link rel="manifest" href="manifest.json?v=24">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=25">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=25">
+  <link rel="manifest" href="manifest.json?v=25">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -155,7 +155,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=24" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=25" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -199,9 +199,8 @@
   <div class="chat-input-bar" id="chatInputBar">
     <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
     
-    <!-- Hidden Specialized HTML5 Inputs -->
     <input type="file" id="cameraInput" style="display: none;" accept="image/*" capture="environment" onchange="handleUniversalFile(event)">
-    <input type="file" id="galleryInput" style="display: none;" accept="image/*,video/*" onchange="handleUniversalFile(event)">
+    <input type="file" id="galleryInput" style="display: none;" accept="image/*,video/*,audio/*" onchange="handleUniversalFile(event)">
     <input type="file" id="docInput" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.json,.xml" onchange="handleUniversalFile(event)">
     <input type="file" id="manualFileInput" style="display: none;" accept="application/pdf" onchange="executeManualUpload(event)">
     
@@ -246,7 +245,7 @@
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
-  var activeAttachment = null; // Stores { fileName, mimeType, base64, dataUrl, textExtract }
+  var activeAttachment = null; // Holds { fileName, mimeType, base64, dataUrl, textExtract }
   var lastSentTimestamp = 0;
   var activeTopicMemory = "";
   var isRecognizing = false;
@@ -283,17 +282,9 @@
     if (sheet) sheet.style.display = 'none';
   });
 
-  function triggerCameraCapture() {
-    document.getElementById('cameraInput').click();
-  }
-
-  function triggerGalleryPicker() {
-    document.getElementById('galleryInput').click();
-  }
-
-  function triggerDocPicker() {
-    document.getElementById('docInput').click();
-  }
+  function triggerCameraCapture() { document.getElementById('cameraInput').click(); }
+  function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
+  function triggerDocPicker() { document.getElementById('docInput').click(); }
 
   function setInputLocked(locked) {
     isBusyProcessing = locked;
@@ -403,7 +394,7 @@
     document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
-  // Universal File Ingestion (Camera, Images, Documents, Audio, Video)
+  // Universal File Ingestion
   function handleUniversalFile(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -420,7 +411,6 @@
     var isTextDoc = /text|json|xml|csv|log|ini/i.test(mime) || /\.(txt|csv|json|xml|log|ini|cfg)$/i.test(file.name);
 
     if (isImage) {
-      // Compress camera and gallery photos to prevent payload bloat while keeping 1024px clarity
       var reader = new FileReader();
       reader.onload = function(e) {
         var img = new Image();
@@ -434,7 +424,7 @@
           canvas.width = w; canvas.height = h;
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.68);
 
           activeAttachment = {
             fileName: file.name,
@@ -449,7 +439,6 @@
       };
       reader.readAsDataURL(file);
     } else if (isTextDoc) {
-      // Read text content directly on client
       var reader = new FileReader();
       reader.onload = function(e) {
         activeAttachment = {
@@ -463,7 +452,6 @@
       };
       reader.readAsText(file);
     } else {
-      // Read binary documents (PDF, Audio, Video, Office)
       var reader = new FileReader();
       reader.onload = function(e) {
         activeAttachment = {
@@ -633,22 +621,36 @@
     var currentText = q;
     input.value = '';
 
+    // Snapshot attachment data locally before clearing tray
+    var toSendAttach = null;
+    var userBubbleThumb = null;
+    var userBubbleName = null;
+
+    if (activeAttachment) {
+      toSendAttach = {
+        fileName: activeAttachment.fileName,
+        mimeType: activeAttachment.mimeType,
+        base64: activeAttachment.base64,
+        textExtract: activeAttachment.textExtract
+      };
+      userBubbleThumb = activeAttachment.dataUrl;
+      userBubbleName = activeAttachment.fileName;
+    }
+
+    clearAttachment();
+
     var box = document.getElementById('chatBox');
-    
-    // VISUAL CHAT BUBBLE RENDERING
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     
     var mediaHtml = '';
-    if (activeAttachment) {
-      if (activeAttachment.dataUrl) {
-        mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + activeAttachment.dataUrl + '" alt="Photo"></div>';
-      } else {
-        mediaHtml = '<div class="bubble-media-container"><div class="bubble-file-chip">📁 ' + escapeHtml(activeAttachment.fileName) + '</div></div>';
-      }
+    if (userBubbleThumb) {
+      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo"></div>';
+    } else if (userBubbleName) {
+      mediaHtml = '<div class="bubble-media-container"><div class="bubble-file-chip">📁 ' + escapeHtml(userBubbleName) + '</div></div>';
     }
 
-    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (activeAttachment ? '<i>[Media attached for analysis]</i>' : '');
+    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (toSendAttach ? '<i>[Media attached for inspection]</i>' : '');
     userNode.innerHTML = mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
@@ -659,15 +661,6 @@
     bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
     box.appendChild(bubbleNode);
     scrollToBottom();
-
-    var toSendAttach = activeAttachment ? {
-      fileName: activeAttachment.fileName,
-      mimeType: activeAttachment.mimeType,
-      base64: activeAttachment.base64,
-      textExtract: activeAttachment.textExtract
-    } : null;
-
-    clearAttachment();
 
     fetchWithTimeout(BACKEND_API_URL, {
       method: "POST",
