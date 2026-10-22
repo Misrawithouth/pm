@@ -5,25 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=40">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=40">
-  <link rel="manifest" href="manifest.json?v=40">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=50">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=50">
+  <link rel="manifest" href="manifest.json?v=50">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#008069">
 
-  <!-- Marked & KaTeX -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-
-  <!-- PDF.js Standalone Core & Worker for Exact Page Rendering -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  </script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -109,18 +102,6 @@
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
-    /* 🟢 EXACT-PAGE IN-APP CANVAS VIEWER (No Iframe / No Page-1 Bugs) */
-    .viewer-modal { position: fixed; inset: 0; background: #1e293b; z-index: 999; display: none; flex-direction: column; }
-    .viewer-header { background: #0f172a; color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-    .viewer-header h4 { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%; color: #38bdf8; }
-    .viewer-toolbar { display: flex; align-items: center; gap: 8px; }
-    .viewer-btn { background: #334155; color: #f8fafc; border: 1px solid #475569; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .viewer-btn:active { background: #0284c7; }
-    .viewer-canvas-wrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 15px 10px; background: #334155; }
-    #drawingCanvas { max-width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.4); border-radius: 4px; background: #fff; }
-    .viewer-loading-indicator { color: #f8fafc; font-size: 14px; margin-top: 40px; display: flex; align-items: center; gap: 8px; }
-    .viewer-footer-controls { background: #0f172a; color: #cbd5e1; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; font-size: 12px; }
-
     /* 🟢 UPLOAD MODAL */
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
     .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
@@ -139,7 +120,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=40" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=50" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -205,27 +186,6 @@
   </div>
 </div>
 
-<!-- 🟢 EXACT-PAGE IN-APP CANVAS VIEWER MODAL -->
-<div class="viewer-modal" id="pdfViewerModal">
-  <div class="viewer-header">
-    <h4 id="viewerTitle">Target Drawing</h4>
-    <div class="viewer-toolbar">
-      <button type="button" class="viewer-btn" onclick="zoomDrawing(1.2)">🔍 +</button>
-      <button type="button" class="viewer-btn" onclick="zoomDrawing(0.8)">🔍 -</button>
-      <button type="button" class="viewer-btn" style="background:#ef4444;border-color:#ef4444;" onclick="closeDrawingViewer()">✕ Close</button>
-    </div>
-  </div>
-  <div class="viewer-canvas-wrap" id="canvasScrollArea">
-    <div id="viewerLoading" class="viewer-loading-indicator">⏳ Fetching exact drawing page... please wait</div>
-    <canvas id="drawingCanvas" style="display:none;"></canvas>
-  </div>
-  <div class="viewer-footer-controls">
-    <button type="button" class="viewer-btn" onclick="changeDrawingPage(-1)">◀ Prev Page</button>
-    <span id="pageTracker">Page -- / --</span>
-    <button type="button" class="viewer-btn" onclick="changeDrawingPage(1)">Next Page ▶</button>
-  </div>
-</div>
-
 <!-- 🟢 MANUAL UPLOAD MODAL -->
 <div class="upload-modal" id="manualUploadModal">
   <div class="upload-card">
@@ -255,12 +215,6 @@
 
   var currentReplyingContext = null; 
   var messageHistoryStore = {};
-
-  // Exact Page PDF.js State
-  var currentPdfDoc = null;
-  var currentActivePage = 1;
-  var currentZoomScale = 1.5;
-  var isPageRendering = false;
 
   function warmUpBackendInstance() {
     try {
@@ -293,86 +247,18 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 NATIVE EXACT-PAGE RENDERER (Guaranteed Jump directly to target page)
+  // 🟢 ZERO-CORS DIRECT PREVIEW (Bypasses Mozilla CORS Block & Opens Official Google Viewer)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
       return;
     }
-
     var targetP = parseInt(page, 10) || 1;
-    currentActivePage = targetP;
-    currentZoomScale = 1.4;
+    
+    // Official direct preview link without third-party CORS blocks
+    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP;
 
-    document.getElementById('viewerTitle').innerText = (title || "Drawing") + " (Target: Page " + targetP + ")";
-    document.getElementById('pdfViewerModal').style.display = "flex";
-    document.getElementById('viewerLoading').style.display = "flex";
-    document.getElementById('drawingCanvas').style.display = "none";
-    document.getElementById('pageTracker').innerText = "Loading Page " + targetP + "...";
-
-    // Direct stream link from Google Drive
-    var streamUrl = "https://drive.google.com/uc?export=download&id=" + fileId;
-
-    pdfjsLib.getDocument({
-      url: streamUrl,
-      rangeChunkSize: 65536,
-      disableAutoFetch: true
-    }).promise.then(function(pdf) {
-      currentPdfDoc = pdf;
-      renderDirectPage(targetP);
-    }).catch(function(err) {
-      // CORS or heavy load fallback: opens standalone focused window directly
-      document.getElementById('viewerLoading').innerHTML = 
-        '<div style="text-align:center;">' +
-          '<p>⚠️ High-res file requires native tab:</p>' +
-          '<a href="https://drive.google.com/file/d/' + fileId + '/preview#page=' + targetP + '" target="_blank" class="viewer-btn" style="background:#008069;padding:8px 14px;text-decoration:none;display:inline-block;margin-top:10px;">🎯 Open Direct Page ' + targetP + ' ↗</a>' +
-        '</div>';
-    });
-  }
-
-  function renderDirectPage(pageNum) {
-    if (!currentPdfDoc || isPageRendering) return;
-    isPageRendering = true;
-
-    currentPdfDoc.getPage(pageNum).then(function(page) {
-      var viewport = page.getViewport({ scale: currentZoomScale });
-      var canvas = document.getElementById('drawingCanvas');
-      var ctx = canvas.getContext('2d');
-
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-      var renderContext = {
-        canvasContext: ctx,
-        viewport: viewport
-      };
-
-      page.render(renderContext).promise.then(function() {
-        isPageRendering = false;
-        document.getElementById('viewerLoading').style.display = "none";
-        canvas.style.display = "block";
-        document.getElementById('pageTracker').innerText = "Page " + pageNum + " / " + currentPdfDoc.numPages;
-      });
-    });
-  }
-
-  function changeDrawingPage(delta) {
-    if (!currentPdfDoc) return;
-    var newPage = currentActivePage + delta;
-    if (newPage >= 1 && newPage <= currentPdfDoc.numPages) {
-      currentActivePage = newPage;
-      renderDirectPage(newPage);
-    }
-  }
-
-  function zoomDrawing(factor) {
-    currentZoomScale = Math.max(0.6, Math.min(3.5, currentZoomScale * factor));
-    if (currentPdfDoc) renderDirectPage(currentActivePage);
-  }
-
-  function closeDrawingViewer() {
-    document.getElementById('pdfViewerModal').style.display = "none";
-    currentPdfDoc = null;
+    window.open(directViewerUrl, '_blank', 'noopener,noreferrer');
   }
 
   // Manual Modal Functions
@@ -795,7 +681,7 @@
         if (c.mode === "download_only") {
           buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download Complete PDF (' + (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'Manual') + ')</a>';
         } else {
-          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Directly at Page ' + targetP + '</button>';
+          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Directly at Page ' + targetP + ' ↗</button>';
         }
 
         cardHtml = 
