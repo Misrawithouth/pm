@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=32">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=32">
-  <link rel="manifest" href="manifest.json?v=32">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=33">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=33">
+  <link rel="manifest" href="manifest.json?v=33">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -109,7 +109,7 @@
     .viewer-header button { background: none; border: none; color: #ef4444; font-size: 22px; font-weight: bold; cursor: pointer; }
     .viewer-frame { flex: 1; width: 100%; border: none; background: #525659; }
 
-    /* 🟢 UPLOAD MODAL */
+    /* 🟢 MANUAL UPLOAD MODAL */
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
     .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
     .upload-card h3 { color: #008069; font-size: 17px; margin-bottom: 12px; }
@@ -127,7 +127,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=32" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=33" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -264,10 +264,18 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // Exact Page Drawing Modal
-  function openDrawingViewer(url, title, page) {
-    document.getElementById('viewerTitle').innerText = (title || "Drawing Viewer") + " (Target: Page " + page + ")";
-    document.getElementById('pdfViewerFrame').src = url;
+  // 🟢 IN-APP DRAWING MODAL (Google Drive Official Embed - Prevents GitHub 404)
+  function openDrawingViewer(fileId, title, page) {
+    if (!fileId) {
+      alert("Document link unavailable.");
+      return;
+    }
+    var targetP = page || 1;
+    document.getElementById('viewerTitle').innerText = (title || "Drawing Viewer") + " (Target: Page " + targetP + ")";
+    
+    // Absolute Google Drive Preview link
+    var embedUrl = "https://drive.google.com/file/d/" + fileId + "/preview";
+    document.getElementById('pdfViewerFrame').src = embedUrl;
     document.getElementById('pdfViewerModal').style.display = "flex";
   }
 
@@ -691,22 +699,25 @@
       var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
       var replyHtml = renderRichContent(rawReply);
 
-      // WhatsApp Style PDF Download & Preview Card
+      // 🟢 WHATSAPP STYLE DOCUMENT DOWNLOAD & EMBED PREVIEW CARD (Zero GitHub 404s)
       var cardHtml = "";
-      if (res && res.card && res.card.downloadUrl) {
+      if (res && res.card && res.card.id) {
         var c = res.card;
+        var targetP = c.page || 1;
+        var downloadHref = "https://drive.google.com/uc?export=download&id=" + c.id;
+
         cardHtml = 
           '<div class="wa-doc-box">' +
             '<div class="wa-doc-header">' +
               '<div class="wa-doc-icon">PDF</div>' +
               '<div class="wa-doc-meta">' +
                 '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
-                '<div class="wa-doc-sub">Target Page: <strong>Page ' + c.page + '</strong> • ' + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'OEM Manual') + '</div>' +
+                '<div class="wa-doc-sub">Target Drawing: <strong>Page ' + targetP + '</strong> • ' + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'OEM Manual') + '</div>' +
               '</div>' +
             '</div>' +
             '<div class="wa-doc-actions">' +
-              '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.viewUrl + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + c.page + ')">👁️ View (Page ' + c.page + ')</button>' +
-              '<a href="' + c.downloadUrl + '" target="_blank" class="wa-doc-btn">⬇️ Download</a>' +
+              '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">👁️ View Drawing</button>' +
+              '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download PDF</a>' +
             '</div>' +
           '</div>';
       }
@@ -748,26 +759,3 @@
 
 </body>
 </html>
-// 🟢 WHATSAPP STYLE DOCUMENT CARD INJECTION (100% Guaranteed)
-      var cardHtml = "";
-      if (res && res.card && res.card.title) {
-        var c = res.card;
-        var downloadHref = c.downloadUrl || ("https://drive.google.com/uc?export=download&id=" + (c.id || ""));
-        var viewHref = c.viewUrl || ("https://drive.google.com/file/d/" + (c.id || "") + "/preview#page=" + (c.page || 1));
-        var targetP = c.page || 1;
-
-        cardHtml = 
-          '<div class="wa-doc-box">' +
-            '<div class="wa-doc-header">' +
-              '<div class="wa-doc-icon">PDF</div>' +
-              '<div class="wa-doc-meta">' +
-                '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
-                '<div class="wa-doc-sub">Target: <strong>Page ' + targetP + '</strong> • ' + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'OEM Manual') + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="wa-doc-actions">' +
-              '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + viewHref + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">👁️ View (Page ' + targetP + ')</button>' +
-              '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download</a>' +
-            '</div>' +
-          '</div>';
-      }
