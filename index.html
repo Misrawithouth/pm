@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=14">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=14">
-  <link rel="manifest" href="manifest.json?v=14">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=16">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=16">
+  <link rel="manifest" href="manifest.json?v=16">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -140,7 +140,7 @@
     .modal-card h4 { font-size: 15.5px; color: #008069; margin-bottom: 14px; }
     .modal-field { margin-bottom: 12px; }
     .modal-field label { display: block; font-size: 11.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
-    .modal-field input, .modal-field select { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 11px; font-size: 13.5px; outline: none; }
+    .modal-field input, .modal-field select { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 11px; font-size: 13.5px; outline: none; box-sizing: border-box; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
     .modal-btn-cancel { background: #e2e8f0; color: #334155; border: none; padding: 9px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; }
     .modal-btn-submit { background: #008069; color: #ffffff; border: none; padding: 9px 17px; border-radius: 6px; font-weight: 600; cursor: pointer; }
@@ -152,7 +152,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=14" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=16" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -197,21 +197,27 @@
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 
+  <!-- MODAL WITH DYNAMIC ADD NEW OPTION -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h4>📂 Upload OEM Manual</h4>
       <div class="modal-field">
-        <label>Manual Title / Machine Model</label>
-        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / Komatsu WA470">
+        <label>Manual Title / Equipment Model</label>
+        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / SPM 4210 / WA470">
       </div>
       <div class="modal-field">
         <label>Category</label>
-        <select id="manualCategoryInput">
+        <select id="manualCategoryInput" onchange="handleCategoryChange(this.value)">
           <option value="Spare Parts Manual">Spare Parts Manual</option>
           <option value="Hydraulic Schematic">Hydraulic Schematic</option>
           <option value="Electrical Diagram">Electrical Diagram</option>
           <option value="Workshop Service Manual">Workshop Service Manual</option>
+          <option value="ADD_NEW">➕ Add New / Custom Category...</option>
         </select>
+      </div>
+      <div class="modal-field" id="customCategoryWrapper" style="display: none;">
+        <label>Custom Category / System Name</label>
+        <input type="text" id="customCategoryInput" placeholder="e.g. Pneumatic Circuit / Transmission">
       </div>
       <div class="modal-actions">
         <button type="button" class="modal-btn-cancel" onclick="closeManualModal()">Cancel</button>
@@ -362,8 +368,21 @@
     document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing query... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
+  function handleCategoryChange(val) {
+    var customBox = document.getElementById('customCategoryWrapper');
+    if (val === 'ADD_NEW') {
+      customBox.style.display = 'block';
+      document.getElementById('customCategoryInput').focus();
+    } else {
+      customBox.style.display = 'none';
+    }
+  }
+
   function openManualModal() {
     document.getElementById('manualTitleInput').value = "";
+    document.getElementById('manualCategoryInput').value = "Spare Parts Manual";
+    document.getElementById('customCategoryInput').value = "";
+    document.getElementById('customCategoryWrapper').style.display = "none";
     document.getElementById('manualModal').style.display = "flex";
   }
 
@@ -373,7 +392,20 @@
 
   function proceedToSelectPDF() {
     var title = document.getElementById('manualTitleInput').value.trim();
-    if (!title) { alert("Title zaroor likhein."); return; }
+    if (!title) { 
+      alert("Kripya Manual Title ya Machine ka naam likhein."); 
+      return; 
+    }
+    
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    if (catSelect === 'ADD_NEW') {
+      var customVal = document.getElementById('customCategoryInput').value.trim();
+      if (!customVal) {
+        alert("Kripya custom category ka naam likhein.");
+        return;
+      }
+    }
+    
     closeManualModal();
     document.getElementById('manualFileInput').click();
   }
@@ -383,7 +415,10 @@
     if (!file) return;
 
     var customTitle = document.getElementById('manualTitleInput').value.trim() || file.name;
-    var categoryDesc = document.getElementById('manualCategoryInput').value;
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    var categoryDesc = (catSelect === 'ADD_NEW') 
+      ? document.getElementById('customCategoryInput').value.trim() 
+      : catSelect;
 
     var attachBar = document.getElementById('attachmentBar');
     var fileNameEl = document.getElementById('attachmentFileName');
@@ -421,7 +456,6 @@
           base64: base64Data,
           fileName: file.name,
           mimeType: "application/pdf",
-          isPermanent: true,
           customTitle: customTitle,
           categoryDesc: categoryDesc
         })
@@ -433,12 +467,13 @@
           progressFill.style.width = "100%";
           progressFill.classList.add("done");
           statusTag.className = "upload-status-tag status-ready";
-          statusTag.innerText = "✓ Uploaded";
+          statusTag.innerText = "✓ Staged";
 
           var box = document.getElementById('chatBox');
-          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Uploaded Successfully!</strong><br>' +
-            '• Title: <strong>' + escapeHtml(customTitle) + '</strong> (' + escapeHtml(categoryDesc) + ')<br>' +
-            '• Admin review link sent.</div>';
+          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
+            '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
+            '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
+            '• Document review queue (mobile upload) me bhej diya gaya hai. Admin verification ke baad direct machine folder me move ho jayega.</div>';
           scrollToBottom();
         } else {
           statusTag.className = "upload-status-tag status-error";
@@ -523,7 +558,6 @@
           base64: cleanBase64,
           fileName: file.name,
           mimeType: mimeType,
-          isPermanent: false,
           customTitle: "",
           categoryDesc: ""
         })
