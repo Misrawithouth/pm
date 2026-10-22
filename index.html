@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=18">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=18">
-  <link rel="manifest" href="manifest.json?v=18">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=19">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=19">
+  <link rel="manifest" href="manifest.json?v=19">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -152,7 +152,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=18" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=19" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -409,9 +409,6 @@
     document.getElementById('manualFileInput').click();
   }
 
-  /**
-   * ⚡ RELIABLE MANUAL PDF UPLOAD (Smooth Redirect Handling)
-   */
   function executeManualUpload(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -486,7 +483,6 @@
         }
       })
       .catch(function(err) {
-        // Safe Fallback: Even if redirect suppresses CORS response, the file is received
         progressFill.style.width = "100%";
         progressFill.classList.add("done");
         statusTag.className = "upload-status-tag status-ready";
@@ -539,9 +535,6 @@
     reader.readAsDataURL(file);
   }
 
-  /**
-   * ⚡ ATTACHMENT UPLOAD
-   */
   function handleFileSelect(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -647,7 +640,7 @@
     return Promise.race([
       fetch(url, options),
       new Promise(function(_, reject) {
-        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 25000);
+        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 45000);
       })
     ]);
   }
@@ -701,7 +694,7 @@
         contextSummary: isGeneral ? "" : activeTopicMemory,
         attachment: toSendAttach
       })
-    }, 28000)
+    }, 45000)
     .then(function(response) { return response.text(); })
     .then(function(textData) {
       var el = document.getElementById(typingId);
