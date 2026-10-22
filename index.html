@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=26">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=26">
-  <link rel="manifest" href="manifest.json?v=26">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=27">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=27">
+  <link rel="manifest" href="manifest.json?v=27">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -155,7 +155,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=26" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=27" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -295,7 +295,7 @@
       if (bar) bar.classList.add('locked');
       if (input) {
         input.disabled = true;
-        input.placeholder = "⏳ Analyzing & inspecting... please wait";
+        input.placeholder = "⏳ Inspecting visible evidence... please wait";
       }
       if (sendBtn) sendBtn.disabled = true;
     } else {
@@ -394,7 +394,7 @@
     document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
-  // Optimized Ingestion: Scale image down to 800px at 0.60 quality (~180 KB payload budget)
+  // Universal File Ingestion: Compress images to <= 800px at 0.62 quality (~140KB total JSON payload)
   function handleUniversalFile(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -416,7 +416,7 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement('canvas');
-          var max_dim = 800; // Optimal payload ceiling for mobile networks and Apps Script
+          var max_dim = 800; // Optimal ceiling avoiding GAS timeouts
           var w = img.width;
           var h = img.height;
           if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
@@ -424,7 +424,7 @@
           canvas.width = w; canvas.height = h;
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          var dataUrl = canvas.toDataURL('image/jpeg', 0.60);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.62);
 
           activeAttachment = {
             fileName: file.name,
