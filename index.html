@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=55">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=55">
-  <link rel="manifest" href="manifest.json?v=55">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=99">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=99">
+  <link rel="manifest" href="manifest.json?v=99">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,7 +36,7 @@
     .mode-btn { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.22); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=3'); background-repeat: repeat; background-size: 380px auto; }
+    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=99'); background-repeat: repeat; background-size: 380px auto; }
 
     .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
@@ -54,7 +54,7 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 🟢 WHATSAPP STYLE DUAL-ACTION DOCUMENT CARD */
+    /* 🟢 WHATSAPP STYLE DOCUMENT ACTION CARD */
     .wa-doc-box { margin-top: 8px; background: #f0f2f5; border: 1px solid #d1d7db; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .wa-doc-header { display: flex; align-items: center; gap: 10px; }
     .wa-doc-icon { width: 38px; height: 42px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-shrink: 0; }
@@ -62,7 +62,7 @@
     .wa-doc-name { font-size: 13px; font-weight: 600; color: #111b21; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .wa-doc-sub { font-size: 11px; color: #667781; margin-top: 2px; }
     .wa-doc-actions { display: flex; gap: 6px; margin-top: 2px; }
-    .wa-doc-btn { flex: 1; text-align: center; background: #008069; color: #fff; border: none; border-radius: 6px; padding: 9px 0; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+    .wa-doc-btn { flex: 1; text-align: center; background: #008069; color: #fff; border: none; border-radius: 6px; padding: 10px 0; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
     .wa-doc-btn.secondary { background: #0284c7; color: #fff; }
     .wa-doc-btn:active { opacity: 0.85; }
 
@@ -120,7 +120,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=55" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=99" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -247,17 +247,14 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 DIRECT NATIVE OFFICIAL VIEWER (Zero Blank Screens, Direct Open)
+  // 🟢 DIRECT OFFICIAL DRIVE VIEWER (Zero Modals / Direct Tab Jump)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
       return;
     }
     var targetP = parseInt(page, 10) || 1;
-    
-    // Official Google Drive direct view URL
     var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/view#page=" + targetP;
-
     window.open(directViewerUrl, '_blank', 'noopener,noreferrer');
   }
 
