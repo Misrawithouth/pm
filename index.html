@@ -766,3 +766,17 @@
 
 </body>
 </html>
+// 🟢 ZERO-CRASH TARGETED PAGE VIEWER
+  function openDrawingViewer(fileId, title, page) {
+    if (!fileId) {
+      alert("Document reference unavailable.");
+      return;
+    }
+    var targetP = page || 1;
+    
+    // Direct Native Page Deep-Link (Bypasses 100MB iframe crash)
+    var targetUrl = "https://drive.google.com/file/d/" + fileId + "/view#page=" + targetP;
+    
+    // Mobile / Desktop native viewer open
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  }
