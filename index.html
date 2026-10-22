@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=8">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=8">
-  <link rel="manifest" href="manifest.json?v=8">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=9">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=9">
+  <link rel="manifest" href="manifest.json?v=9">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +57,7 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 💬 NATIVE WHATSAPP 3-DOT TYPING BUBBLE */
+    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (ZERO CLUTTER) */
     .wa-typing-bubble {
       align-self: flex-start;
       background: #ffffff;
@@ -67,41 +67,20 @@
       box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       z-index: 2;
     }
     .wa-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       background: #008069;
       border-radius: 50%;
-      opacity: 0.4;
-      animation: waDotPulse 1.3s infinite ease-in-out;
+      opacity: 0.35;
+      animation: waDotPulse 1.2s infinite ease-in-out;
     }
     .wa-dot:nth-child(2) { animation-delay: 0.2s; }
     .wa-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-4px); opacity: 1; } }
-
-    /* 🔍 DETERMINISTIC DIAGNOSTIC PROGRESS INDICATOR (MAX 95% CAPPED) */
-    .diag-analyzer-card {
-      align-self: flex-start;
-      background: #ffffff;
-      padding: 10px 13px;
-      border-radius: 8px;
-      border-top-left-radius: 0;
-      box-shadow: 0 1px 2px rgba(11,20,26,.12);
-      width: 235px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      border-left: 3.5px solid #008069;
-      z-index: 2;
-    }
-    .diag-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 600; color: #0f172a; }
-    .diag-badge { background: #dcfce7; color: #166534; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 10.5px; }
-    .diag-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
-    .diag-fill { height: 100%; width: 15%; background: linear-gradient(90deg, #008069, #10b981); transition: width 0.3s ease; }
-    .diag-status { font-size: 10.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
 
     /* 📄 WHATSAPP ATTACHMENT CARD WITH IN-APP VIEWER TOGGLE */
     .wa-doc-card {
@@ -124,7 +103,7 @@
     .wa-btn-sec { background: #e2e8f0; color: #334155; }
     .pdf-viewer-frame { width: 100%; height: 340px; border: 1px solid #cbd5e1; border-radius: 6px; display: none; background: #ffffff; margin-top: 6px; }
 
-    /* 📊 RESPONSIVE SCROLLABLE TABLE (NO OVERFLOW BREAKS) */
+    /* 📊 RESPONSIVE SCROLLABLE TABLE */
     .table-responsive-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; }
     .table-responsive-wrapper::-webkit-scrollbar { height: 4px; }
     .table-responsive-wrapper::-webkit-scrollbar-thumb { background: #008069; border-radius: 2px; }
@@ -180,7 +159,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=8" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=9" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -199,7 +178,7 @@
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • WhatsApp style fast execution active.
+      • WhatsApp style fast response engine active.
     </div>
   </div>
 
@@ -278,7 +257,7 @@
 
   function scrollToBottom() {
     var box = document.getElementById('chatBox');
-    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 30);
+    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
   function toggleInAppDrawing(id, url) {
@@ -581,13 +560,6 @@
     executeOneTapSend();
   }
 
-  // ⚡ CASUAL & GENERAL CONVERSATION DETECTOR
-  function isCasualQuery(text) {
-    if (!text) return false;
-    var clean = text.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    return /^(hi|hello|hey|namaste|pranam|ram\s*ram|hlo|hii|helo|ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|aur\s*kya|kya\s*ho\s*raha|aur\s*bhai|kya\s*haal|kaise\s*ho)$/i.test(clean);
-  }
-
   function fetchWithRetry(url, options, maxRetries) {
     return new Promise(function(resolve, reject) {
       function attempt(retriesLeft) {
@@ -630,46 +602,38 @@
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
-    var isCasual = isCasualQuery(currentText) && !activeAttachment;
-    var progressInterval = null;
 
-    if (isCasual || isGeneral) {
-      // 💬 NATIVE WHATSAPP 3-DOT TYPING BUBBLE
-      var bubbleNode = document.createElement('div');
-      bubbleNode.className = 'wa-typing-bubble';
-      bubbleNode.id = typingId;
-      bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
-      box.appendChild(bubbleNode);
-    } else {
-      // 🔍 DETERMINISTIC DIAGNOSTIC PROGRESS INDICATOR (STRICT MAX 95% CAP)
-      var cardNode = document.createElement('div');
-      cardNode.className = 'diag-analyzer-card';
-      cardNode.id = typingId;
-      cardNode.innerHTML = 
-        '<div class="diag-header"><span>Processing...</span><span class="diag-badge" id="' + typingId + '-pct">20%</span></div>' +
-        '<div class="diag-track"><div class="diag-fill" id="' + typingId + '-bar" style="width: 20%;"></div></div>' +
-        '<div class="diag-status" id="' + typingId + '-txt">Scanning Subsystem Index...</div>';
-      box.appendChild(cardNode);
-
-      var pct = 20;
-      progressInterval = setInterval(function() {
-        var pctEl = document.getElementById(typingId + '-pct');
-        var barEl = document.getElementById(typingId + '-bar');
-        var txtEl = document.getElementById(typingId + '-txt');
-        if (pctEl && barEl) {
-          // Strictly capped at 95% maximum until server completes
-          pct = Math.min(pct + Math.floor(Math.random() * 12) + 8, 95);
-          pctEl.innerText = pct + "%";
-          barEl.style.width = pct + "%";
-          if (pct > 65 && txtEl) txtEl.innerText = "Synthesizing Directives...";
-        }
-      }, 300);
-    }
-
+    // 💬 UNIVERSAL PURE WHATSAPP 3-DOT BUBBLE (NO PROGRESS BAR CLUTTER)
+    var bubbleNode = document.createElement('div');
+    bubbleNode.className = 'wa-typing-bubble';
+    bubbleNode.id = typingId;
+    bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
+    box.appendChild(bubbleNode);
     scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
+
+    // ⚡ INSTANT CLIENT ACKNOWLEDGEMENT FOR SIMPLE CONFIRMATIONS (ZERO FREEZE)
+    var cleanQ = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    if (/^(ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad)$/i.test(cleanQ) && !toSendAttach) {
+      setTimeout(function() {
+        var el = document.getElementById(typingId);
+        if (el) {
+          var ackReplies = [
+            "Theek hai bhai! Agla point ya drawing check batayein.",
+            "Got it! Agla step ya component check batao.",
+            "Sahi hai! Aur koi breakdown ya part check karna hai?"
+          ];
+          var chosen = ackReplies[Math.floor(Math.random() * ackReplies.length)];
+          var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
+          el.outerHTML = '<div class="msg bot-msg">' + chosen + timeHtml + '</div>';
+          scrollToBottom();
+          triggerHaptic(20);
+        }
+      }, 250);
+      return;
+    }
 
     fetchWithRetry(BACKEND_API_URL, {
       method: "POST",
@@ -686,7 +650,6 @@
       })
     }, 2)
     .then(function(textData) {
-      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (!el) return;
 
@@ -700,7 +663,7 @@
       }
 
       if (!isGeneral && res && res.reply) {
-        if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure|filter|turbo/i.test(currentText + " " + res.reply)) {
+        if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure|filter|turbo|guide|beam/i.test(currentText + " " + res.reply)) {
           activeTopicMemory = "Current Component / Fault: " + currentText + " | Details: " + res.reply.substring(0, 180);
         }
       }
@@ -744,7 +707,6 @@
       triggerHaptic(20);
     })
     .catch(function() {
-      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server response timeout. Kripya dubara bhejein.</div>';
       scrollToBottom();
