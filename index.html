@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=20">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=20">
-  <link rel="manifest" href="manifest.json?v=20">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=21">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=21">
+  <link rel="manifest" href="manifest.json?v=21">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -113,15 +113,14 @@
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
     .followup-chip:active { background: #dcfce7; }
 
-    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; z-index: 25; }
+    /* ATTACHMENT TRAY WITH CAPTION ADVICE */
+    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; z-index: 25; }
     .attachment-header-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
-    .upload-status-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace; transition: all 0.2s ease; }
-    .status-uploading { background: #fef08a; color: #854d0e; }
+    .upload-status-tag { font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: bold; font-family: monospace; }
     .status-ready { background: #bbf7d0; color: #166534; }
+    .status-uploading { background: #fef08a; color: #854d0e; }
     .status-error { background: #fecaca; color: #991b1b; }
-    .progress-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
-    .progress-fill { height: 100%; width: 0%; background: #008069; transition: width 0.2s ease-out; }
-    .progress-fill.done { background: #16a34a; }
+    .caption-hint { font-size: 11px; color: #008069; font-weight: 500; }
 
     .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
@@ -152,7 +151,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=20" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=21" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -175,17 +174,16 @@
     </div>
   </div>
 
+  <!-- WHATSAPP STYLE ATTACHMENT TRAY -->
   <div class="attachment-preview-bar" id="attachmentBar" style="display: none;">
     <div class="attachment-header-row">
-      <span id="attachmentFileName" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">📎 file.jpg</span>
+      <span id="attachmentFileName" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%; font-weight:600;">📎 photo.jpg</span>
       <div>
-        <span class="upload-status-tag status-uploading" id="uploadStatusTag">0%</span>
-        <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-weight:bold;font-size:15px;cursor:pointer;">✕</button>
+        <span class="upload-status-tag status-ready" id="uploadStatusTag">✓ Attached</span>
+        <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-weight:bold;font-size:16px;cursor:pointer;margin-left:6px;">✕</button>
       </div>
     </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
+    <div class="caption-hint">💡 File attached hai! Niche input me sawal/caption likhein ya seedha Send dabayein.</div>
   </div>
 
   <div class="chat-input-bar" id="chatInputBar">
@@ -421,29 +419,14 @@
     var attachBar = document.getElementById('attachmentBar');
     var fileNameEl = document.getElementById('attachmentFileName');
     var statusTag = document.getElementById('uploadStatusTag');
-    var progressFill = document.getElementById('progressFill');
 
-    progressFill.className = "progress-fill";
-    progressFill.style.width = "20%";
     statusTag.className = "upload-status-tag status-uploading";
-    statusTag.innerText = "20%";
+    statusTag.innerText = "Uploading...";
     fileNameEl.innerText = "📄 " + customTitle;
     attachBar.style.display = "flex";
 
     var reader = new FileReader();
-
-    reader.onprogress = function(e) {
-      if (e.lengthComputable) {
-        var pct = Math.round((e.loaded / e.total) * 60);
-        progressFill.style.width = Math.max(20, pct) + "%";
-        statusTag.innerText = Math.max(20, pct) + "%";
-      }
-    };
-
     reader.onload = function(e) {
-      progressFill.style.width = "80%";
-      statusTag.innerText = "80%";
-
       var base64Data = e.target.result.split(',')[1];
       
       fetch(BACKEND_API_URL, {
@@ -460,12 +443,8 @@
           categoryDesc: categoryDesc
         })
       })
+      .then(function(res) { return res.json(); })
       .then(function(res) {
-        return res.json();
-      })
-      .then(function(res) {
-        progressFill.style.width = "100%";
-        progressFill.classList.add("done");
         statusTag.className = "upload-status-tag status-ready";
         statusTag.innerText = "✓ Staged";
 
@@ -473,12 +452,10 @@
         box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
           '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
           '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
-          '• Document quarantine folder (<code>mobile upload</code>) me bhej diya gaya hai. Verification ke baad live hoga.</div>';
+          '• Document quarantine folder (<code>mobile upload</code>) me chala gaya hai. Verification ke baad live hoga.</div>';
         scrollToBottom();
       })
       .catch(function(err) {
-        progressFill.style.width = "100%";
-        progressFill.classList.add("done");
         statusTag.className = "upload-status-tag status-ready";
         statusTag.innerText = "✓ Staged";
 
@@ -486,7 +463,7 @@
         box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
           '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
           '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
-          '• Document quarantine folder (<code>mobile upload</code>) me bhej diya gaya hai.</div>';
+          '• Document review queue me receive ho gaya hai.</div>';
         scrollToBottom();
       });
     };
@@ -529,6 +506,9 @@
     reader.readAsDataURL(file);
   }
 
+  /**
+   * ⚡ STAGE ATTACHMENT & ALLOW OPTIONAL CAPTION BEFORE SEND
+   */
   function handleFileSelect(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -536,12 +516,9 @@
     var attachBar = document.getElementById('attachmentBar');
     var fileNameEl = document.getElementById('attachmentFileName');
     var statusTag = document.getElementById('uploadStatusTag');
-    var progressFill = document.getElementById('progressFill');
 
-    progressFill.className = "progress-fill";
-    progressFill.style.width = "30%";
     statusTag.className = "upload-status-tag status-uploading";
-    statusTag.innerText = "30%";
+    statusTag.innerText = "Reading...";
     fileNameEl.innerText = "📎 " + file.name;
     attachBar.style.display = "flex";
 
@@ -549,42 +526,15 @@
       activeAttachment = {
         fileName: file.name,
         mimeType: mimeType,
-        base64: cleanBase64,
-        isUploaded: false
+        base64: cleanBase64
       };
+      statusTag.className = "upload-status-tag status-ready";
+      statusTag.innerText = "✓ Ready";
 
-      progressFill.style.width = "80%";
-      statusTag.innerText = "80%";
-
-      fetch(BACKEND_API_URL, {
-        method: "POST",
-        mode: "cors",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "upload",
-          base64: cleanBase64,
-          fileName: file.name,
-          mimeType: mimeType,
-          customTitle: "",
-          categoryDesc: ""
-        })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(res) {
-        progressFill.style.width = "100%";
-        progressFill.classList.add("done");
-        statusTag.className = "upload-status-tag status-ready";
-        statusTag.innerText = "✓ Ready";
-        activeAttachment.isUploaded = true;
-      })
-      .catch(function(err) {
-        progressFill.style.width = "100%";
-        progressFill.classList.add("done");
-        statusTag.className = "upload-status-tag status-ready";
-        statusTag.innerText = "✓ Ready";
-        activeAttachment.isUploaded = true;
-      });
+      // Focus input so user can optionally type question
+      var input = document.getElementById('userInput');
+      input.placeholder = "Is photo se related sawal likhein (optional)...";
+      input.focus();
     });
   }
 
@@ -592,7 +542,7 @@
     activeAttachment = null;
     document.getElementById('fileUploadInput').value = "";
     document.getElementById('attachmentBar').style.display = "none";
-    document.getElementById('progressFill').style.width = "0%";
+    document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
   }
 
   function toggleGeneralMode() {
@@ -657,11 +607,16 @@
     input.value = '';
 
     var box = document.getElementById('chatBox');
-    var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
+    
+    // User display bubble (shows caption + attachment indicator)
+    var display = currentText;
+    if (activeAttachment) {
+      display = currentText ? ("📎 [" + activeAttachment.fileName + "]\n\n" + currentText) : ("📎 [" + activeAttachment.fileName + "]");
+    }
 
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
-    userNode.innerHTML = escapeHtml(display) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
+    userNode.innerHTML = escapeHtml(display).replace(/\n/g, '<br>') + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
