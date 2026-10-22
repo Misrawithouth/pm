@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=7">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=7">
-  <link rel="manifest" href="manifest.json?v=7">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=8">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=8">
+  <link rel="manifest" href="manifest.json?v=8">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,94 +15,100 @@
   <meta name="apple-mobile-web-app-title" content="P&amp;M Assistant">
   <meta name="theme-color" content="#008069">
 
-  <!-- ⚡ CDN: Markdown Parser & KaTeX Formula Engine -->
+  <!-- ⚡ CDN: Markdown Parser & KaTeX Engine -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { width: 100%; height: 100%; background: #efeae2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 0; overflow: hidden; }
-    #appContainer { width: 100%; max-width: 640px; height: 100%; margin: 0 auto; background: #efeae2; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0, 0, 0, 0.08); }
+    html, body { width: 100%; height: 100%; background: #efeae2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; overflow: hidden; }
     
-    .chat-header { background: #008069; color: #ffffff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+    #appContainer { width: 100%; max-width: 640px; height: 100%; margin: 0 auto; background: #efeae2; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 24px rgba(0,0,0,0.12); }
+
+    /* HEADER */
+    .chat-header { background: #008069; color: #ffffff; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
     .header-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
 
-    /* 🚜 FULL-BLEED ZERO-WHITE EDGE EMBLEM AVATAR (FIXED SCALE) */
+    /* 🚜 FULL-BLEED ZERO-WHITE EMBLEM AVATAR */
     .header-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #005c4b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      overflow: hidden;
-      border: 1.5px solid rgba(255, 255, 255, 0.45);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      width: 42px; height: 42px; border-radius: 50%; background: #005c4b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
+    .header-avatar img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.24); }
 
-    .header-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.24); /* Safed border poori tarah crop ho jayega */
-    }
-
-    .header-info h3 { font-size: 14.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .header-info p { font-size: 10.5px; color: #a7f3d0; line-height: 1.2; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-    .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+    .header-info h3 { font-size: 15px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; letter-spacing: 0.1px; }
+    .header-info p { font-size: 11px; color: #a7f3d0; line-height: 1.2; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    
+    .mode-btn { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.22); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11.5px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+    .mode-btn:active { background: rgba(255, 255, 255, 0.28); }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 10px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.86), rgba(239, 234, 226, 0.86)), url('chat-bg.png?v=2'); background-repeat: repeat; background-size: 380px auto; background-attachment: local; }
+    /* CHAT AREA */
+    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=3'); background-repeat: repeat; background-size: 380px auto; }
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 2px; }
 
-    .msg { max-width: 92%; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; line-height: 1.55; word-wrap: break-word; word-break: break-word; position: relative; z-index: 2; max-height: none !important; overflow: visible !important; }
-    .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
-    .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
-    .user-msg.with-attachment { background: #cbf7c3; }
+    /* WHATSAPP MESSAGE BUBBLES */
+    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
+    .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
+    .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
-    /* 📊 RESPONSIVE HORIZONTAL SCROLL TABLE */
-    .table-responsive-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
+    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
+    .status-tick { color: #53bdeb; font-size: 11px; }
+
+    /* 💬 NATIVE WHATSAPP 3-DOT TYPING BUBBLE */
+    .wa-typing-bubble {
+      align-self: flex-start;
       background: #ffffff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      padding: 10px 14px;
+      border-radius: 7.5px;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
     }
-    .table-responsive-wrapper::-webkit-scrollbar { height: 4px; }
-    .table-responsive-wrapper::-webkit-scrollbar-thumb { background: #008069; border-radius: 2px; }
+    .wa-dot {
+      width: 6px;
+      height: 6px;
+      background: #008069;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: waDotPulse 1.3s infinite ease-in-out;
+    }
+    .wa-dot:nth-child(2) { animation-delay: 0.2s; }
+    .wa-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-4px); opacity: 1; } }
 
-    .bot-msg table { width: 100%; min-width: 480px; border-collapse: collapse; font-size: 12px; margin: 0; }
-    .bot-msg th, .bot-msg td { padding: 9px 11px; text-align: left; border: 1px solid #e2e8f0; vertical-align: middle; word-break: normal; hyphens: none; }
-    .bot-msg th { background: #008069; color: #ffffff; font-weight: 600; white-space: nowrap; letter-spacing: 0.2px; }
-    .bot-msg tr:nth-child(even) { background: #f8fafc; }
+    /* 🔍 DETERMINISTIC DIAGNOSTIC PROGRESS INDICATOR (MAX 95% CAPPED) */
+    .diag-analyzer-card {
+      align-self: flex-start;
+      background: #ffffff;
+      padding: 10px 13px;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 2px rgba(11,20,26,.12);
+      width: 235px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-left: 3.5px solid #008069;
+      z-index: 2;
+    }
+    .diag-header { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 600; color: #0f172a; }
+    .diag-badge { background: #dcfce7; color: #166534; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 10.5px; }
+    .diag-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .diag-fill { height: 100%; width: 15%; background: linear-gradient(90deg, #008069, #10b981); transition: width 0.3s ease; }
+    .diag-status { font-size: 10.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .bot-msg .katex-display { margin: 8px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
-    .bot-msg pre { background: #1e293b; color: #f8fafc; padding: 10px; border-radius: 6px; overflow-x: auto; margin: 8px 0; font-size: 12px; }
-    .bot-msg code { font-family: monospace; background: rgba(0,0,0,0.06); padding: 2px 4px; border-radius: 3px; font-size: 12px; }
-    .bot-msg pre code { background: transparent; padding: 0; }
-    .bot-msg ul, .bot-msg ol { margin: 6px 0 6px 20px; }
-    .bot-msg li { margin-bottom: 4px; }
-    .bot-msg h1, .bot-msg h2, .bot-msg h3, .bot-msg h4 { margin: 8px 0 4px; color: #0f172a; font-size: 14.5px; }
-
-    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 13px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); font-size: 12.5px; line-height: 1.6; color: #334155; position: relative; z-index: 2; }
-    .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
-    .followup-chip:active { background: #dcfce7; border-color: #4ade80; }
-
-    /* 📄 WHATSAPP DOCUMENT ATTACHMENT CARD WITH IN-APP PREVIEW TOGGLE */
+    /* 📄 WHATSAPP ATTACHMENT CARD WITH IN-APP VIEWER TOGGLE */
     .wa-doc-card {
       margin-top: 8px;
       background: #f8fafc;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 7.5px;
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -111,31 +117,35 @@
     .wa-doc-row { display: flex; align-items: center; gap: 10px; }
     .wa-doc-icon { font-size: 26px; line-height: 1; }
     .wa-doc-details { flex: 1; overflow: hidden; }
-    .wa-doc-title { font-weight: 600; font-size: 13px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .wa-doc-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .wa-doc-title { font-weight: 600; font-size: 12.8px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wa-doc-sub { font-size: 11px; color: #64748b; margin-top: 1px; }
     .wa-doc-actions { display: flex; gap: 6px; }
-    .wa-btn { flex: 1; background: #008069; color: #ffffff; padding: 7px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600; text-align: center; text-decoration: none; border: none; cursor: pointer; touch-action: manipulation; }
+    .wa-btn { flex: 1; background: #008069; color: #ffffff; padding: 7px 10px; border-radius: 5px; font-size: 11.5px; font-weight: 600; text-align: center; text-decoration: none; border: none; cursor: pointer; touch-action: manipulation; }
     .wa-btn-sec { background: #e2e8f0; color: #334155; }
-    
-    .pdf-viewer-frame {
-      width: 100%;
-      height: 340px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      display: none;
-      background: #ffffff;
-      margin-top: 6px;
-    }
+    .pdf-viewer-frame { width: 100%; height: 340px; border: 1px solid #cbd5e1; border-radius: 6px; display: none; background: #ffffff; margin-top: 6px; }
 
-    .analyzing-card { align-self: flex-start; background: #ffffff; padding: 10px 14px; border-radius: 8px; border-top-left-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); width: 230px; display: flex; flex-direction: column; gap: 6px; border-left: 3.5px solid #008069; }
-    .analyzing-header { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: #0f172a; }
-    .analyzing-bar-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
-    .analyzing-bar-fill { height: 100%; width: 15%; background: #008069; transition: width 0.25s ease-out; }
-    .analyzing-status-text { font-size: 10.5px; color: #64748b; }
+    /* 📊 RESPONSIVE SCROLLABLE TABLE (NO OVERFLOW BREAKS) */
+    .table-responsive-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; }
+    .table-responsive-wrapper::-webkit-scrollbar { height: 4px; }
+    .table-responsive-wrapper::-webkit-scrollbar-thumb { background: #008069; border-radius: 2px; }
+    .bot-msg table { width: 100%; min-width: 460px; border-collapse: collapse; font-size: 12px; margin: 0; }
+    .bot-msg th, .bot-msg td { padding: 8px 10px; text-align: left; border: 1px solid #e2e8f0; vertical-align: middle; word-break: normal; }
+    .bot-msg th { background: #008069; color: #ffffff; font-weight: 600; white-space: nowrap; }
+    .bot-msg tr:nth-child(even) { background: #f8fafc; }
 
+    .bot-msg .katex-display { margin: 8px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+    .bot-msg ul, .bot-msg ol { margin: 6px 0 6px 18px; }
+    .bot-msg li { margin-bottom: 3px; }
+
+    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
+    .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; touch-action: manipulation; }
+    .followup-chip:active { background: #dcfce7; }
+
+    /* PREVIEW & PROGRESS BAR FOR UPLOADS */
     .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; z-index: 25; }
     .attachment-header-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
-    .upload-status-tag { font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: bold; font-family: monospace; }
+    .upload-status-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace; }
     .status-uploading { background: #fef08a; color: #854d0e; }
     .status-ready { background: #bbf7d0; color: #166534; }
     .status-error { background: #fecaca; color: #991b1b; }
@@ -143,18 +153,20 @@
     .progress-fill { height: 100%; width: 0%; background: #008069; transition: width 0.2s ease-out; }
     .progress-fill.done { background: #16a34a; }
 
-    .chat-input-bar { padding: 8px 10px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
-    .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #475569; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
+    /* INPUT BAR */
+    .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
+    .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; touch-action: manipulation; transition: all 0.2s ease; }
     .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
     @keyframes micPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-    .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 15px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
-    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; user-select: none; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 16px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
+    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
     .send-btn:active { background: #005c4b; }
 
+    /* MODAL */
     .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
     .modal-card { background: #ffffff; border-radius: 12px; padding: 20px; width: 100%; max-width: 380px; display: flex; flex-direction: column; }
     .modal-card h4 { font-size: 15.5px; color: #008069; margin-bottom: 14px; }
-    .modal-field { margin-bottom: 13px; }
+    .modal-field { margin-bottom: 12px; }
     .modal-field label { display: block; font-size: 11.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
     .modal-field input, .modal-field select { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 11px; font-size: 13.5px; outline: none; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
@@ -168,7 +180,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=7" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=8" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -184,10 +196,10 @@
 
   <div class="chat-messages" id="chatBox">
     <div class="onboarding-card">
-      <strong>📌 P&amp;M Technical Desk Active</strong>
+      <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • WhatsApp style fast communication &amp; format-on-demand active.
+      • WhatsApp style fast execution active.
     </div>
   </div>
 
@@ -205,36 +217,29 @@
   </div>
 
   <div class="chat-input-bar">
-    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo / Document">📎</button>
+    <button type="button" class="attach-btn" onclick="document.getElementById('fileUploadInput').click()" title="Attach Photo">📎</button>
     <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelect(event)" accept="*/*">
     <input type="file" id="manualFileInput" style="display: none;" onchange="executeManualUpload(event)" accept="application/pdf">
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
-    <button type="button" class="send-btn" id="sendBtn" onpointerdown="handleTouchSend(event);" onclick="executeOneTapSend();">Send</button>
+    <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
-      <h4>📂 Upload New OEM Manual</h4>
+      <h4>📂 Upload OEM Manual</h4>
       <div class="modal-field">
         <label>Manual Title / Machine Model</label>
-        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / MAN Tipper CLA 25">
+        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / Komatsu WA470">
       </div>
       <div class="modal-field">
-        <label>Category / Document Type</label>
-        <select id="manualCategoryInput" onchange="checkCustomCategory(this.value)">
+        <label>Category</label>
+        <select id="manualCategoryInput">
           <option value="Spare Parts Manual">Spare Parts Manual</option>
-          <option value="Operation Manual">Operation Manual</option>
-          <option value="Hydraulic Circuit / Schematic">Hydraulic Circuit / Schematic</option>
-          <option value="Electrical Wiring Diagram">Electrical Wiring Diagram</option>
+          <option value="Hydraulic Schematic">Hydraulic Schematic</option>
+          <option value="Electrical Diagram">Electrical Diagram</option>
           <option value="Workshop Service Manual">Workshop Service Manual</option>
-          <option value="Lubrication & Greasing Schedule">Lubrication & Greasing Schedule</option>
-          <option value="__CUSTOM__">➕ Add New Category (Custom)...</option>
         </select>
-      </div>
-      <div class="modal-field" id="customCategoryBox" style="display: none;">
-        <label>Specify Custom Category Name</label>
-        <input type="text" id="customCategoryInput" placeholder="e.g. Brochure, Technical Leaflet, Inspection Sheet">
       </div>
       <div class="modal-actions">
         <button type="button" class="modal-btn-cancel" onclick="closeManualModal()">Cancel</button>
@@ -258,7 +263,17 @@
   var speechRecognizer = null;
 
   function triggerHaptic(duration) {
-    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 35);
+    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
+  }
+
+  function getFormattedTime() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12;
+    return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
   }
 
   function scrollToBottom() {
@@ -317,7 +332,7 @@
 
     speechRecognizer.onstart = function() {
       isRecognizing = true;
-      triggerHaptic(50);
+      triggerHaptic(40);
       var micBtn = document.getElementById('micBtn');
       micBtn.classList.add('listening');
       micBtn.innerText = '🔴';
@@ -352,9 +367,6 @@
 
   function openManualModal() {
     document.getElementById('manualTitleInput').value = "";
-    document.getElementById('manualCategoryInput').value = "Spare Parts Manual";
-    document.getElementById('customCategoryBox').style.display = "none";
-    document.getElementById('customCategoryInput').value = "";
     document.getElementById('manualModal').style.display = "flex";
   }
 
@@ -362,24 +374,9 @@
     document.getElementById('manualModal').style.display = "none";
   }
 
-  function checkCustomCategory(val) {
-    var box = document.getElementById('customCategoryBox');
-    if (val === "__CUSTOM__") {
-      box.style.display = "block";
-      document.getElementById('customCategoryInput').focus();
-    } else {
-      box.style.display = "none";
-    }
-  }
-
   function proceedToSelectPDF() {
     var title = document.getElementById('manualTitleInput').value.trim();
     if (!title) { alert("Title zaroor likhein."); return; }
-    var catSelect = document.getElementById('manualCategoryInput').value;
-    if (catSelect === "__CUSTOM__") {
-      var customName = document.getElementById('customCategoryInput').value.trim();
-      if (!customName) { alert("Kripya custom category ka naam likhein."); return; }
-    }
     closeManualModal();
     document.getElementById('manualFileInput').click();
   }
@@ -389,11 +386,7 @@
     if (!file) return;
 
     var customTitle = document.getElementById('manualTitleInput').value.trim() || file.name;
-    var catSelect = document.getElementById('manualCategoryInput').value;
-    var categoryDesc = catSelect;
-    if (catSelect === "__CUSTOM__") {
-      categoryDesc = document.getElementById('customCategoryInput').value.trim() || "Brochure / Other Document";
-    }
+    var categoryDesc = document.getElementById('manualCategoryInput').value;
 
     var attachBar = document.getElementById('attachmentBar');
     var fileNameEl = document.getElementById('attachmentFileName');
@@ -446,7 +439,7 @@
           statusTag.innerText = "✓ Uploaded";
 
           var box = document.getElementById('chatBox');
-          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Uploaded!</strong><br>' +
+          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Uploaded Successfully!</strong><br>' +
             '• Title: <strong>' + escapeHtml(customTitle) + '</strong> (' + escapeHtml(categoryDesc) + ')<br>' +
             '• Admin review link sent.</div>';
           scrollToBottom();
@@ -588,9 +581,11 @@
     executeOneTapSend();
   }
 
-  function handleTouchSend(e) {
-    if (e && e.cancelable) { e.preventDefault(); e.stopPropagation(); }
-    executeOneTapSend();
+  // ⚡ CASUAL & GENERAL CONVERSATION DETECTOR
+  function isCasualQuery(text) {
+    if (!text) return false;
+    var clean = text.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    return /^(hi|hello|hey|namaste|pranam|ram\s*ram|hlo|hii|helo|ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|aur\s*kya|kya\s*ho\s*raha|aur\s*bhai|kya\s*haal|kaise\s*ho)$/i.test(clean);
   }
 
   function fetchWithRetry(url, options, maxRetries) {
@@ -620,41 +615,58 @@
     var q = (input.value || '').trim();
     if (!q && !activeAttachment) return;
 
-    triggerHaptic(40);
+    triggerHaptic(25);
     var currentText = q;
     input.value = '';
     input.blur();
 
     var box = document.getElementById('chatBox');
     var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
-    var attachClass = activeAttachment ? " with-attachment" : "";
 
+    // USER MESSAGE WITH TIMESTAMP & TICKS
     var userNode = document.createElement('div');
-    userNode.className = 'msg user-msg' + attachClass;
-    userNode.textContent = display;
+    userNode.className = 'msg user-msg';
+    userNode.innerHTML = escapeHtml(display) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
-    var cardNode = document.createElement('div');
-    cardNode.className = 'analyzing-card';
-    cardNode.id = typingId;
-    cardNode.innerHTML = 
-      '<div class="analyzing-header"><span>Processing...</span><span id="' + typingId + '-pct">25%</span></div>' +
-      '<div class="analyzing-bar-track"><div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 25%;"></div></div>' +
-      '<div class="analyzing-status-text">' + (isGeneral ? 'Applying Engineering Logic...' : 'Scanning Subsystem Index...') + '</div>';
-    box.appendChild(cardNode);
-    scrollToBottom();
+    var isCasual = isCasualQuery(currentText) && !activeAttachment;
+    var progressInterval = null;
 
-    var pct = 25;
-    var progressInterval = setInterval(function() {
-      var pctEl = document.getElementById(typingId + '-pct');
-      var barEl = document.getElementById(typingId + '-bar');
-      if (pctEl && barEl && pct < 95) {
-        pct += 20;
-        pctEl.innerText = pct + "%";
-        barEl.style.width = pct + "%";
-      }
-    }, 250);
+    if (isCasual || isGeneral) {
+      // 💬 NATIVE WHATSAPP 3-DOT TYPING BUBBLE
+      var bubbleNode = document.createElement('div');
+      bubbleNode.className = 'wa-typing-bubble';
+      bubbleNode.id = typingId;
+      bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
+      box.appendChild(bubbleNode);
+    } else {
+      // 🔍 DETERMINISTIC DIAGNOSTIC PROGRESS INDICATOR (STRICT MAX 95% CAP)
+      var cardNode = document.createElement('div');
+      cardNode.className = 'diag-analyzer-card';
+      cardNode.id = typingId;
+      cardNode.innerHTML = 
+        '<div class="diag-header"><span>Processing...</span><span class="diag-badge" id="' + typingId + '-pct">20%</span></div>' +
+        '<div class="diag-track"><div class="diag-fill" id="' + typingId + '-bar" style="width: 20%;"></div></div>' +
+        '<div class="diag-status" id="' + typingId + '-txt">Scanning Subsystem Index...</div>';
+      box.appendChild(cardNode);
+
+      var pct = 20;
+      progressInterval = setInterval(function() {
+        var pctEl = document.getElementById(typingId + '-pct');
+        var barEl = document.getElementById(typingId + '-bar');
+        var txtEl = document.getElementById(typingId + '-txt');
+        if (pctEl && barEl) {
+          // Strictly capped at 95% maximum until server completes
+          pct = Math.min(pct + Math.floor(Math.random() * 12) + 8, 95);
+          pctEl.innerText = pct + "%";
+          barEl.style.width = pct + "%";
+          if (pct > 65 && txtEl) txtEl.innerText = "Synthesizing Directives...";
+        }
+      }, 300);
+    }
+
+    scrollToBottom();
 
     var toSendAttach = activeAttachment;
     clearAttachment();
@@ -674,7 +686,7 @@
       })
     }, 2)
     .then(function(textData) {
-      clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
       if (!el) return;
 
@@ -725,14 +737,16 @@
         fpHtml += '</div>';
       }
 
-      el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + '</div>';
+      var timeHtml = '<div class="msg-meta">' + getFormattedTime() + '</div>';
+
+      el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + timeHtml + '</div>';
       scrollToBottom();
-      triggerHaptic(30);
+      triggerHaptic(20);
     })
     .catch(function() {
-      clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
       var el = document.getElementById(typingId);
-      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server timeout. Kripya dubara bhejein.</div>';
+      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server response timeout. Kripya dubara bhejein.</div>';
       scrollToBottom();
     });
   }
