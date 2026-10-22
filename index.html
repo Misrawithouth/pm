@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=9">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=9">
-  <link rel="manifest" href="manifest.json?v=9">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=10">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=10">
+  <link rel="manifest" href="manifest.json?v=10">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="P&amp;M Assistant">
   <meta name="theme-color" content="#008069">
 
-  <!-- ⚡ CDN: Markdown Parser & KaTeX Engine -->
+  <!-- CDN: Markdown Parser & KaTeX Engine -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -57,7 +57,7 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; margin-right: -2px; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (ZERO CLUTTER) */
+    /* 💬 PURE WHATSAPP 3-DOT TYPING BUBBLE (ZERO LOADING CARDS) */
     .wa-typing-bubble {
       align-self: flex-start;
       background: #ffffff;
@@ -159,7 +159,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=9" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=10" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -178,7 +178,7 @@
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part, fault ya drawing poochhein.<br>
       • <strong>🎙️ Mic dabakar bolkar sawal pooch sakte hain.</strong><br>
-      • WhatsApp style fast response engine active.
+      • Strict verified OEM data engine active.
     </div>
   </div>
 
@@ -595,7 +595,7 @@
     var box = document.getElementById('chatBox');
     var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
 
-    // USER MESSAGE WITH TIMESTAMP & TICKS
+    // USER MESSAGE
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     userNode.innerHTML = escapeHtml(display) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
@@ -603,7 +603,7 @@
 
     var typingId = "typ-" + Date.now();
 
-    // 💬 UNIVERSAL PURE WHATSAPP 3-DOT BUBBLE (NO PROGRESS BAR CLUTTER)
+    // 💬 PURE WHATSAPP 3-DOT BUBBLE
     var bubbleNode = document.createElement('div');
     bubbleNode.className = 'wa-typing-bubble';
     bubbleNode.id = typingId;
@@ -614,7 +614,7 @@
     var toSendAttach = activeAttachment;
     clearAttachment();
 
-    // ⚡ INSTANT CLIENT ACKNOWLEDGEMENT FOR SIMPLE CONFIRMATIONS (ZERO FREEZE)
+    // ⚡ INSTANT LOCAL ACKNOWLEDGEMENT FOR SIMPLE CONFIRMATIONS
     var cleanQ = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
     if (/^(ok|okk|okay|theek|thik|theek\s*hai|sahi\s*hai|got\s*it|samajh\s*gaya|thanks|dhanyawad)$/i.test(cleanQ) && !toSendAttach) {
       setTimeout(function() {
