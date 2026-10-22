@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=31">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=31">
-  <link rel="manifest" href="manifest.json?v=31">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=32">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=32">
+  <link rel="manifest" href="manifest.json?v=32">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,6 +49,11 @@
     .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
     .quoted-box-bubble .q-text { color: #334155; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+    .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
+    .bubble-file-chip { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.06); padding: 7px 10px; border-radius: 6px; font-size: 12.5px; margin-bottom: 4px; }
+    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
+    .status-tick { color: #53bdeb; font-size: 11px; }
+
     /* 🟢 WHATSAPP STYLE DOCUMENT DOWNLOAD & PREVIEW CARD */
     .wa-doc-box { margin-top: 8px; background: #f0f2f5; border: 1px solid #d1d7db; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .wa-doc-header { display: flex; align-items: center; gap: 10px; }
@@ -60,9 +65,6 @@
     .wa-doc-btn { flex: 1; text-align: center; background: #008069; color: #fff; border: none; border-radius: 6px; padding: 7px 0; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
     .wa-doc-btn.secondary { background: #e0f2fe; color: #0284c7; }
     .wa-doc-btn:active { opacity: 0.85; }
-
-    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
-    .status-tick { color: #53bdeb; font-size: 11px; }
 
     .wa-typing-bubble { align-self: flex-start; background: #ffffff; padding: 10px 14px; border-radius: 7.5px; border-top-left-radius: 0; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); display: inline-flex; align-items: center; gap: 5px; }
     .wa-dot { width: 7px; height: 7px; background: #008069; border-radius: 50%; opacity: 0.35; animation: waDotPulse 1.2s infinite ease-in-out; }
@@ -77,20 +79,46 @@
     .reply-texts strong { font-size: 11.5px; color: #008069; display: block; }
     .reply-texts span { font-size: 11.5px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
+    .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: none; align-items: center; gap: 10px; flex-shrink: 0; z-index: 25; }
+    .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .tray-details { flex: 1; overflow: hidden; }
+    .tray-title { font-size: 12.5px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tray-hint { font-size: 11px; color: #008069; margin-top: 1px; }
+
+    .media-sheet { position: absolute; bottom: 58px; left: 10px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: 1px solid #e2e8f0; padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 40; width: 175px; }
+    .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+    .media-opt:active { background: #f1f5f9; }
+
     .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; }
+    .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
+    @keyframes micPulse { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
     .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 16px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
     .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+    .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; }
+    .chat-input-bar.locked .send-btn { background: #94a3b8; }
 
+    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
-    /* 🟢 IN-APP DRAWING MODAL (EXACT PAGE VIEWER) */
+    /* 🟢 IN-APP EXACT-PAGE DRAWING VIEWER MODAL */
     .viewer-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; display: none; flex-direction: column; }
     .viewer-header { background: #1e293b; color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .viewer-header h4 { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%; }
     .viewer-header button { background: none; border: none; color: #ef4444; font-size: 22px; font-weight: bold; cursor: pointer; }
     .viewer-frame { flex: 1; width: 100%; border: none; background: #525659; }
+
+    /* 🟢 UPLOAD MODAL */
+    .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
+    .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+    .upload-card h3 { color: #008069; font-size: 17px; margin-bottom: 12px; }
+    .upload-card label { display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
+    .upload-card input { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-size: 13.5px; margin-bottom: 12px; }
+    .upload-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+    .upload-actions button { padding: 9px 16px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; }
+    .btn-cancel { background: #e2e8f0; color: #475569; }
+    .btn-submit { background: #008069; color: #fff; }
   </style>
 </head>
 <body>
@@ -99,7 +127,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=31" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=32" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -107,21 +135,24 @@
       </div>
     </div>
     <div class="header-actions">
+      <button type="button" class="mode-btn" onclick="openManualModal()">📂 +Manual</button>
       <button type="button" class="mode-btn" id="generalModeBtn" onclick="toggleGeneralMode()">💬 General</button>
       <button type="button" class="mode-btn" onclick="resetChat()">🔄</button>
     </div>
   </div>
 
   <div class="chat-messages" id="chatBox">
-    <div class="onboarding-card" style="background:#fff;padding:12px;border-radius:8px;border-left:4px solid #008069;font-size:12.5px;line-height:1.6;color:#334155;">
+    <div class="onboarding-card">
       <strong>📌 P&amp;M Technical Desk Active</strong><br>
       • Direct machine part number, fault ya drawing reference poochhein.<br>
-      • 💡 Drawing maangne par specific Page Number ke sath In-App preview aur WhatsApp style download card aayega.
+      • 💡 Har message aur photo ke upar ↩️ Reply button hai jisse context wapas jud jayega.
     </div>
   </div>
 
+  <!-- WHATSAPP STYLE QUOTED REPLY TRAY -->
   <div class="reply-context-tray" id="replyTray">
     <div class="reply-details">
+      <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Image">
       <div class="reply-texts">
         <strong>Replying to message:</strong>
         <span id="replySnippet">Text message...</span>
@@ -130,8 +161,34 @@
     <button type="button" onclick="cancelReplyContext()" style="border:none;background:none;color:#ef4444;font-size:18px;font-weight:bold;cursor:pointer;">✕</button>
   </div>
 
+  <!-- ATTACHMENT PREVIEW TRAY -->
+  <div class="attachment-preview-bar" id="attachmentBar">
+    <div id="trayPreviewSlot" class="tray-thumb">📎</div>
+    <div class="tray-details">
+      <div class="tray-title" id="attachmentFileName">file.jpg</div>
+      <div class="tray-hint">💡 Question likhein aur Send karein.</div>
+    </div>
+    <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;">✕</button>
+  </div>
+
+  <!-- ACTION SHEET MENU -->
+  <div class="media-sheet" id="mediaSheet">
+    <button type="button" class="media-opt" onclick="triggerCameraCapture()">📷 Camera</button>
+    <button type="button" class="media-opt" onclick="triggerGalleryPicker()">🖼️ Photos/Gallery</button>
+    <button type="button" class="media-opt" onclick="triggerDocPicker()">📄 Document/File</button>
+  </div>
+
+  <!-- CHAT INPUT BAR -->
   <div class="chat-input-bar" id="chatInputBar">
+    <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
+    
+    <input type="file" id="cameraInput" style="display: none;" accept="image/*" capture="environment" onchange="handleUniversalFile(event)">
+    <input type="file" id="galleryInput" style="display: none;" accept="image/*,video/*,audio/*" onchange="handleUniversalFile(event)">
+    <input type="file" id="docInput" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.json,.xml" onchange="handleUniversalFile(event)">
+    <input type="file" id="manualFileInput" style="display: none;" accept="application/pdf" onchange="executeManualUpload(event)">
+    
     <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
+    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
 </div>
@@ -145,25 +202,51 @@
   <iframe class="viewer-frame" id="pdfViewerFrame" src=""></iframe>
 </div>
 
+<!-- 🟢 MANUAL UPLOAD MODAL -->
+<div class="upload-modal" id="manualUploadModal">
+  <div class="upload-card">
+    <h3>📂 Upload OEM Manual for Verification</h3>
+    <label>Manual Title / Model Name:</label>
+    <input type="text" id="manualTitleInput" placeholder="e.g. Putzmeister SPM 500 Parts Manual">
+    <label>Category / System Note:</label>
+    <input type="text" id="manualCategoryInput" placeholder="e.g. Hydraulic &amp; Boom Overhaul">
+    <div class="upload-actions">
+      <button type="button" class="btn-cancel" onclick="closeManualModal()">Cancel</button>
+      <button type="button" class="btn-submit" onclick="triggerManualFilePick()">Choose PDF &amp; Submit</button>
+    </div>
+  </div>
+</div>
+
 <script>
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
 
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
+  var activeAttachment = null;
+  var lastSentTimestamp = 0;
+  var isRecognizing = false;
+  var speechRecognizer = null;
   var isBusyProcessing = false;
-  var messageHistoryStore = {};
-  var currentReplyingContext = null;
 
-  function openDrawingViewer(url, title, page) {
-    document.getElementById('viewerTitle').innerText = (title || "Drawing Viewer") + " (Target: Page " + page + ")";
-    document.getElementById('pdfViewerFrame').src = url;
-    document.getElementById('pdfViewerModal').style.display = "flex";
+  var currentReplyingContext = null; 
+  var messageHistoryStore = {};
+
+  // Background Pre-Warming
+  function warmUpBackendInstance() {
+    try {
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        mode: "cors",
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "ping" })
+      }).catch(function() {});
+    } catch(e) {}
   }
 
-  function closeDrawingViewer() {
-    document.getElementById('pdfViewerFrame').src = "";
-    document.getElementById('pdfViewerModal').style.display = "none";
+  function triggerHaptic(duration) {
+    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
   }
 
   function getFormattedTime() {
@@ -181,13 +264,112 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
+  // Exact Page Drawing Modal
+  function openDrawingViewer(url, title, page) {
+    document.getElementById('viewerTitle').innerText = (title || "Drawing Viewer") + " (Target: Page " + page + ")";
+    document.getElementById('pdfViewerFrame').src = url;
+    document.getElementById('pdfViewerModal').style.display = "flex";
+  }
+
+  function closeDrawingViewer() {
+    document.getElementById('pdfViewerFrame').src = "";
+    document.getElementById('pdfViewerModal').style.display = "none";
+  }
+
+  // Manual Modal Functions
+  function openManualModal() {
+    document.getElementById('manualUploadModal').style.display = "flex";
+  }
+  function closeManualModal() {
+    document.getElementById('manualUploadModal').style.display = "none";
+  }
+  function triggerManualFilePick() {
+    document.getElementById('manualFileInput').click();
+  }
+
+  function executeManualUpload(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var customTitle = document.getElementById('manualTitleInput').value.trim();
+    var categoryDesc = document.getElementById('manualCategoryInput').value.trim();
+    closeManualModal();
+
+    setInputLocked(true);
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64Data = e.target.result.split(',')[1];
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "upload",
+          base64: base64Data,
+          fileName: file.name,
+          mimeType: "application/pdf",
+          customTitle: customTitle,
+          categoryDesc: categoryDesc
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        setInputLocked(false);
+        alert(res.message || "Manual verification queue me send ho gaya hai.");
+      })
+      .catch(function(err) {
+        setInputLocked(false);
+        alert("Upload error: " + err.toString());
+      });
+    };
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  }
+
+  // Media Sheet
+  function toggleMediaMenu(e) {
+    e.stopPropagation();
+    var sheet = document.getElementById('mediaSheet');
+    sheet.style.display = (sheet.style.display === 'flex') ? 'none' : 'flex';
+  }
+
+  document.addEventListener('click', function() {
+    var sheet = document.getElementById('mediaSheet');
+    if (sheet) sheet.style.display = 'none';
+  });
+
+  function triggerCameraCapture() { document.getElementById('cameraInput').click(); }
+  function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
+  function triggerDocPicker() { document.getElementById('docInput').click(); }
+
+  // WhatsApp Quoted Reply
   function setReplyContext(msgId) {
     var item = messageHistoryStore[msgId];
     if (!item) return;
-    currentReplyingContext = { msgId: msgId, text: item.text || "" };
-    document.getElementById('replySnippet').innerText = item.text || "Message";
-    document.getElementById('replyTray').style.display = 'flex';
+
+    currentReplyingContext = {
+      msgId: msgId,
+      text: item.text || "",
+      dataUrl: item.dataUrl || null,
+      base64: item.base64 || null,
+      mimeType: item.mimeType || null
+    };
+
+    var tray = document.getElementById('replyTray');
+    var thumb = document.getElementById('replyThumb');
+    var snippet = document.getElementById('replySnippet');
+
+    if (item.dataUrl) {
+      thumb.src = item.dataUrl;
+      thumb.style.display = 'block';
+    } else {
+      thumb.style.display = 'none';
+    }
+
+    snippet.innerText = item.text || (item.dataUrl ? "[Photo]" : "[Message]");
+    tray.style.display = 'flex';
     document.getElementById('userInput').focus();
+    triggerHaptic(30);
   }
 
   function cancelReplyContext() {
@@ -195,12 +377,155 @@
     document.getElementById('replyTray').style.display = 'none';
   }
 
-  function resetChat() {
-    currentMachine = "";
-    currentMachineName = "";
-    cancelReplyContext();
-    document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
-    document.getElementById('chatBox').innerHTML = '<div style="background:#fff;padding:12px;border-radius:8px;border-left:4px solid #008069;font-size:12.5px;"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
+  function setInputLocked(locked) {
+    isBusyProcessing = locked;
+    var bar = document.getElementById('chatInputBar');
+    var input = document.getElementById('userInput');
+    var sendBtn = document.getElementById('sendBtn');
+    if (locked) {
+      if (bar) bar.classList.add('locked');
+      if (input) {
+        input.disabled = true;
+        input.placeholder = "⏳ Processing... please wait";
+      }
+      if (sendBtn) sendBtn.disabled = true;
+    } else {
+      if (bar) bar.classList.remove('locked');
+      if (input) {
+        input.disabled = false;
+        input.placeholder = "Sawal likhein ya bolkar batayein...";
+        input.focus();
+      }
+      if (sendBtn) sendBtn.disabled = false;
+    }
+  }
+
+  function renderRichContent(rawText) {
+    if (!rawText || !rawText.trim()) return "";
+    var parsedHtml = rawText;
+    if (window.marked) {
+      marked.setOptions({ gfm: true, breaks: true });
+      parsedHtml = marked.parse(rawText);
+    }
+    return parsedHtml;
+  }
+
+  function handleUniversalFile(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var previewSlot = document.getElementById('trayPreviewSlot');
+    var trayTitle = document.getElementById('attachmentFileName');
+    var trayBar = document.getElementById('attachmentBar');
+
+    trayTitle.innerText = file.name;
+    trayBar.style.display = 'flex';
+
+    var mime = (file.type || "").toLowerCase();
+    var isImage = mime.indexOf("image/") === 0;
+
+    if (isImage) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var max_dim = 800;
+          var w = img.width;
+          var h = img.height;
+          if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
+          else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.62);
+
+          activeAttachment = {
+            fileName: file.name,
+            mimeType: "image/jpeg",
+            base64: dataUrl.split(',')[1],
+            dataUrl: dataUrl
+          };
+
+          previewSlot.innerHTML = '<img src="' + dataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        activeAttachment = {
+          fileName: file.name,
+          mimeType: mime || "application/octet-stream",
+          base64: e.target.result.split(',')[1],
+          textExtract: null,
+          dataUrl: null
+        };
+        previewSlot.innerHTML = '📁';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    var input = document.getElementById('userInput');
+    input.placeholder = "Is attachment se related sawal likhein...";
+    input.focus();
+    event.target.value = "";
+  }
+
+  function clearAttachment() {
+    activeAttachment = null;
+    document.getElementById('attachmentBar').style.display = "none";
+    document.getElementById('trayPreviewSlot').innerHTML = '📎';
+    document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
+  }
+
+  // Voice Input (Web Speech API)
+  function toggleVoiceInput() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Aapka browser Speech Recognition support nahi karta.");
+      return;
+    }
+
+    var micBtn = document.getElementById('micBtn');
+
+    if (isRecognizing) {
+      if (speechRecognizer) speechRecognizer.stop();
+      isRecognizing = false;
+      micBtn.classList.remove('listening');
+      return;
+    }
+
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    speechRecognizer = new SpeechRecognition();
+    speechRecognizer.continuous = false;
+    speechRecognizer.interimResults = false;
+    speechRecognizer.lang = 'hi-IN';
+
+    speechRecognizer.onstart = function() {
+      isRecognizing = true;
+      micBtn.classList.add('listening');
+      triggerHaptic(50);
+    };
+
+    speechRecognizer.onresult = function(event) {
+      var transcript = event.results[0][0].transcript;
+      var input = document.getElementById('userInput');
+      input.value = (input.value ? input.value + ' ' : '') + transcript;
+      input.focus();
+    };
+
+    speechRecognizer.onerror = function() {
+      isRecognizing = false;
+      micBtn.classList.remove('listening');
+    };
+
+    speechRecognizer.onend = function() {
+      isRecognizing = false;
+      micBtn.classList.remove('listening');
+    };
+
+    speechRecognizer.start();
   }
 
   function toggleGeneralMode() {
@@ -219,14 +544,14 @@
     }
   }
 
-  function renderRichContent(rawText) {
-    if (!rawText || !rawText.trim()) return "";
-    var parsedHtml = rawText;
-    if (window.marked) {
-      marked.setOptions({ gfm: true, breaks: true });
-      parsedHtml = marked.parse(rawText);
-    }
-    return parsedHtml;
+  function resetChat() {
+    currentMachine = "";
+    currentMachineName = "";
+    clearAttachment();
+    cancelReplyContext();
+    setInputLocked(false);
+    document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
+    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
   }
 
   function handleFollowUp(text) {
@@ -239,15 +564,19 @@
   function executeOneTapSend() {
     if (isBusyProcessing) return;
 
+    var now = Date.now();
+    if (now - lastSentTimestamp < 300) return;
+    lastSentTimestamp = now;
+
     var input = document.getElementById('userInput');
     var q = (input.value || '').trim();
-    if (!q) return;
+    if (!q && !activeAttachment && !currentReplyingContext) return;
 
     var currentText = q;
     var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
 
     // 0ms Greeting Interceptor
-    if (!currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram)$/i.test(qClean)) {
+    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram)$/i.test(qClean)) {
       input.value = '';
       var box = document.getElementById('chatBox');
       var uNode = document.createElement('div');
@@ -257,25 +586,74 @@
 
       var bNode = document.createElement('div');
       bNode.className = 'msg bot-msg';
-      bNode.innerHTML = "Haan bhai, bolo! P&M desk active hai. Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein.<div class="msg-meta">' + getFormattedTime() + '</div>';
+      bNode.innerHTML = "Haan bhai, bolo! P&M desk active hai. Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein.<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
       box.appendChild(bNode);
       scrollToBottom();
       return;
     }
 
-    isBusyProcessing = true;
+    setInputLocked(true);
+    triggerHaptic(25);
     input.value = '';
 
+    var toSendAttach = null;
+    var userBubbleThumb = null;
+    var quotedContextToSend = null;
+
+    if (activeAttachment) {
+      toSendAttach = {
+        fileName: activeAttachment.fileName,
+        mimeType: activeAttachment.mimeType,
+        base64: activeAttachment.base64
+      };
+      userBubbleThumb = activeAttachment.dataUrl;
+    } else if (currentReplyingContext && currentReplyingContext.base64) {
+      toSendAttach = {
+        fileName: "quoted_image.jpg",
+        mimeType: currentReplyingContext.mimeType || "image/jpeg",
+        base64: currentReplyingContext.base64
+      };
+      userBubbleThumb = currentReplyingContext.dataUrl;
+    }
+
+    if (currentReplyingContext) {
+      quotedContextToSend = {
+        text: currentReplyingContext.text,
+        hasImage: !!currentReplyingContext.dataUrl
+      };
+    }
+
+    var capturedReplySnapshot = currentReplyingContext;
+    clearAttachment();
+    cancelReplyContext();
+
     var currentMsgId = "msg-" + Date.now();
-    messageHistoryStore[currentMsgId] = { text: currentText };
+    messageHistoryStore[currentMsgId] = {
+      text: currentText,
+      dataUrl: userBubbleThumb || (capturedReplySnapshot ? capturedReplySnapshot.dataUrl : null),
+      base64: toSendAttach ? toSendAttach.base64 : null
+    };
 
     var box = document.getElementById('chatBox');
     var userNode = document.createElement('div');
     userNode.className = 'msg user-msg';
     userNode.id = currentMsgId;
-    userNode.innerHTML = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">↩️ Reply</span>' + 
-      escapeHtml(currentText).replace(/\n/g, '<br>') + 
-      '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
+
+    var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">↩️ Reply</span>';
+    var quotedHtml = '';
+    if (capturedReplySnapshot) {
+      var qThumb = capturedReplySnapshot.dataUrl ? '<img src="' + capturedReplySnapshot.dataUrl + '">' : '';
+      var qTxt = capturedReplySnapshot.text || (capturedReplySnapshot.dataUrl ? "Photo" : "Message");
+      quotedHtml = '<div class="quoted-box-bubble">' + qThumb + '<div class="q-text">↩️ ' + escapeHtml(qTxt) + '</div></div>';
+    }
+
+    var mediaHtml = '';
+    if (userBubbleThumb) {
+      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
+    }
+
+    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : '<i>[Media attached for inspection]</i>';
+    userNode.innerHTML = replyBtnHtml + quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
     var typingId = "typ-" + Date.now();
@@ -286,9 +664,6 @@
     box.appendChild(bubbleNode);
     scrollToBottom();
 
-    var capturedReply = currentReplyingContext;
-    cancelReplyContext();
-
     fetch(BACKEND_API_URL, {
       method: "POST",
       mode: "cors",
@@ -298,13 +673,14 @@
         query: currentText,
         machineKey: isGeneral ? "" : currentMachine,
         isGeneral: isGeneral,
-        quotedContext: capturedReply
+        attachment: toSendAttach,
+        quotedContext: quotedContextToSend
       })
     })
     .then(function(res) { return res.json(); })
     .then(function(res) {
       var el = document.getElementById(typingId);
-      if (!el) { isBusyProcessing = false; return; }
+      if (!el) { setInputLocked(false); return; }
 
       if (!isGeneral && res && res.machineKey && res.machineName) {
         currentMachine = res.machineKey;
@@ -315,7 +691,7 @@
       var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
       var replyHtml = renderRichContent(rawReply);
 
-      // 🟢 BUILD WHATSAPP STYLE DOCUMENT CARD
+      // WhatsApp Style PDF Download & Preview Card
       var cardHtml = "";
       if (res && res.card && res.card.downloadUrl) {
         var c = res.card;
@@ -345,25 +721,29 @@
       }
 
       var botMsgId = "msg-" + Date.now();
-      messageHistoryStore[botMsgId] = { text: rawReply };
+      messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
       var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">↩️ Reply</span>';
 
       el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + cardHtml + fpHtml + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       scrollToBottom();
-      isBusyProcessing = false;
+      setInputLocked(false);
     })
     .catch(function(err) {
       var el = document.getElementById(typingId);
       if (el) {
-        el.outerHTML = '<div class="msg bot-msg">⚠️ Network delay ho gaya. Kripya dobara try karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+        el.outerHTML = '<div class="msg bot-msg">⚠️ Network connection drop ho gayi hai. Kripya dobara try karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       }
       scrollToBottom();
-      isBusyProcessing = false;
+      setInputLocked(false);
     });
   }
 
   function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    warmUpBackendInstance();
+  });
 </script>
 
 </body>
