@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=29">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=29">
-  <link rel="manifest" href="manifest.json?v=29">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=30">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=30">
+  <link rel="manifest" href="manifest.json?v=30">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -42,11 +42,9 @@
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
-    /* Reply Action Tag on Message Header */
     .msg-reply-trigger { float: right; margin-left: 8px; margin-bottom: 2px; font-size: 11px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; cursor: pointer; color: #008069; font-weight: 600; user-select: none; }
     .msg-reply-trigger:active { background: rgba(0,0,0,0.15); }
 
-    /* Quoted Box inside Bubble */
     .quoted-box-bubble { background: rgba(0,0,0,0.06); border-left: 4px solid #008069; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; }
     .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
     .quoted-box-bubble .q-text { color: #334155; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -62,7 +60,6 @@
     .wa-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
 
-    /* Sticky WhatsApp Reply Tray */
     .reply-context-tray { background: #f0fdf4; border-top: 1px solid #cbd5e1; border-left: 5px solid #008069; padding: 6px 12px; display: none; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; z-index: 24; }
     .reply-details { display: flex; align-items: center; gap: 8px; overflow: hidden; }
     .reply-thumb-mini { width: 34px; height: 34px; border-radius: 4px; object-fit: cover; border: 1px solid #86efac; flex-shrink: 0; }
@@ -70,14 +67,12 @@
     .reply-texts strong { font-size: 11.5px; color: #008069; display: block; }
     .reply-texts span { font-size: 11.5px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
-    /* Attachment Tray Preview */
     .attachment-preview-bar { padding: 8px 12px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: none; align-items: center; gap: 10px; flex-shrink: 0; z-index: 25; }
     .tray-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .tray-details { flex: 1; overflow: hidden; }
     .tray-title { font-size: 12.5px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tray-hint { font-size: 11px; color: #008069; margin-top: 1px; }
 
-    /* Action Sheet Attachment Menu */
     .media-sheet { position: absolute; bottom: 58px; left: 10px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: 1px solid #e2e8f0; padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 40; width: 175px; }
     .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
     .media-opt:active { background: #f1f5f9; }
@@ -91,24 +86,9 @@
     .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; }
     .chat-input-bar.locked .send-btn { background: #94a3b8; }
 
-    .table-responsive-wrapper { width: 100%; overflow-x: auto; margin: 8px 0; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; }
-    .bot-msg table { width: 100%; min-width: 460px; border-collapse: collapse; font-size: 12px; }
-    .bot-msg th, .bot-msg td { padding: 8px 10px; text-align: left; border: 1px solid #e2e8f0; }
-    .bot-msg th { background: #008069; color: #ffffff; }
-
     .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
-
-    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
-    .modal-card { background: #ffffff; border-radius: 12px; padding: 20px; width: 100%; max-width: 380px; display: flex; flex-direction: column; }
-    .modal-card h4 { font-size: 15.5px; color: #008069; margin-bottom: 14px; }
-    .modal-field { margin-bottom: 12px; }
-    .modal-field label { display: block; font-size: 11.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
-    .modal-field input, .modal-field select { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 11px; font-size: 13.5px; outline: none; box-sizing: border-box; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
-    .modal-btn-cancel { background: #e2e8f0; color: #334155; border: none; padding: 9px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-    .modal-btn-submit { background: #008069; color: #ffffff; border: none; padding: 9px 17px; border-radius: 6px; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -117,7 +97,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=29" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=30" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -181,35 +161,6 @@
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
   </div>
-
-  <!-- MODAL -->
-  <div class="modal-overlay" id="manualModal">
-    <div class="modal-card">
-      <h4>📂 Upload OEM Manual</h4>
-      <div class="modal-field">
-        <label>Manual Title / Equipment Model</label>
-        <input type="text" id="manualTitleInput" placeholder="e.g. Boomer L2D / SPM 4210 / WA470">
-      </div>
-      <div class="modal-field">
-        <label>Category</label>
-        <select id="manualCategoryInput" onchange="handleCategoryChange(this.value)">
-          <option value="Spare Parts Manual">Spare Parts Manual</option>
-          <option value="Hydraulic Schematic">Hydraulic Schematic</option>
-          <option value="Electrical Diagram">Electrical Diagram</option>
-          <option value="Workshop Service Manual">Workshop Service Manual</option>
-          <option value="ADD_NEW">➕ Add New / Custom Category...</option>
-        </select>
-      </div>
-      <div class="modal-field" id="customCategoryWrapper" style="display: none;">
-        <label>Custom Category / System Name</label>
-        <input type="text" id="customCategoryInput" placeholder="e.g. Pneumatic Circuit / Transmission">
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="modal-btn-cancel" onclick="closeManualModal()">Cancel</button>
-        <button type="button" class="modal-btn-submit" onclick="proceedToSelectPDF()">Select PDF 📄</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -225,9 +176,21 @@
   var speechRecognizer = null;
   var isBusyProcessing = false;
 
-  // Replying context memory
   var currentReplyingContext = null; 
-  var messageHistoryStore = {}; // msgId -> { text, dataUrl, base64, mimeType }
+  var messageHistoryStore = {};
+
+  // 🚀 BACKGROUND PRE-WARMER (Wakes up Google Apps Script container instantly on page load)
+  function warmUpBackendInstance() {
+    try {
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        mode: "cors",
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "ping" })
+      }).catch(function() {});
+    } catch(e) {}
+  }
 
   function triggerHaptic(duration) {
     if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
@@ -263,7 +226,6 @@
   function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
   function triggerDocPicker() { document.getElementById('docInput').click(); }
 
-  // WhatsApp-style reply binding
   function setReplyContext(msgId) {
     var item = messageHistoryStore[msgId];
     if (!item) return;
@@ -323,75 +285,12 @@
 
   function renderRichContent(rawText) {
     if (!rawText || !rawText.trim()) return "";
-
-    var textWithMath = rawText.replace(/\$\$([\s\S]+?)\$\$/g, function(match, math) {
-      try {
-        return '<div class="katex-display">' + katex.renderToString(math.trim(), { displayMode: true, throwOnError: false }) + '</div>';
-      } catch (e) { return match; }
-    });
-
-    textWithMath = textWithMath.replace(/\$([^\$\n]+?)\$/g, function(match, math) {
-      try {
-        return katex.renderToString(math.trim(), { displayMode: false, throwOnError: false });
-      } catch (e) { return match; }
-    });
-
-    var parsedHtml = textWithMath;
+    var parsedHtml = rawText;
     if (window.marked) {
       marked.setOptions({ gfm: true, breaks: true });
-      parsedHtml = marked.parse(textWithMath);
+      parsedHtml = marked.parse(rawText);
     }
-
-    parsedHtml = parsedHtml.replace(/<table>([\s\S]*?)<\/table>/gi, '<div class="table-responsive-wrapper"><table>$1</table></div>');
     return parsedHtml;
-  }
-
-  function setupSpeechEngine() {
-    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      var micBtn = document.getElementById('micBtn');
-      if (micBtn) micBtn.style.display = 'none';
-      return;
-    }
-    speechRecognizer = new SpeechRecognition();
-    speechRecognizer.continuous = false;
-    speechRecognizer.interimResults = true;
-    speechRecognizer.lang = 'hi-IN';
-
-    speechRecognizer.onstart = function() {
-      isRecognizing = true;
-      triggerHaptic(40);
-      var micBtn = document.getElementById('micBtn');
-      micBtn.classList.add('listening');
-      micBtn.innerText = '🔴';
-      document.getElementById('userInput').placeholder = 'Sun raha hoon... bolyein';
-    };
-
-    speechRecognizer.onresult = function(event) {
-      var transcript = '';
-      for (var i = event.resultIndex; i < event.results.length; ++i) {
-        transcript += event.results[i][0].transcript;
-      }
-      document.getElementById('userInput').value = transcript;
-    };
-
-    speechRecognizer.onerror = function() { stopVoiceInput(); };
-    speechRecognizer.onend = function() { stopVoiceInput(); };
-  }
-
-  function toggleVoiceInput() {
-    if (isBusyProcessing) return;
-    if (!speechRecognizer) setupSpeechEngine();
-    if (!speechRecognizer) { alert("Speech recognition is not supported in this browser."); return; }
-    if (isRecognizing) speechRecognizer.stop();
-    else speechRecognizer.start();
-  }
-
-  function stopVoiceInput() {
-    isRecognizing = false;
-    var micBtn = document.getElementById('micBtn');
-    if (micBtn) { micBtn.classList.remove('listening'); micBtn.innerText = '🎙️'; }
-    document.getElementById('userInput').placeholder = isBusyProcessing ? '⏳ Processing... please wait' : 'Sawal likhein ya bolkar batayein...';
   }
 
   function handleUniversalFile(event) {
@@ -407,7 +306,6 @@
 
     var mime = (file.type || "").toLowerCase();
     var isImage = mime.indexOf("image/") === 0;
-    var isTextDoc = /text|json|xml|csv|log|ini/i.test(mime) || /\.(txt|csv|json|xml|log|ini|cfg)$/i.test(file.name);
 
     if (isImage) {
       var reader = new FileReader();
@@ -437,19 +335,6 @@
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
-    } else if (isTextDoc) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        activeAttachment = {
-          fileName: file.name,
-          mimeType: mime || "text/plain",
-          textExtract: e.target.result,
-          base64: null,
-          dataUrl: null
-        };
-        previewSlot.innerHTML = '📄';
-      };
-      reader.readAsText(file);
     } else {
       var reader = new FileReader();
       reader.onload = function(e) {
@@ -460,13 +345,13 @@
           textExtract: null,
           dataUrl: null
         };
-        previewSlot.innerHTML = mime.indexOf("video") === 0 ? '🎥' : (mime.indexOf("audio") === 0 ? '🎵' : '📁');
+        previewSlot.innerHTML = '📁';
       };
       reader.readAsDataURL(file);
     }
 
     var input = document.getElementById('userInput');
-    input.placeholder = "Is photo se related sawal likhein (optional)...";
+    input.placeholder = "Is attachment se related sawal likhein...";
     input.focus();
     event.target.value = "";
   }
@@ -478,87 +363,6 @@
     document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
   }
 
-  function handleCategoryChange(val) {
-    var customBox = document.getElementById('customCategoryWrapper');
-    if (val === 'ADD_NEW') {
-      customBox.style.display = 'block';
-      document.getElementById('customCategoryInput').focus();
-    } else {
-      customBox.style.display = 'none';
-    }
-  }
-
-  function openManualModal() {
-    document.getElementById('manualTitleInput').value = "";
-    document.getElementById('manualCategoryInput').value = "Spare Parts Manual";
-    document.getElementById('customCategoryInput').value = "";
-    document.getElementById('customCategoryWrapper').style.display = "none";
-    document.getElementById('manualModal').style.display = "flex";
-  }
-
-  function closeManualModal() {
-    document.getElementById('manualModal').style.display = "none";
-  }
-
-  function proceedToSelectPDF() {
-    var title = document.getElementById('manualTitleInput').value.trim();
-    if (!title) { alert("Kripya Manual Title ya Machine ka naam likhein."); return; }
-    var catSelect = document.getElementById('manualCategoryInput').value;
-    if (catSelect === 'ADD_NEW') {
-      var customVal = document.getElementById('customCategoryInput').value.trim();
-      if (!customVal) { alert("Kripya custom category ka naam likhein."); return; }
-    }
-    closeManualModal();
-    document.getElementById('manualFileInput').click();
-  }
-
-  function executeManualUpload(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    var customTitle = document.getElementById('manualTitleInput').value.trim() || file.name;
-    var catSelect = document.getElementById('manualCategoryInput').value;
-    var categoryDesc = (catSelect === 'ADD_NEW') 
-      ? document.getElementById('customCategoryInput').value.trim() 
-      : catSelect;
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var base64Data = e.target.result.split(',')[1];
-      fetch(BACKEND_API_URL, {
-        method: "POST",
-        mode: "cors",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "upload",
-          base64: base64Data,
-          fileName: file.name,
-          mimeType: "application/pdf",
-          customTitle: customTitle,
-          categoryDesc: categoryDesc
-        })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(res) {
-        var box = document.getElementById('chatBox');
-        box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Sent for Admin Approval!</strong><br>' +
-          '• Title: <strong>' + escapeHtml(customTitle) + '</strong><br>' +
-          '• Category: <strong>' + escapeHtml(categoryDesc) + '</strong><br>' +
-          '• Document quarantine folder (<code>mobile upload</code>) me bhej diya gaya hai. Verification ke baad index hoga.</div>';
-        scrollToBottom();
-      })
-      .catch(function() {
-        var box = document.getElementById('chatBox');
-        box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Upload Staged!</strong><br>' +
-          '• Document review queue me verify hone ke baad live ho jayega.</div>';
-        scrollToBottom();
-      });
-    };
-    reader.readAsDataURL(file);
-    event.target.value = "";
-  }
-
   function toggleGeneralMode() {
     isGeneral = !isGeneral;
     var btn = document.getElementById('generalModeBtn');
@@ -567,7 +371,6 @@
       btn.innerText = "⚡ General ON";
       currentMachine = "";
       currentMachineName = "";
-      activeTopicMemory = "";
       document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering";
     } else {
       btn.classList.remove('active');
@@ -579,7 +382,6 @@
   function resetChat() {
     currentMachine = "";
     currentMachineName = "";
-    activeTopicMemory = "";
     clearAttachment();
     cancelReplyContext();
     setInputLocked(false);
@@ -590,7 +392,6 @@
   function handleFollowUp(text) {
     if (isBusyProcessing) return;
     if (text.indexOf("Reset") !== -1) { resetChat(); return; }
-    if (text.indexOf("General Mode") !== -1) { toggleGeneralMode(); return; }
     document.getElementById('userInput').value = text;
     executeOneTapSend();
   }
@@ -599,7 +400,7 @@
     return Promise.race([
       fetch(url, options),
       new Promise(function(_, reject) {
-        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 45000);
+        setTimeout(function() { reject(new Error("Timeout")); }, timeoutMs || 70000);
       })
     ]);
   }
@@ -615,13 +416,37 @@
     var q = (input.value || '').trim();
     if (!q && !activeAttachment && !currentReplyingContext) return;
 
+    var currentText = q;
+    var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+
+    // ⚡ INSTANT LOCAL BYPASS FOR FIRST GREETINGS (0ms - No cold-start lag)
+    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram|hlo|hii|helo)$/i.test(qClean)) {
+      input.value = '';
+      var box = document.getElementById('chatBox');
+      
+      var uNode = document.createElement('div');
+      uNode.className = 'msg user-msg';
+      uNode.innerHTML = escapeHtml(currentText) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
+      box.appendChild(uNode);
+
+      var bNode = document.createElement('div');
+      bNode.className = 'msg bot-msg';
+      bNode.innerHTML = "Haan bhai, bolo! P&M desk active hai. Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein." +
+        '<div class="followup-container">' +
+          '<button type="button" class="followup-chip" onclick="handleFollowUp(\'Hydraulic Drill Jumbo - Boomer\')">👉 Hydraulic Drill Jumbo - Boomer</button>' +
+          '<button type="button" class="followup-chip" onclick="handleFollowUp(\'Air Compressor GA90\')">👉 Air Compressor GA90</button>' +
+        '</div>' +
+        '<div class="msg-meta">' + getFormattedTime() + '</div>';
+      box.appendChild(bNode);
+      scrollToBottom();
+      triggerHaptic(20);
+      return;
+    }
+
     setInputLocked(true);
     triggerHaptic(25);
-
-    var currentText = q;
     input.value = '';
 
-    // Snapshot attachment and quoted context
     var toSendAttach = null;
     var userBubbleThumb = null;
     var userBubbleName = null;
@@ -631,8 +456,7 @@
       toSendAttach = {
         fileName: activeAttachment.fileName,
         mimeType: activeAttachment.mimeType,
-        base64: activeAttachment.base64,
-        textExtract: activeAttachment.textExtract
+        base64: activeAttachment.base64
       };
       userBubbleThumb = activeAttachment.dataUrl;
       userBubbleName = activeAttachment.fileName;
@@ -660,8 +484,7 @@
     messageHistoryStore[currentMsgId] = {
       text: currentText,
       dataUrl: userBubbleThumb || (capturedReplySnapshot ? capturedReplySnapshot.dataUrl : null),
-      base64: toSendAttach ? toSendAttach.base64 : null,
-      mimeType: toSendAttach ? toSendAttach.mimeType : null
+      base64: toSendAttach ? toSendAttach.base64 : null
     };
 
     var box = document.getElementById('chatBox');
@@ -670,7 +493,6 @@
     userNode.id = currentMsgId;
 
     var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">↩️ Reply</span>';
-
     var quotedHtml = '';
     if (capturedReplySnapshot) {
       var qThumb = capturedReplySnapshot.dataUrl ? '<img src="' + capturedReplySnapshot.dataUrl + '">' : '';
@@ -681,11 +503,9 @@
     var mediaHtml = '';
     if (userBubbleThumb) {
       mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
-    } else if (userBubbleName) {
-      mediaHtml = '<div class="bubble-media-container"><div class="bubble-file-chip">📁 ' + escapeHtml(userBubbleName) + '</div></div>';
     }
 
-    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : (toSendAttach ? '<i>[Media attached for inspection]</i>' : '');
+    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : '<i>[Media attached for inspection]</i>';
     userNode.innerHTML = replyBtnHtml + quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
@@ -711,7 +531,7 @@
         attachment: toSendAttach,
         quotedContext: quotedContextToSend
       })
-    }, 45000)
+    }, 70000)
     .then(function(response) { return response.text(); })
     .then(function(textData) {
       var el = document.getElementById(typingId);
@@ -726,18 +546,13 @@
         document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
       }
 
-      var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai. Dobara poochein.";
+      var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
       var replyHtml = renderRichContent(rawReply);
 
       var botMsgId = "msg-" + Date.now();
-      messageHistoryStore[botMsgId] = {
-        text: rawReply,
-        dataUrl: null,
-        base64: null
-      };
+      messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
 
       var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">↩️ Reply</span>';
-
       var fpHtml = '';
       if (res && res.followUps && res.followUps.length > 0) {
         fpHtml = '<div class="followup-container">';
@@ -767,7 +582,7 @@
   function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
   window.addEventListener('DOMContentLoaded', function() {
-    setupSpeechEngine();
+    warmUpBackendInstance(); // Silent container wake-up call on page load
   });
 </script>
 
