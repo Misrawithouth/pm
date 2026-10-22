@@ -351,4 +351,399 @@
   }
 
   function openManualModal() {
-    document.getElementBy
+    document.getElementById('manualTitleInput').value = "";
+    document.getElementById('manualCategoryInput').value = "Spare Parts Manual";
+    document.getElementById('customCategoryBox').style.display = "none";
+    document.getElementById('customCategoryInput').value = "";
+    document.getElementById('manualModal').style.display = "flex";
+  }
+
+  function closeManualModal() {
+    document.getElementById('manualModal').style.display = "none";
+  }
+
+  function checkCustomCategory(val) {
+    var box = document.getElementById('customCategoryBox');
+    if (val === "__CUSTOM__") {
+      box.style.display = "block";
+      document.getElementById('customCategoryInput').focus();
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  function proceedToSelectPDF() {
+    var title = document.getElementById('manualTitleInput').value.trim();
+    if (!title) { alert("Title zaroor likhein."); return; }
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    if (catSelect === "__CUSTOM__") {
+      var customName = document.getElementById('customCategoryInput').value.trim();
+      if (!customName) { alert("Kripya custom category ka naam likhein."); return; }
+    }
+    closeManualModal();
+    document.getElementById('manualFileInput').click();
+  }
+
+  function executeManualUpload(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var customTitle = document.getElementById('manualTitleInput').value.trim() || file.name;
+    var catSelect = document.getElementById('manualCategoryInput').value;
+    var categoryDesc = catSelect;
+    if (catSelect === "__CUSTOM__") {
+      categoryDesc = document.getElementById('customCategoryInput').value.trim() || "Brochure / Other Document";
+    }
+
+    var attachBar = document.getElementById('attachmentBar');
+    var fileNameEl = document.getElementById('attachmentFileName');
+    var statusTag = document.getElementById('uploadStatusTag');
+    var progressFill = document.getElementById('progressFill');
+
+    clearInterval(uploadProgressTimer);
+    progressFill.className = "progress-fill";
+    progressFill.style.width = "20%";
+    statusTag.className = "upload-status-tag status-uploading";
+    statusTag.innerText = "20%";
+    fileNameEl.innerText = "📄 " + customTitle;
+    attachBar.style.display = "flex";
+
+    var currentPercent = 25;
+    uploadProgressTimer = setInterval(function() {
+      if (currentPercent < 85) {
+        currentPercent += 15;
+        progressFill.style.width = currentPercent + "%";
+        statusTag.innerText = currentPercent + "%";
+      }
+    }, 120);
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64Data = e.target.result.split(',')[1];
+      
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        mode: "cors",
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "upload",
+          base64: base64Data,
+          fileName: file.name,
+          mimeType: "application/pdf",
+          isPermanent: true,
+          customTitle: customTitle,
+          categoryDesc: categoryDesc
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        clearInterval(uploadProgressTimer);
+        if (res && res.status === "success") {
+          progressFill.style.width = "100%";
+          progressFill.classList.add("done");
+          statusTag.className = "upload-status-tag status-ready";
+          statusTag.innerText = "✓ Uploaded";
+
+          var box = document.getElementById('chatBox');
+          box.innerHTML += '<div class="msg bot-msg">📨 <strong>Manual Uploaded!</strong><br>' +
+            '• Title: <strong>' + escapeHtml(customTitle) + '</strong> (' + escapeHtml(categoryDesc) + ')<br>' +
+            '• Admin review link sent.</div>';
+          scrollToBottom();
+        } else {
+          statusTag.className = "upload-status-tag status-error";
+          statusTag.innerText = "Error";
+        }
+      })
+      .catch(function() {
+        clearInterval(uploadProgressTimer);
+        statusTag.className = "upload-status-tag status-error";
+        statusTag.innerText = "Error";
+      });
+    };
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  }
+
+  function compressImageClient(file, callback) {
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+      var r = new FileReader();
+      r.onload = function(e) { callback(e.target.result.split(',')[1], file.type || 'application/octet-stream'); };
+      r.readAsDataURL(file);
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var max_dim = 480;
+        var w = img.width;
+        var h = img.height;
+        if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
+        else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.45);
+        callback(dataUrl.split(',')[1], 'image/jpeg');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleFileSelect(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var attachBar = document.getElementById('attachmentBar');
+    var fileNameEl = document.getElementById('attachmentFileName');
+    var statusTag = document.getElementById('uploadStatusTag');
+    var progressFill = document.getElementById('progressFill');
+
+    clearInterval(uploadProgressTimer);
+    progressFill.className = "progress-fill";
+    progressFill.style.width = "40%";
+    statusTag.className = "upload-status-tag status-uploading";
+    statusTag.innerText = "40%";
+    fileNameEl.innerText = "📎 " + file.name;
+    attachBar.style.display = "flex";
+
+    compressImageClient(file, function(cleanBase64, mimeType) {
+      activeAttachment = {
+        fileName: file.name,
+        mimeType: mimeType,
+        base64: cleanBase64,
+        isUploaded: false
+      };
+      progressFill.style.width = "100%";
+      progressFill.classList.add("done");
+      statusTag.className = "upload-status-tag status-ready";
+      statusTag.innerText = "✓ Ready";
+
+      fetch(BACKEND_API_URL, {
+        method: "POST",
+        mode: "cors",
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "upload",
+          base64: cleanBase64,
+          fileName: file.name,
+          mimeType: mimeType,
+          isPermanent: false,
+          customTitle: "",
+          categoryDesc: ""
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (res && res.status === "success") {
+          statusTag.innerText = "✓ Uploaded";
+          activeAttachment.isUploaded = true;
+        }
+      })
+      .catch(function() {});
+    });
+  }
+
+  function clearAttachment() {
+    clearInterval(uploadProgressTimer);
+    activeAttachment = null;
+    document.getElementById('fileUploadInput').value = "";
+    document.getElementById('attachmentBar').style.display = "none";
+    document.getElementById('progressFill').style.width = "0%";
+  }
+
+  function toggleGeneralMode() {
+    isGeneral = !isGeneral;
+    var btn = document.getElementById('generalModeBtn');
+    if (isGeneral) {
+      btn.classList.add('active');
+      btn.innerText = "⚡ General ON";
+      currentMachine = "";
+      currentMachineName = "";
+      activeTopicMemory = "";
+      document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering";
+    } else {
+      btn.classList.remove('active');
+      btn.innerText = "💬 General";
+      document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
+    }
+  }
+
+  function resetChat() {
+    currentMachine = "";
+    currentMachineName = "";
+    activeTopicMemory = "";
+    clearAttachment();
+    document.getElementById('activeMachineStatus').innerText = "P&M Technical Desk • Dev: Nitin Misra";
+    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
+  }
+
+  function handleFollowUp(text) {
+    document.getElementById('userInput').value = text;
+    executeOneTapSend();
+  }
+
+  function handleTouchSend(e) {
+    if (e && e.cancelable) { e.preventDefault(); e.stopPropagation(); }
+    executeOneTapSend();
+  }
+
+  function fetchWithRetry(url, options, maxRetries) {
+    return new Promise(function(resolve, reject) {
+      function attempt(retriesLeft) {
+        fetch(url, options)
+          .then(function(response) {
+            if (!response.ok && response.type !== 'opaque') throw new Error("HTTP " + response.status);
+            return response.text();
+          })
+          .then(resolve)
+          .catch(function(err) {
+            if (retriesLeft > 0) setTimeout(function() { attempt(retriesLeft - 1); }, 1000);
+            else reject(err);
+          });
+      }
+      attempt(maxRetries);
+    });
+  }
+
+  function executeOneTapSend() {
+    var now = Date.now();
+    if (now - lastSentTimestamp < 250) return;
+    lastSentTimestamp = now;
+
+    var input = document.getElementById('userInput');
+    var q = (input.value || '').trim();
+    if (!q && !activeAttachment) return;
+
+    triggerHaptic(40);
+    var currentText = q;
+    input.value = '';
+    input.blur();
+
+    var box = document.getElementById('chatBox');
+    var display = currentText || ("📎 [" + activeAttachment.fileName + "]");
+    var attachClass = activeAttachment ? " with-attachment" : "";
+
+    var userNode = document.createElement('div');
+    userNode.className = 'msg user-msg' + attachClass;
+    userNode.textContent = display;
+    box.appendChild(userNode);
+
+    var typingId = "typ-" + Date.now();
+    var cardNode = document.createElement('div');
+    cardNode.className = 'analyzing-card';
+    cardNode.id = typingId;
+    cardNode.innerHTML = 
+      '<div class="analyzing-header"><span>Processing...</span><span id="' + typingId + '-pct">25%</span></div>' +
+      '<div class="analyzing-bar-track"><div class="analyzing-bar-fill" id="' + typingId + '-bar" style="width: 25%;"></div></div>' +
+      '<div class="analyzing-status-text">' + (isGeneral ? 'Applying Engineering Logic...' : 'Scanning Subsystem Index...') + '</div>';
+    box.appendChild(cardNode);
+    scrollToBottom();
+
+    var pct = 25;
+    var progressInterval = setInterval(function() {
+      var pctEl = document.getElementById(typingId + '-pct');
+      var barEl = document.getElementById(typingId + '-bar');
+      if (pctEl && barEl && pct < 95) {
+        pct += 20;
+        pctEl.innerText = pct + "%";
+        barEl.style.width = pct + "%";
+      }
+    }, 250);
+
+    var toSendAttach = activeAttachment;
+    clearAttachment();
+
+    fetchWithRetry(BACKEND_API_URL, {
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "ask",
+        query: currentText,
+        machineKey: isGeneral ? "" : currentMachine,
+        isGeneral: isGeneral,
+        contextSummary: isGeneral ? "" : activeTopicMemory,
+        attachment: toSendAttach
+      })
+    }, 2)
+    .then(function(textData) {
+      clearInterval(progressInterval);
+      var el = document.getElementById(typingId);
+      if (!el) return;
+
+      var res = null;
+      try { res = JSON.parse(textData); } catch (e) { throw new Error("Invalid response format"); }
+
+      if (!isGeneral && res && res.machineKey && res.machineName) {
+        currentMachine = res.machineKey;
+        currentMachineName = res.machineName;
+        document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
+      }
+
+      if (!isGeneral && res && res.reply) {
+        if (/smoke|dhua|fuel|injector|engine|coolant|gasket|pump|drifter|shank|leak|pressure|filter|turbo/i.test(currentText + " " + res.reply)) {
+          activeTopicMemory = "Current Component / Fault: " + currentText + " | Details: " + res.reply.substring(0, 180);
+        }
+      }
+
+      var replyHtml = renderRichContent(res ? res.reply : '');
+
+      // 📄 WHATSAPP ATTACHMENT CARD
+      var cardHtml = '';
+      if (res && res.card) {
+        var frameId = "frame-" + Date.now();
+        cardHtml = 
+          '<div class="wa-doc-card">' +
+            '<div class="wa-doc-row">' +
+              '<div class="wa-doc-icon">📄</div>' +
+              '<div class="wa-doc-details">' +
+                '<div class="wa-doc-title">' + escapeHtml(res.card.title) + '</div>' +
+                '<div class="wa-doc-sub">Target: Page ' + res.card.page + ' • ' + escapeHtml(res.card.section) + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="wa-doc-actions">' +
+              '<button type="button" class="wa-btn" onclick="toggleInAppDrawing(\'' + frameId + '\', \'' + res.card.url + '\')">👁️ View in App</button>' +
+              '<a href="' + res.card.url + '" target="_blank" class="wa-btn wa-btn-sec">Open Drive ↗</a>' +
+            '</div>' +
+            '<iframe id="' + frameId + '" class="pdf-viewer-frame" src="about:blank"></iframe>' +
+          '</div>';
+      }
+
+      var fpHtml = '';
+      if (res && res.followUps && res.followUps.length > 0) {
+        fpHtml = '<div class="followup-container">';
+        for (var i = 0; i < res.followUps.length; i++) {
+          fpHtml += '<button type="button" class="followup-chip" onclick="handleFollowUp(\'' + escapeHtmlAttr(res.followUps[i]) + '\')">👉 ' + escapeHtml(res.followUps[i]) + '</button>';
+        }
+        fpHtml += '</div>';
+      }
+
+      el.outerHTML = '<div class="msg bot-msg">' + replyHtml + cardHtml + fpHtml + '</div>';
+      scrollToBottom();
+      triggerHaptic(30);
+    })
+    .catch(function() {
+      clearInterval(progressInterval);
+      var el = document.getElementById(typingId);
+      if (el) el.outerHTML = '<div class="msg bot-msg">⚠️ Server timeout. Kripya dubara bhejein.</div>';
+      scrollToBottom();
+    });
+  }
+
+  function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    setupSpeechEngine();
+  });
+</script>
+
+</body>
+</html>
