@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=105">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=105">
-  <link rel="manifest" href="manifest.json?v=105">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=120">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=120">
+  <link rel="manifest" href="manifest.json?v=120">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,25 +20,82 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { width: 100%; height: 100%; background: #efeae2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; overflow: hidden; }
     
-    #appContainer { width: 100%; max-width: 640px; height: 100%; margin: 0 auto; background: #efeae2; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 24px rgba(0,0,0,0.12); }
+    html, body { 
+      width: 100%; 
+      height: 100%; 
+      background: #d1d7db; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      overflow: hidden; 
+    }
+    
+    /* 🟢 DYNAMIC RESPONSIVE CONTAINER */
+    #appContainer { 
+      width: 100%; 
+      height: 100%; 
+      background: #efeae2; 
+      display: flex; 
+      flex-direction: column; 
+      position: relative; 
+      margin: 0 auto;
+      transition: all 0.25s ease-in-out;
+    }
 
-    .chat-header { background: #008069; color: #ffffff; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
+    /* 🟢 TABLET & IPAD (600px - 1024px) */
+    @media (min-width: 600px) and (max-width: 1024px) {
+      #appContainer {
+        width: 94%;
+        height: 96vh;
+        margin: 2vh auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.14);
+        border: 1px solid #cbd5e1;
+      }
+      .msg { max-width: 80%; }
+    }
+
+    /* 🟢 LAPTOP & DESKTOP (Width > 1024px) — Full Modern Broad View */
+    @media (min-width: 1025px) {
+      #appContainer {
+        width: 88%;
+        max-width: 1240px; /* Poori broad laptop screen layout */
+        height: 94vh;
+        margin: 3vh auto;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 30px rgba(0,0,0,0.18);
+        border: 1px solid #cbd5e1;
+      }
+      .msg { 
+        max-width: 68%; 
+        font-size: 14.5px;
+      }
+      .chat-messages {
+        padding: 18px 24px;
+      }
+      .chat-input-bar {
+        padding: 10px 16px;
+      }
+    }
+
+    .chat-header { background: #008069; color: #ffffff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 20; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
     .header-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
     .header-avatar { width: 42px; height: 42px; border-radius: 50%; background: #005c4b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.4); }
     .header-avatar img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.24); }
 
-    .header-info h3 { font-size: 15px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .header-info p { font-size: 11px; color: #a7f3d0; line-height: 1.2; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .header-info h3 { font-size: 15.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .header-info p { font-size: 11.5px; color: #a7f3d0; line-height: 1.2; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
     .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     
-    .mode-btn { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.22); color: #ffffff; padding: 5px 9px; border-radius: 14px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+    .mode-btn { background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.22); color: #ffffff; padding: 6px 10px; border-radius: 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=105'); background-repeat: repeat; background-size: 380px auto; }
+    .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; background-color: #efeae2; background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=120'); background-repeat: repeat; background-size: 380px auto; }
 
-    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
+    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.55; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
     .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
@@ -47,7 +104,7 @@
 
     .quoted-box-bubble { background: rgba(0,0,0,0.06); border-left: 4px solid #008069; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; }
     .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
-    .quoted-box-bubble .q-text { color: #334155; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .quoted-box-bubble .q-text { color: #334155; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
     .bubble-file-chip { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.06); padding: 7px 10px; border-radius: 6px; font-size: 12.5px; margin-bottom: 4px; }
@@ -89,18 +146,18 @@
     .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
     .media-opt:active { background: #f1f5f9; }
 
-    .chat-input-bar { padding: 7px 9px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
+    .chat-input-bar { padding: 8px 12px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; }
     .attach-btn, .mic-btn { width: 40px; height: 42px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; }
     .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
     @keyframes micPulse { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
     .chat-input-bar input { flex: 1; height: 42px; border: none; border-radius: 21px; padding: 0 16px; font-size: 14.5px; outline: none; background: #ffffff; color: #111b21; }
-    .send-btn { height: 42px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+    .send-btn { height: 42px; padding: 0 18px; background: #008069; color: #ffffff; border: none; border-radius: 21px; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; }
     .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; }
     .chat-input-bar.locked .send-btn { background: #94a3b8; }
 
-    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
+    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px 14px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 13px; line-height: 1.6; color: #334155; }
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
+    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 8px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 600; text-align: left; cursor: pointer; }
 
     /* 🟢 UPLOAD MODAL */
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
@@ -120,7 +177,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=105" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=120" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Technical Support</h3>
@@ -247,7 +304,7 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 SMART PAGE COPY + DIRECT GOOGLE DRIVE OPEN
+  // 🟢 DIRECT NATIVE RAW STREAM (Bypasses Google Drive Web Player)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
@@ -255,18 +312,15 @@
     }
     var targetP = parseInt(page, 10) || 1;
 
-    // Clipboard par page number auto-copy
+    // Clipboard auto-copy helper for quick jump
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(targetP.toString()).catch(function() {});
     }
 
-    alert("💡 Target Drawing: Page " + targetP + "\n\nPage number clipboard par copy ho gaya hai! Google Drive khulne par upar left ke 'Page' box me paste (Ctrl+V) karke Enter dabayein.");
-
-    var directViewerUrl = "https://drive.google.com/file/d/" + fileId + "/view";
-    window.open(directViewerUrl, '_blank', 'noopener,noreferrer');
+    var rawNativeUrl = "https://drive.google.com/uc?id=" + fileId + "&export=download#page=" + targetP;
+    window.open(rawNativeUrl, '_blank', 'noopener,noreferrer');
   }
 
-  // Manual Modal Functions
   function openManualModal() { document.getElementById('manualUploadModal').style.display = "flex"; }
   function closeManualModal() { document.getElementById('manualUploadModal').style.display = "none"; }
   function triggerManualFilePick() { document.getElementById('manualFileInput').click(); }
@@ -310,7 +364,6 @@
     event.target.value = "";
   }
 
-  // Media Sheet
   function toggleMediaMenu(e) {
     e.stopPropagation();
     var sheet = document.getElementById('mediaSheet');
@@ -326,7 +379,6 @@
   function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
   function triggerDocPicker() { document.getElementById('docInput').click(); }
 
-  // WhatsApp Quoted Reply
   function setReplyContext(msgId) {
     var item = messageHistoryStore[msgId];
     if (!item) return;
@@ -464,7 +516,6 @@
     document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
   }
 
-  // Voice Input (Web Speech API)
   function toggleVoiceInput() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       alert("Aapka browser Speech Recognition support nahi karta.");
@@ -559,7 +610,6 @@
     var currentText = q;
     var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
 
-    // 0ms Greeting Interceptor
     if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram)$/i.test(qClean)) {
       input.value = '';
       var box = document.getElementById('chatBox');
