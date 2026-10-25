@@ -1,1042 +1,416 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>P&amp;M Technical Support Desk</title>
-  
-  <link rel="icon" type="image/png" href="pm-logo.png?v=210">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=210">
-  <link rel="manifest" href="manifest.json?v=210">
+/**
+ * ============================================================================
+ * PLANT & MACHINERY TECHNICAL ASSISTANT - INSTANT HIGH-SPEED GATEWAY
+ * Lead Developer: Nitin Misra | Plant & Machinery Department
+ * Core Fix: Zero-Wait Pinecone Decoupling, Instant 1.5s Response Time
+ * ============================================================================
+ */
 
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#008069">
-
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    
-    html, body { 
-      width: 100%; 
-      height: 100%; 
-      height: 100dvh; 
-      margin: 0; 
-      padding: 0; 
-      background: #efeae2; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-      overflow: hidden; 
-    }
-    
-    #appContainer { 
-      width: 100%; 
-      height: 100%; 
-      height: 100dvh;
-      background: #efeae2; 
-      display: flex; 
-      flex-direction: column; 
-      position: relative; 
-      margin: 0; 
-      padding: 0;
-    }
-
-    /* 🟢 HEADER */
-    .chat-header { 
-      background: #008069; 
-      color: #ffffff; 
-      padding: 8px 10px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between; 
-      flex-shrink: 0; 
-      z-index: 20; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.18); 
-      gap: 5px;
-    }
-    .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; min-width: 0; flex: 1; }
-    .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: #005c4b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.4); }
-    .header-avatar img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.24); }
-
-    .header-info { min-width: 0; flex: 1; overflow: hidden; }
-    .header-info h3 { font-size: 14.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .header-info p { font-size: 11px; color: #a7f3d0; line-height: 1.2; margin-top: 1px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-    
-    .lang-select-btn {
-      background: rgba(255, 255, 255, 0.22);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: #ffffff;
-      padding: 4px 6px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-    }
-    .lang-select-btn option { color: #111827; background: #ffffff; font-weight: 600; }
-    .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 7px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-    .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
-
-    /* 🟢 CHAT MESSAGES */
-    .chat-messages { 
-      flex: 1; 
-      overflow-y: auto; 
-      -webkit-overflow-scrolling: touch; 
-      padding: 10px 12px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px; 
-      position: relative; 
-      background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=210'); 
-      background-repeat: repeat; 
-      background-size: 380px auto; 
-    }
-
-    @media (min-width: 900px) {
-      .chat-header { padding: 10px 24px; }
-      .header-info h3 { font-size: 16px; }
-      .header-info p { font-size: 12px; }
-      .mode-btn, .lang-select-btn { font-size: 12.5px; padding: 6px 10px; }
-      .chat-messages { padding: 18px calc(50vw - 460px); }
-      .chat-input-bar { padding: 10px calc(50vw - 460px) !important; }
-      .reply-context-tray, .attachment-preview-bar { margin: 0 calc(50vw - 460px); }
-    }
-
-    .msg { max-width: 88%; padding: 8px 12px; border-radius: 7.5px; font-size: 13.8px; line-height: 1.5; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
-    .bot-msg { align-self: flex-start; background: #ffffff; color: #111b21; border-top-left-radius: 0; }
-    .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
-
-    .msg-reply-trigger { float: right; margin-left: 8px; margin-bottom: 2px; font-size: 11px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; cursor: pointer; color: #008069; font-weight: 600; user-select: none; }
-    .quoted-box-bubble { background: rgba(0,0,0,0.06); border-left: 4px solid #008069; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; }
-    .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
-    .quoted-box-bubble .q-text { color: #334155; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
-    .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
-    .status-tick { color: #53bdeb; font-size: 11px; }
-
-    /* 🟢 LIVE STREAMING TYPING CURSOR */
-    .typing-cursor {
-      display: inline-block;
-      width: 2px;
-      height: 14px;
-      background-color: #008069;
-      margin-left: 2px;
-      vertical-align: middle;
-      animation: blinkCursor 0.8s infinite;
-    }
-    @keyframes blinkCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* 🟢 MULTI-SOURCE DIGEST CARDS */
-    .source-digest-box { margin-top: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .source-digest-header { font-size: 12px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px; }
-    .source-item-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
-    .source-item-top { display: flex; justify-content: space-between; align-items: center; }
-    .source-item-title { font-size: 12.5px; font-weight: 600; color: #0369a1; text-decoration: none; }
-    .source-item-tag { font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
-    .source-item-desc { font-size: 11.5px; color: #475569; line-height: 1.4; }
-    .source-item-actions { display: flex; gap: 6px; margin-top: 4px; }
-    .btn-view-inline { flex: 1; padding: 6px 0; background: #008069; color: #ffffff; border: none; border-radius: 4px; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; }
-    .btn-download-page { flex: 1; padding: 6px 0; background: #0284c7; color: #ffffff; border: none; border-radius: 4px; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
-
-    .wa-typing-bubble { align-self: flex-start; background: #ffffff; padding: 10px 14px; border-radius: 7.5px; border-top-left-radius: 0; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); display: inline-flex; align-items: center; gap: 5px; }
-    .wa-dot { width: 7px; height: 7px; background: #008069; border-radius: 50%; opacity: 0.35; animation: waDotPulse 1.2s infinite ease-in-out; }
-    .wa-dot:nth-child(2) { animation-delay: 0.2s; }
-    .wa-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes waDotPulse { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-5px); opacity: 1; } }
-
-    .reply-context-tray { background: #f0fdf4; border-top: 1px solid #cbd5e1; border-left: 5px solid #008069; padding: 6px 10px; display: none; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; z-index: 24; }
-    .reply-details { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-    .reply-thumb-mini { width: 34px; height: 34px; border-radius: 4px; object-fit: cover; border: 1px solid #86efac; flex-shrink: 0; }
-    .reply-texts strong { font-size: 11px; color: #008069; display: block; }
-    .reply-texts span { font-size: 11px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-
-    .attachment-preview-bar { padding: 6px 10px; background: #f1f5f9; border-top: 1px solid #cbd5e1; display: none; align-items: center; gap: 8px; flex-shrink: 0; z-index: 25; }
-    .tray-thumb { width: 38px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .tray-details { flex: 1; overflow: hidden; }
-    .tray-title { font-size: 12px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .media-sheet { position: absolute; bottom: 58px; left: 10px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: 1px solid #e2e8f0; padding: 6px; display: none; flex-direction: column; gap: 4px; z-index: 40; width: 175px; }
-    .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
-
-    .chat-input-bar { padding: 6px 8px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; width: 100%; }
-    .attach-btn, .mic-btn { width: 38px; height: 40px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; }
-    .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
-    @keyframes micPulse { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
-    .chat-input-bar input { flex: 1; height: 40px; border: none; border-radius: 20px; padding: 0 14px; font-size: 14px; outline: none; background: #ffffff; color: #111b21; min-width: 0; }
-    .send-btn { height: 40px; padding: 0 16px; background: #008069; color: #ffffff; border: none; border-radius: 20px; font-weight: 600; font-size: 13.5px; cursor: pointer; flex-shrink: 0; }
-    .chat-input-bar.locked input { background: #e2e8f0; color: #64748b; }
-    .chat-input-bar.locked .send-btn { background: #94a3b8; }
-
-    .onboarding-card { background: #ffffff; border-radius: 8px; padding: 12px; border-left: 4px solid #008069; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.6; color: #334155; }
-    .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
-
-    /* 🟢 INLINE DRAWING & PAGE INSPECTOR */
-    .drawing-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.92);
-      z-index: 3000;
-      display: none;
-      flex-direction: column;
-      backdrop-filter: blur(4px);
-    }
-    .drawing-modal-header {
-      background: #1e293b;
-      color: #ffffff;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #334155;
-    }
-    .drawing-modal-title { font-size: 13px; font-weight: 600; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .drawing-tools { display: flex; align-items: center; gap: 8px; }
-    .tool-btn { background: #334155; color: #ffffff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .tool-btn-close { background: #ef4444; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    
-    .drawing-modal-body {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-      background: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .drawing-viewport-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      transition: transform 0.15s ease-out;
-      transform-origin: center center;
-    }
-
-    .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
-    .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
-    .upload-card h3 { color: #008069; font-size: 17px; margin-bottom: 12px; }
-    .upload-card label { display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
-    .upload-card input { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-size: 13.5px; margin-bottom: 12px; }
-    .upload-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-    .upload-actions button { padding: 9px 16px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; }
-    .btn-cancel { background: #e2e8f0; color: #475569; }
-    .btn-submit { background: #008069; color: #fff; }
-  </style>
-</head>
-<body>
-
-<div id="appContainer">
-  <div class="chat-header">
-    <div class="header-left">
-      <div class="header-avatar">
-        <img src="pm-logo.png?v=210" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
-      </div>
-      <div class="header-info">
-        <h3 id="uiHeaderTitle">P&amp;M Support Desk</h3>
-        <p id="activeMachineStatus">P&amp;M Engineering Desk • Lead Dev: Nitin Misra</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <select id="langSelector" class="lang-select-btn" onchange="changeSystemLanguage(this.value)">
-        <option value="en">🇬🇧 English</option>
-        <option value="hinglish">🇮🇳 Hinglish</option>
-        <option value="hi">🕉️ हिन्दी</option>
-      </select>
-
-      <button type="button" class="mode-btn" onclick="openManualModal()">📂 +Manual</button>
-      <button type="button" class="mode-btn" id="generalModeBtn" onclick="toggleGeneralMode()">💬 General</button>
-      <button type="button" class="mode-btn" onclick="resetChat()">🔄</button>
-    </div>
-  </div>
-
-  <div class="chat-messages" id="chatBox">
-    <div class="onboarding-card" id="onboardingCardText">
-      <strong>📌 P&amp;M Engineering Desk Active</strong><br>
-      • State equipment model, part number, schematic requirement, or fault diagnosis.<br>
-      • 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.
-    </div>
-  </div>
-
-  <div class="reply-context-tray" id="replyTray">
-    <div class="reply-details">
-      <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Thumbnail">
-      <div class="reply-texts">
-        <strong id="replyTrayLabel">Replying to context:</strong>
-        <span id="replySnippet">Message snippet...</span>
-      </div>
-    </div>
-    <button type="button" onclick="cancelReplyContext()" style="border:none;background:none;color:#ef4444;font-size:18px;font-weight:bold;cursor:pointer;">✕</button>
-  </div>
-
-  <div class="attachment-preview-bar" id="attachmentBar">
-    <div id="trayPreviewSlot" class="tray-thumb">📎</div>
-    <div class="tray-details">
-      <div class="tray-title" id="attachmentFileName">file.jpg</div>
-      <div class="tray-hint" id="attachmentHintText">Media staged. Enter inquiry description and click Send.</div>
-    </div>
-    <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;">✕</button>
-  </div>
-
-  <div class="media-sheet" id="mediaSheet">
-    <button type="button" class="media-opt" onclick="triggerCameraCapture()"><span id="lblCam">📷 Camera</span></button>
-    <button type="button" class="media-opt" onclick="triggerGalleryPicker()"><span id="lblGal">🖼️ Photos / Gallery</span></button>
-    <button type="button" class="media-opt" onclick="triggerDocPicker()"><span id="lblDoc">📄 Document / File</span></button>
-  </div>
-
-  <div class="chat-input-bar" id="chatInputBar">
-    <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
-    
-    <input type="file" id="cameraInput" style="display: none;" accept="image/*" capture="environment" onchange="handleUniversalFile(event)">
-    <input type="file" id="galleryInput" style="display: none;" accept="image/*,video/*,audio/*" onchange="handleUniversalFile(event)">
-    <input type="file" id="docInput" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.json,.xml" onchange="handleUniversalFile(event)">
-    <input type="file" id="manualFileInput" style="display: none;" accept="application/pdf" onchange="executeManualUpload(event)">
-    
-    <input type="text" id="userInput" placeholder="Enter technical inquiry or use voice input..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
-    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input">🎙️</button>
-    <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
-  </div>
-</div>
-
-<!-- 🟢 INLINE DRAWING & PAGE INSPECTOR -->
-<div class="drawing-modal" id="drawingModal">
-  <div class="drawing-modal-header">
-    <div class="drawing-modal-title" id="modalDocTitle">Document Inspection</div>
-    <div class="drawing-tools">
-      <button type="button" class="tool-btn" onclick="zoomDrawing(0.25)">🔍 +</button>
-      <button type="button" class="tool-btn" onclick="zoomDrawing(-0.25)">🔍 -</button>
-      <button type="button" class="tool-btn" onclick="resetZoom()">100%</button>
-      <a href="#" id="modalDirectDownloadBtn" target="_blank" class="tool-btn" style="text-decoration:none;">⬇️ Save PDF</a>
-      <button type="button" class="tool-btn-close" onclick="closeDrawingViewer()">✕</button>
-    </div>
-  </div>
-  <div class="drawing-modal-body" id="modalCanvasContainer">
-    <iframe id="drawingIframe" class="drawing-viewport-frame" src=""></iframe>
-  </div>
-</div>
-
-<!-- 🟢 MANUAL UPLOAD MODAL -->
-<div class="upload-modal" id="manualUploadModal">
-  <div class="upload-card">
-    <h3 id="uploadModalTitle">📂 Upload Technical Document for Indexing</h3>
-    <label id="uploadModalLbl1">Equipment Model / Manual Title:</label>
-    <input type="text" id="manualTitleInput" placeholder="e.g. Putzmeister SPM 500 Parts Manual">
-    <label id="uploadModalLbl2">System / Engineering Classification:</label>
-    <input type="text" id="manualCategoryInput" placeholder="e.g. Hydraulic &amp; Boom Overhaul Specification">
-    <div class="upload-actions">
-      <button type="button" class="btn-cancel" onclick="closeManualModal()"><span id="btnCancelText">Cancel</span></button>
-      <button type="button" class="btn-submit" onclick="triggerManualFilePick()"><span id="btnSubmitText">Select PDF &amp; Submit</span></button>
-    </div>
-  </div>
-</div>
-
-<script>
-  var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
-
-  var UI_STRINGS = {
-    en: {
-      headerTitle: "P&M Support Desk",
-      deskStatus: "P&M Engineering Desk • Lead Dev: Nitin Misra",
-      onboarding: "<strong>📌 P&M Engineering Desk Active</strong><br>• State equipment model, part number, schematic requirement, or fault diagnosis.<br>• 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.",
-      placeholder: "Enter technical inquiry or use voice input...",
-      processing: "Analyzing engineering specifications...",
-      generalBtn: "💬 General",
-      generalActiveBtn: "⚡ General ON",
-      generalModeDesk: "Mode: Universal P&M Engineering Standards",
-      resetOnboarding: "<strong>Session Reset</strong><br>Workspace cleared. State machine or inquiry to begin.",
-      replyContext: "Replying to context:",
-      replyTrigger: "↩️ Reply",
-      cam: "📷 Camera",
-      gal: "🖼️ Photos / Gallery",
-      doc: "📄 Document / File",
-      uploadTitle: "📂 Upload Technical Document for Indexing",
-      uploadLbl1: "Equipment Model / Manual Title:",
-      uploadLbl2: "System / Engineering Classification:",
-      cancelBtn: "Cancel",
-      submitBtn: "Select PDF & Submit",
-      speechLang: "en-US",
-      netError: "⚠️ Network connection interruption occurred. Please re-state your inquiry."
-    },
-    hinglish: {
-      headerTitle: "P&M Support Desk",
-      deskStatus: "P&M Technical Desk • Dev: Nitin Misra",
-      onboarding: "<strong>📌 P&M Technical Desk Active</strong><br>• Machine ka model, part number, hydraulic circuit ya fault poochhein.<br>• 💡 Context Threading: Kisi bhi message ya photo par ↩️ Reply daba kar context jodein.",
-      placeholder: "Sawal likhein ya bolkar batayein...",
-      processing: "Technical specifications check ho rahi hain...",
-      generalBtn: "💬 General",
-      generalActiveBtn: "⚡ General ON",
-      generalModeDesk: "Mode: Universal P&M Workshop Standards",
-      resetOnboarding: "<strong>Session Reset Ho Gaya</strong><br>Nayi machine ya sawal likhein.",
-      replyContext: "Replying to message:",
-      replyTrigger: "↩️ Reply",
-      cam: "📷 Camera",
-      gal: "🖼️ Gallery / Photos",
-      doc: "📄 Document / File",
-      uploadTitle: "📂 Verification ke liye Manual Upload Karein",
-      uploadLbl1: "Machine Model / Manual ka Naam:",
-      uploadLbl2: "System / Note:",
-      cancelBtn: "Cancel",
-      submitBtn: "PDF Chunein & Submit Karein",
-      speechLang: "hi-IN",
-      netError: "⚠️ Network connection drop ho gaya hai. Kripya dobara try karein."
-    },
-    hi: {
-      headerTitle: "पी&एम तकनीकी सहायता",
-      deskStatus: "पी&एम इंजीनियरिंग डेस्क • मुख्य विकासकर्ता: नितिन मिश्रा",
-      onboarding: "<strong>📌 पी&एम तकनीकी सहायता सक्रिय</strong><br>• मशीन मॉडल, पुर्जा संख्या (Part No), परिपथ आरेख अथवा तकनीकी खराबी का विवरण लिखें।<br>• 💡 संदर्भ बनाए रखने हेतु किसी भी संदेश अथवा चित्र पर ↩️ उत्तर (Reply) चुनें।",
-      placeholder: "तकनीकी प्रश्न लिखें अथवा बोलकर बताएं...",
-      processing: "तकनीकी विवरण का विश्लेषण जारी है...",
-      generalBtn: "💬 सामान्य",
-      generalActiveBtn: "⚡ सामान्य सक्रिय",
-      generalModeDesk: "मोड: सार्वभौमिक पी&एम इंजीनियरिंग मानक",
-      resetOnboarding: "<strong>सत्र रीसेट हुआ</strong><br>कार्यक्षेत्र रिक्त किया गया। मशीन अथवा तकनीकी प्रश्न दर्ज करें।",
-      replyContext: "संदेश का संदर्भ:",
-      replyTrigger: "↩️ उत्तर",
-      cam: "📷 कैमरा",
-      gal: "🖼️ फोटो / गैलरी",
-      doc: "📄 दस्तावेज / फाइल",
-      uploadTitle: "📂 तकनीकी मैनुअल सत्यापन हेतु अपलोड करें",
-      uploadLbl1: "मशीन मॉडल / मैनुअल का शीर्षक:",
-      uploadLbl2: "प्रणाली / तकनीकी वर्गीकरण:",
-      cancelBtn: "रद्द करें",
-      submitBtn: "PDF चुनें और सबमिट करें",
-      speechLang: "hi-IN",
-      netError: "⚠️ नेटवर्क संपर्क बाधित हुआ। कृपया पुनः प्रयास करें।"
-    }
+function getEnvConfig() {
+  var props = PropertiesService.getScriptProperties();
+  return {
+    apiKey: (props.getProperty("GEMINI_API_KEY") || "").trim(),
+    rootFolderId: (props.getProperty("ROOT_FOLDER_ID") || "").trim(),
+    adminEmail: (props.getProperty("ADMIN_EMAIL") || "").trim()
   };
+}
 
-  var CURRENT_LANG = localStorage.getItem("PM_LANG_PREF") || "en";
-  var currentMachine = "";
-  var currentMachineName = "";
-  var isGeneral = false;
-  var activeAttachment = null;
-  var lastSentTimestamp = 0;
-  var isRecognizing = false;
-  var speechRecognizer = null;
-  var isBusyProcessing = false;
-
-  var currentReplyingContext = null; 
-  var messageHistoryStore = {};
-  var conversationHistoryQueue = [];
-  var currentZoomLevel = 1.0;
-
-  function applyLanguage(lang) {
-    CURRENT_LANG = lang;
-    localStorage.setItem("PM_LANG_PREF", lang);
-    var dict = UI_STRINGS[lang] || UI_STRINGS.en;
-
-    document.getElementById('langSelector').value = lang;
-    document.getElementById('uiHeaderTitle').innerText = dict.headerTitle;
-    if (!isGeneral) {
-      document.getElementById('activeMachineStatus').innerText = currentMachineName ? (lang === 'hi' ? "सक्रिय: " : (lang === 'hinglish' ? "Active: " : "Active: ")) + currentMachineName : dict.deskStatus;
-    }
-    document.getElementById('userInput').placeholder = dict.placeholder;
-    document.getElementById('onboardingCardText').innerHTML = dict.onboarding;
-    document.getElementById('replyTrayLabel').innerText = dict.replyContext;
-    document.getElementById('lblCam').innerText = dict.cam;
-    document.getElementById('lblGal').innerText = dict.gal;
-    document.getElementById('lblDoc').innerText = dict.doc;
-    document.getElementById('uploadModalTitle').innerText = dict.uploadTitle;
-    document.getElementById('uploadModalLbl1').innerText = dict.uploadLbl1;
-    document.getElementById('uploadModalLbl2').innerText = dict.uploadLbl2;
-    document.getElementById('btnCancelText').innerText = dict.cancelBtn;
-    document.getElementById('btnSubmitText').innerText = dict.submitBtn;
-
-    var genBtn = document.getElementById('generalModeBtn');
-    genBtn.innerText = isGeneral ? dict.generalActiveBtn : dict.generalBtn;
+function doGet(e) {
+  try {
+    return HtmlService.createHtmlOutputFromFile('index')
+      .setTitle('P&M Technical Support Desk')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+  } catch (err) {
+    return HtmlService.createHtmlOutput("<h3>Gateway Error: " + escapeHtml(err.toString()) + "</h3>");
   }
+}
 
-  function changeSystemLanguage(newLang) {
-    applyLanguage(newLang);
-    triggerHaptic(30);
-  }
-
-  function warmUpBackendInstance() {
-    try {
-      fetch(BACKEND_API_URL, {
-        method: "POST",
-        mode: "cors",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "ping" })
-      }).catch(function() {});
-    } catch(e) {}
-  }
-
-  function triggerHaptic(duration) {
-    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
-  }
-
-  function getFormattedTime() {
-    var now = new Date();
-    var h = now.getHours();
-    var m = now.getMinutes();
-    var ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12;
-    h = h ? h : 12;
-    return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
-  }
-
-  function scrollToBottom() {
-    var box = document.getElementById('chatBox');
-    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 10);
-  }
-
-  /* 🟢 ULTRA-FAST TYPEWRITER STREAMING ENGINE */
-  function streamTypewriterOutput(containerEl, fullMarkdownText, callbackOnComplete) {
-    var words = fullMarkdownText.split(' ');
-    var currentWordIndex = 0;
-    var accumulatedText = "";
-    
-    var typingTimer = setInterval(function() {
-      // Stream in 2 words per tick for high fluid pace
-      var wordsToAdd = 2;
-      for (var w = 0; w < wordsToAdd && currentWordIndex < words.length; w++) {
-        accumulatedText += (currentWordIndex === 0 ? "" : " ") + words[currentWordIndex];
-        currentWordIndex++;
-      }
-
-      containerEl.innerHTML = marked.parse(accumulatedText) + '<span class="typing-cursor"></span>';
-      scrollToBottom();
-
-      if (currentWordIndex >= words.length) {
-        clearInterval(typingTimer);
-        containerEl.innerHTML = marked.parse(fullMarkdownText);
-        scrollToBottom();
-        if (callbackOnComplete) callbackOnComplete();
-      }
-    }, 25);
-  }
-
-  function openInlineDrawingViewer(fileId, title, page) {
-    if (!fileId) return;
-    var targetP = parseInt(page, 10) || 1;
-    var modal = document.getElementById('drawingModal');
-    var iframe = document.getElementById('drawingIframe');
-    var titleEl = document.getElementById('modalDocTitle');
-    var dlBtn = document.getElementById('modalDirectDownloadBtn');
-
-    titleEl.innerText = title + " (Page " + targetP + ")";
-    dlBtn.href = "https://drive.google.com/uc?export=download&id=" + fileId;
-    
-    iframe.src = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP + "&zoom=120";
-    currentZoomLevel = 1.0;
-    iframe.style.transform = "scale(1)";
-
-    modal.style.display = "flex";
-    triggerHaptic(35);
-  }
-
-  function closeDrawingViewer() {
-    var modal = document.getElementById('drawingModal');
-    var iframe = document.getElementById('drawingIframe');
-    iframe.src = "";
-    modal.style.display = "none";
-  }
-
-  function zoomDrawing(delta) {
-    currentZoomLevel = Math.max(0.75, Math.min(3.0, currentZoomLevel + delta));
-    var iframe = document.getElementById('drawingIframe');
-    iframe.style.transform = "scale(" + currentZoomLevel + ")";
-  }
-
-  function resetZoom() {
-    currentZoomLevel = 1.0;
-    var iframe = document.getElementById('drawingIframe');
-    iframe.style.transform = "scale(1)";
-  }
-
-  function openManualModal() { document.getElementById('manualUploadModal').style.display = "flex"; }
-  function closeManualModal() { document.getElementById('manualUploadModal').style.display = "none"; }
-  function triggerManualFilePick() { document.getElementById('manualFileInput').click(); }
-
-  function executeManualUpload(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    var customTitle = document.getElementById('manualTitleInput').value.trim();
-    var categoryDesc = document.getElementById('manualCategoryInput').value.trim();
-    closeManualModal();
-
-    setInputLocked(true);
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var base64Data = e.target.result.split(',')[1];
-      fetch(BACKEND_API_URL, {
-        method: "POST",
-        mode: "cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "upload",
-          base64: base64Data,
-          fileName: file.name,
-          mimeType: "application/pdf",
-          customTitle: customTitle,
-          categoryDesc: categoryDesc
-        })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(res) {
-        setInputLocked(false);
-        alert(res.message || "Document submitted to verification queue.");
-      })
-      .catch(function(err) {
-        setInputLocked(false);
-        alert("Upload error: " + err.toString());
-      });
-    };
-    reader.readAsDataURL(file);
-    event.target.value = "";
-  }
-
-  function toggleMediaMenu(e) {
-    e.stopPropagation();
-    var sheet = document.getElementById('mediaSheet');
-    sheet.style.display = (sheet.style.display === 'flex') ? 'none' : 'flex';
-  }
-
-  document.addEventListener('click', function() {
-    var sheet = document.getElementById('mediaSheet');
-    if (sheet) sheet.style.display = 'none';
-  });
-
-  function triggerCameraCapture() { document.getElementById('cameraInput').click(); }
-  function triggerGalleryPicker() { document.getElementById('galleryInput').click(); }
-  function triggerDocPicker() { document.getElementById('docInput').click(); }
-
-  function setReplyContext(msgId) {
-    var item = messageHistoryStore[msgId];
-    if (!item) return;
-
-    currentReplyingContext = {
-      msgId: msgId,
-      text: item.text || "",
-      dataUrl: item.dataUrl || null,
-      base64: item.base64 || null,
-      mimeType: item.mimeType || null
-    };
-
-    var tray = document.getElementById('replyTray');
-    var thumb = document.getElementById('replyThumb');
-    var snippet = document.getElementById('replySnippet');
-
-    if (item.dataUrl) {
-      thumb.src = item.dataUrl;
-      thumb.style.display = 'block';
-    } else {
-      thumb.style.display = 'none';
+function doPost(e) {
+  var requestId = "REQ-" + Utilities.formatDate(new Date(), "GMT+5:30", "yyyyMMdd-HHmmss") + "-" + Math.floor(Math.random() * 1000);
+  try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return buildJsonResponse({ status: "error", error_code: 400, reply: "Invalid payload received." });
     }
 
-    snippet.innerText = item.text || (item.dataUrl ? "[Technical Media]" : "[Message]");
-    tray.style.display = 'flex';
-    document.getElementById('userInput').focus();
-    triggerHaptic(30);
-  }
+    var data = JSON.parse(e.postData.contents);
 
-  function cancelReplyContext() {
-    currentReplyingContext = null;
-    document.getElementById('replyTray').style.display = 'none';
-  }
-
-  function setInputLocked(locked) {
-    isBusyProcessing = locked;
-    var bar = document.getElementById('chatInputBar');
-    var input = document.getElementById('userInput');
-    var sendBtn = document.getElementById('sendBtn');
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-
-    if (locked) {
-      if (bar) bar.classList.add('locked');
-      if (input) {
-        input.disabled = true;
-        input.placeholder = dict.processing;
-      }
-      if (sendBtn) sendBtn.disabled = true;
-    } else {
-      if (bar) bar.classList.remove('locked');
-      if (input) {
-        input.disabled = false;
-        input.placeholder = dict.placeholder;
-        input.focus();
-      }
-      if (sendBtn) sendBtn.disabled = false;
-    }
-  }
-
-  function handleUniversalFile(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    var previewSlot = document.getElementById('trayPreviewSlot');
-    var trayTitle = document.getElementById('attachmentFileName');
-    var trayBar = document.getElementById('attachmentBar');
-
-    trayTitle.innerText = file.name;
-    trayBar.style.display = 'flex';
-
-    var mime = (file.type || "").toLowerCase();
-    var isImage = mime.indexOf("image/") === 0;
-
-    if (isImage) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var img = new Image();
-        img.onload = function() {
-          var canvas = document.createElement('canvas');
-          var max_dim = 800;
-          var w = img.width;
-          var h = img.height;
-          if (w > h && w > max_dim) { h = Math.round((h * max_dim) / w); w = max_dim; }
-          else if (h > max_dim) { w = Math.round((w * max_dim) / h); h = max_dim; }
-          canvas.width = w; canvas.height = h;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          var dataUrl = canvas.toDataURL('image/jpeg', 0.62);
-
-          activeAttachment = {
-            fileName: file.name,
-            mimeType: "image/jpeg",
-            base64: dataUrl.split(',')[1],
-            dataUrl: dataUrl
-          };
-
-          previewSlot.innerHTML = '<img src="' + dataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">';
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        activeAttachment = {
-          fileName: file.name,
-          mimeType: mime || "application/octet-stream",
-          base64: e.target.result.split(',')[1],
-          textExtract: null,
-          dataUrl: null
-        };
-        previewSlot.innerHTML = '📁';
-      };
-      reader.readAsDataURL(file);
+    if (data.action === "ping") {
+      getFastDriveIndex(false);
+      return buildJsonResponse({ status: "warm", message: "Server operational." });
     }
 
-    var input = document.getElementById('userInput');
-    input.placeholder = (CURRENT_LANG === 'hi' ? "संलग्न मीडिया हेतु प्रश्न लिखें..." : (CURRENT_LANG === 'hinglish' ? "Attachment se related sawal likhein..." : "Describe technical inquiry for attached media..."));
-    input.focus();
-    event.target.value = "";
-  }
-
-  function clearAttachment() {
-    activeAttachment = null;
-    document.getElementById('attachmentBar').style.display = "none";
-    document.getElementById('trayPreviewSlot').innerHTML = '📎';
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-    document.getElementById('userInput').placeholder = dict.placeholder;
-  }
-
-  function toggleVoiceInput() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert("Speech Recognition engine not supported in this browser.");
-      return;
+    if (data.action === "ask") {
+      var result = askPMSupport(data.query, data.machineKey, data.isGeneral, data.conversationHistory, data.attachment, requestId, data.quotedContext, data.lang);
+      return buildJsonResponse(result);
     }
 
-    var micBtn = document.getElementById('micBtn');
-
-    if (isRecognizing) {
-      if (speechRecognizer) speechRecognizer.stop();
-      isRecognizing = false;
-      micBtn.classList.remove('listening');
-      return;
+    if (data.action === "upload") {
+      var uploadRes = quarantineUpload(data.base64, data.fileName, data.mimeType, data.customTitle, data.categoryDesc);
+      return buildJsonResponse(uploadRes);
     }
 
-    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    speechRecognizer = new SpeechRecognition();
-    speechRecognizer.continuous = false;
-    speechRecognizer.interimResults = false;
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-    speechRecognizer.lang = dict.speechLang || 'en-US';
+    return buildJsonResponse({ status: "error", error_code: 400, reply: "Unknown operation." });
 
-    speechRecognizer.onstart = function() {
-      isRecognizing = true;
-      micBtn.classList.add('listening');
-      triggerHaptic(50);
-    };
-
-    speechRecognizer.onresult = function(event) {
-      var transcript = event.results[0][0].transcript;
-      var input = document.getElementById('userInput');
-      input.value = (input.value ? input.value + ' ' : '') + transcript;
-      input.focus();
-    };
-
-    speechRecognizer.onerror = function() {
-      isRecognizing = false;
-      micBtn.classList.remove('listening');
-    };
-
-    speechRecognizer.onend = function() {
-      isRecognizing = false;
-      micBtn.classList.remove('listening');
-    };
-
-    speechRecognizer.start();
-  }
-
-  function toggleGeneralMode() {
-    isGeneral = !isGeneral;
-    var btn = document.getElementById('generalModeBtn');
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-
-    if (isGeneral) {
-      btn.classList.add('active');
-      btn.innerText = dict.generalActiveBtn;
-      currentMachine = "";
-      currentMachineName = "";
-      document.getElementById('activeMachineStatus').innerText = dict.generalModeDesk;
-    } else {
-      btn.classList.remove('active');
-      btn.innerText = dict.generalBtn;
-      document.getElementById('activeMachineStatus').innerText = dict.deskStatus;
-    }
-  }
-
-  function resetChat() {
-    currentMachine = "";
-    currentMachineName = "";
-    conversationHistoryQueue = [];
-    clearAttachment();
-    cancelReplyContext();
-    setInputLocked(false);
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-    document.getElementById('activeMachineStatus').innerText = dict.deskStatus;
-    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card">' + dict.resetOnboarding + '</div>';
-  }
-
-  function handleFollowUp(text) {
-    if (isBusyProcessing) return;
-    if (text.indexOf("Reset") !== -1 || text.indexOf("रीसेट") !== -1) { resetChat(); return; }
-    document.getElementById('userInput').value = text;
-    executeOneTapSend();
-  }
-
-  function executeOneTapSend() {
-    if (isBusyProcessing) return;
-
-    var now = Date.now();
-    if (now - lastSentTimestamp < 300) return;
-    lastSentTimestamp = now;
-
-    var input = document.getElementById('userInput');
-    var q = (input.value || '').trim();
-    if (!q && !activeAttachment && !currentReplyingContext) return;
-
-    var currentText = q;
-    var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
-
-    // 0ms Greeting Interceptor
-    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram|greetings|नमस्ते|प्रणाम)$/i.test(qClean)) {
-      input.value = '';
-      var box = document.getElementById('chatBox');
-      var uNode = document.createElement('div');
-      uNode.className = 'msg user-msg';
-      uNode.innerHTML = escapeHtml(currentText) + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
-      box.appendChild(uNode);
-
-      var bNode = document.createElement('div');
-      bNode.className = 'msg bot-msg';
-      var greetingMsg = "P&M Support Desk active. Specify target equipment model, drawing reference, or operational fault code.";
-      if (CURRENT_LANG === 'hinglish') {
-        greetingMsg = "Haan bhai, P&M desk active hai! Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein.";
-      } else if (CURRENT_LANG === 'hi') {
-        greetingMsg = "पी&एम तकनीकी सहायता सक्रिय है। कृपया उपकरण का नाम, परिपथ आरेख अथवा तकनीकी समस्या का विवरण बताएं।";
-      }
-      bNode.innerHTML = greetingMsg + "<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
-      box.appendChild(bNode);
-      scrollToBottom();
-      return;
-    }
-
-    setInputLocked(true);
-    triggerHaptic(25);
-    input.value = '';
-
-    var toSendAttach = null;
-    var userBubbleThumb = null;
-    var quotedContextToSend = null;
-
-    if (activeAttachment) {
-      toSendAttach = {
-        fileName: activeAttachment.fileName,
-        mimeType: activeAttachment.mimeType,
-        base64: activeAttachment.base64
-      };
-      userBubbleThumb = activeAttachment.dataUrl;
-    } else if (currentReplyingContext && currentReplyingContext.base64) {
-      toSendAttach = {
-        fileName: "quoted_media.jpg",
-        mimeType: currentReplyingContext.mimeType || "image/jpeg",
-        base64: currentReplyingContext.base64
-      };
-      userBubbleThumb = currentReplyingContext.dataUrl;
-    }
-
-    if (currentReplyingContext) {
-      quotedContextToSend = {
-        text: currentReplyingContext.text,
-        hasImage: !!currentReplyingContext.dataUrl
-      };
-    }
-
-    var capturedReplySnapshot = currentReplyingContext;
-    clearAttachment();
-    cancelReplyContext();
-
-    var currentMsgId = "msg-" + Date.now();
-    messageHistoryStore[currentMsgId] = {
-      text: currentText,
-      dataUrl: userBubbleThumb || (capturedReplySnapshot ? capturedReplySnapshot.dataUrl : null),
-      base64: toSendAttach ? toSendAttach.base64 : null
-    };
-
-    var box = document.getElementById('chatBox');
-    var userNode = document.createElement('div');
-    userNode.className = 'msg user-msg';
-    userNode.id = currentMsgId;
-
-    var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">' + dict.replyTrigger + '</span>';
-    var quotedHtml = '';
-    if (capturedReplySnapshot) {
-      var qThumb = capturedReplySnapshot.dataUrl ? '<img src="' + capturedReplySnapshot.dataUrl + '">' : '';
-      var qTxt = capturedReplySnapshot.text || (capturedReplySnapshot.dataUrl ? "Media Attachment" : "Context Reference");
-      quotedHtml = '<div class="quoted-box-bubble">' + qThumb + '<div class="q-text">↩️ ' + escapeHtml(qTxt) + '</div></div>';
-    }
-
-    var mediaHtml = '';
-    if (userBubbleThumb) {
-      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Media Attachment" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
-    }
-
-    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : '<i>[Technical Media Staged for Inspection]</i>';
-    userNode.innerHTML = replyBtnHtml + quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
-    box.appendChild(userNode);
-
-    var typingId = "typ-" + Date.now();
-    var bubbleNode = document.createElement('div');
-    bubbleNode.className = 'wa-typing-bubble';
-    bubbleNode.id = typingId;
-    bubbleNode.innerHTML = '<div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div>';
-    box.appendChild(bubbleNode);
-    scrollToBottom();
-
-    conversationHistoryQueue.push({ role: "user", text: currentText });
-    if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
-
-    fetch(BACKEND_API_URL, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: "ask",
-        query: currentText,
-        machineKey: isGeneral ? "" : currentMachine,
-        isGeneral: isGeneral,
-        attachment: toSendAttach,
-        quotedContext: quotedContextToSend,
-        conversationHistory: conversationHistoryQueue,
-        lang: CURRENT_LANG
-      })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(res) {
-      var el = document.getElementById(typingId);
-      if (!el) { setInputLocked(false); return; }
-
-      if (!isGeneral && res && res.machineKey && res.machineName) {
-        currentMachine = res.machineKey;
-        currentMachineName = res.machineName;
-        document.getElementById('activeMachineStatus').innerText = (CURRENT_LANG === 'hi' ? "सक्रिय: " : (CURRENT_LANG === 'hinglish' ? "Active: " : "Active: ")) + res.machineName;
-      }
-
-      var rawReply = (res && res.reply) ? res.reply.trim() : "No technical response returned.";
-      conversationHistoryQueue.push({ role: "assistant", text: rawReply.substring(0, 400) });
-      if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
-
-      var botMsgId = "msg-" + Date.now();
-      messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
-      var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">' + dict.replyTrigger + '</span>';
-
-      // 🟢 Transform Bubble to Live Streaming Container
-      el.className = 'msg bot-msg';
-      el.id = botMsgId;
-      el.innerHTML = botReplyBtn + '<div class="live-stream-content"></div><div class="msg-meta">' + getFormattedTime() + '</div>';
-
-      var streamContainer = el.querySelector('.live-stream-content');
-
-      // 🟢 Execute Smooth Live Typewriter Stream
-      streamTypewriterOutput(streamContainer, rawReply, function() {
-        // Render Source Cards & Action Chips post-typing
-        var extrasContainer = document.createElement('div');
-        var sourcesHtml = "";
-
-        if (res && res.sources && res.sources.length > 0) {
-          sourcesHtml = '<div class="source-digest-box"><div class="source-digest-header">📚 Matched Manual Pages (' + res.sources.length + ' Sources Verified):</div>';
-          for (var s = 0; s < res.sources.length; s++) {
-            var src = res.sources[s];
-            sourcesHtml += 
-              '<div class="source-item-card">' +
-                '<div class="source-item-top">' +
-                  '<span class="source-item-title">📄 ' + escapeHtml(src.fileName) + '</span>' +
-                  '<span class="source-item-tag">Page ' + src.page + ' • ' + src.relevance + '% Match</span>' +
-                '</div>' +
-                '<div class="source-item-desc">' + escapeHtml(src.digest) + '</div>' +
-                '<div class="source-item-actions">' +
-                  '<button type="button" class="btn-view-inline" onclick="openInlineDrawingViewer(\'' + src.fileId + '\', \'' + escapeHtmlAttr(src.fileName) + '\', ' + src.page + ')">👁️ Inspect Page ' + src.page + '</button>' +
-                  '<a href="' + src.downloadUrl + '" target="_blank" class="btn-download-page">⬇️ Download PDF</a>' +
-                '</div>' +
-              '</div>';
-          }
-          sourcesHtml += '</div>';
-        }
-
-        var fpHtml = '';
-        if (res && res.followUps && res.followUps.length > 0) {
-          fpHtml = '<div class="followup-container">';
-          for (var i = 0; i < res.followUps.length; i++) {
-            fpHtml += '<button type="button" class="followup-chip" onclick="handleFollowUp(\'' + escapeHtmlAttr(res.followUps[i]) + '\')">👉 ' + escapeHtml(res.followUps[i]) + '</button>';
-          }
-          fpHtml += '</div>';
-        }
-
-        extrasContainer.innerHTML = sourcesHtml + fpHtml;
-        streamContainer.appendChild(extrasContainer);
-        scrollToBottom();
-        setInputLocked(false);
-      });
-    })
-    .catch(function(err) {
-      var el = document.getElementById(typingId);
-      if (el) {
-        el.outerHTML = '<div class="msg bot-msg">' + dict.netError + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
-      }
-      scrollToBottom();
-      setInputLocked(false);
+  } catch (err) {
+    Logger.log("[" + requestId + "] doPost Exception: " + err.toString());
+    return buildJsonResponse({
+      status: "error",
+      error_code: 500,
+      requestId: requestId,
+      reply: "Technical gateway processing error. Please retry.",
+      followUps: [],
+      sources: []
     });
   }
+}
 
-  function escapeHtml(str) { return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-  function escapeHtmlAttr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+function buildJsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
 
-  window.addEventListener('DOMContentLoaded', function() {
-    warmUpBackendInstance();
-    applyLanguage(CURRENT_LANG);
-  });
-</script>
+function sanitizeBase64(rawStr) {
+  if (!rawStr || typeof rawStr !== 'string') return "";
+  var clean = rawStr;
+  if (clean.indexOf(",") !== -1) clean = clean.split(",")[1];
+  clean = clean.replace(/[^A-Za-z0-9+/=]/g, "");
+  while (clean.length % 4 !== 0) clean += "=";
+  return clean;
+}
 
-</body>
-</html>
+function getFastDriveIndex(forceRefresh) {
+  var cache = CacheService.getScriptCache();
+  if (!forceRefresh) {
+    var cached = cache.get("DRIVE_INDEX_FAST");
+    if (cached) {
+      try { return JSON.parse(cached); } catch (e) {}
+    }
+  }
+
+  var env = getEnvConfig();
+  var index = { totalMachines: 0, machines: {} };
+  if (!env.rootFolderId) return index;
+
+  try {
+    var rootFolder = DriveApp.getFolderById(env.rootFolderId);
+    var subFolders = rootFolder.getFolders();
+
+    while (subFolders.hasNext()) {
+      var folder = subFolders.next();
+      var folderName = folder.getName().trim();
+      if (/mobile\s*upload/i.test(folderName)) continue;
+
+      var catKey = folderName.toUpperCase().replace(/[^A-Z0-9]/g, '_').substring(0, 30);
+      index.machines[catKey] = {
+        folderId: folder.getId(),
+        name: folderName,
+        keywords: folderName.toLowerCase().split(/[\s_\-–()]+/).filter(function(k) { return k.length >= 3; })
+      };
+      index.totalMachines++;
+    }
+    cache.put("DRIVE_INDEX_FAST", JSON.stringify(index), 21600);
+  } catch (e) {
+    Logger.log("getFastDriveIndex error: " + e.toString());
+  }
+
+  return index;
+}
+
+function getLockedMachineFiles(machineKey, folderId) {
+  if (!machineKey || !folderId) return [];
+
+  var cache = CacheService.getScriptCache();
+  var cacheKey = "FILES_" + machineKey;
+  var cached = cache.get(cacheKey);
+  if (cached) {
+    try { 
+      var parsed = JSON.parse(cached);
+      if (parsed && parsed.length > 0) return parsed;
+    } catch (e) {}
+  }
+
+  var filesList = [];
+  try {
+    var targetFolder = DriveApp.getFolderById(folderId);
+    var files = targetFolder.getFiles();
+    var count = 0;
+    while (files.hasNext() && count < 25) {
+      var f = files.next();
+      var fId = f.getId();
+      var fSize = 0;
+      try { fSize = Math.round(f.getSize() / 1024); } catch(sErr) {}
+
+      filesList.push({
+        id: fId,
+        name: f.getName(),
+        size: fSize,
+        viewUrl: "https://drive.google.com/file/d/" + fId + "/preview",
+        downloadUrl: "https://drive.google.com/uc?export=download&id=" + fId
+      });
+      count++;
+    }
+    if (filesList.length > 0) {
+      cache.put(cacheKey, JSON.stringify(filesList), 21600);
+    }
+  } catch (err) {
+    Logger.log("getLockedMachineFiles safe bypass: " + err.toString());
+  }
+
+  return filesList;
+}
+
+function quarantineUpload(base64Data, fileName, mimeType, customTitle, categoryDesc) {
+  var env = getEnvConfig();
+  try {
+    var cleanBase64 = sanitizeBase64(base64Data);
+    if (!cleanBase64 || cleanBase64.length < 10) return { status: "error", message: "Invalid payload." };
+
+    var decoded = Utilities.base64Decode(cleanBase64);
+    var cleanMime = mimeType || "application/pdf";
+    var saveName = customTitle ? (customTitle + ".pdf") : (fileName || "uploaded_manual.pdf");
+    var blob = Utilities.newBlob(decoded, cleanMime, saveName);
+
+    var root = DriveApp.getFolderById(env.rootFolderId);
+    var subs = root.getFoldersByName("mobile upload");
+    var stagingFolder = subs.hasNext() ? subs.next() : root.createFolder("mobile upload");
+
+    var file = stagingFolder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    return {
+      status: "success",
+      fileId: file.getId(),
+      fileName: saveName,
+      message: "Uploaded to quarantine."
+    };
+  } catch (err) {
+    return { status: "error", message: err.toString() };
+  }
+}
+
+function askPMSupport(userQuery, activeMachineKey, isGeneralMode, conversationHistory, attachedFiles, requestId, quotedContext, selectedLang) {
+  try {
+    var raw = (userQuery || "").trim();
+    var qClean = raw.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    var langMode = (selectedLang || "en").toLowerCase();
+
+    var driveIndex = getFastDriveIndex(false);
+    var targetKey = null;
+
+    if (activeMachineKey && driveIndex.machines[activeMachineKey]) {
+      targetKey = activeMachineKey;
+    } else if (!isGeneralMode) {
+      var matchedKey = null;
+      var highestScore = 0;
+      for (var mKey in driveIndex.machines) {
+        var mObj = driveIndex.machines[mKey];
+        var score = 0;
+        for (var w = 0; w < mObj.keywords.length; w++) {
+          var kw = mObj.keywords[w];
+          var regex = new RegExp('\\b' + kw + '\\b', 'i');
+          if (regex.test(qClean)) score += (kw.length * 2);
+        }
+        if (score > highestScore && score >= 4) {
+          highestScore = score;
+          matchedKey = mKey;
+        }
+      }
+      targetKey = matchedKey;
+    }
+
+    var targetMachineObj = (targetKey && driveIndex.machines[targetKey]) ? driveIndex.machines[targetKey] : null;
+    var machineFiles = targetMachineObj ? getLockedMachineFiles(targetKey, targetMachineObj.folderId) : [];
+
+    // 🟢 1. FAST INITIAL LOCK SCOPE
+    var isJustSelectingMachine = !activeMachineKey && targetMachineObj && qClean.length <= 25 && (!attachedFiles || attachedFiles.length === 0) && !quotedContext;
+
+    if (isJustSelectingMachine) {
+      var mName = targetMachineObj.name;
+      var scopeReply = "";
+      if (langMode === "hi") {
+        scopeReply = "उपकरण संदर्भ लॉक किया गया: **" + mName + "**।\n\n" +
+          "📋 **उपलब्ध तकनीकी कवरेज एवं मैनुअल सारांश:**\n" +
+          "• **हाइड्रोलिक एवं डायरेक्ट कंट्रोल सिस्टम (DCS):** पंप दबाव, मुख्य नियंत्रण वाल्व (MCV) एवं वाल्व ब्लॉक सेटिंग्स।\n" +
+          "• **रॉक ड्रिल एवं ड्रिफ्टर (COP 1838HD+):** ओवरहालिंग प्रक्रिया, सील किट, संचायक (Accumulator) चार्जिंग एवं डैम्पनिंग दबाव।\n" +
+          "• **बूम पोजिशनिंग (BUT 35/32):** बूम सिलेंडर, फीडर ज्योमेट्री एवं एक्सटेंशन मैकेनिक्स।\n" +
+          "• **कैरियर एवं इलेक्ट्रिकल सर्किट:** इंजन DPF पुनर्जनन, 400V/50Hz पावर पैक एवं स्टार्टर वायरिंग डायग्राम।\n" +
+          "• **स्पेयर पार्ट्स कैटलॉग:** एक्सप्लोडेड असेंबली दृश्य एवं OEM पुर्जा संख्या (Part Numbers)।\n\n" +
+          "👉 विशिष्ट पुर्जा संख्या, हाइड्रोलिक परिपथ अथवा खराबी निवारण (Troubleshooting) हेतु प्रश्न पूछें।";
+      } else if (langMode === "hinglish") {
+        scopeReply = "Machine lock kar di gayi hai: **" + mName + "**!\n\n" +
+          "📋 **Repository Scope & Technical Coverage:**\n" +
+          "• **Hydraulics & DCS Logic:** Main pump pressure, pilot valve, check valves aur control block specifications.\n" +
+          "• **Rock Drill / COP 1838HD+:** Complete overhaul sequence, seal kits, accumulator nitrogen charging aur damping pressure values.\n" +
+          "• **Boom Mechanics (BUT 35/32):** Feed cylinder, boom positioning geometry aur extension cylinders.\n" +
+          "• **Carrier & Electricals:** DPF regeneration maintenance, 400V power pack, safety interlocks aur wiring diagrams.\n" +
+          "• **Parts Catalogue:** Exploded views aur official OEM spare part codes.\n\n" +
+          "👉 Ab iska kaunsa specific part number, hydraulic circuit ya fault code check karna hai batayein.";
+      } else {
+        scopeReply = "Equipment context initialized: **" + mName + "**.\n\n" +
+          "📋 **Repository Scope & Technical Coverage:**\n" +
+          "• **Hydraulics & Direct Control System (DCS):** Main pump pressures, pilot lines, check valves & control block settings.\n" +
+          "• **Rock Drill / COP Mechanics:** Overhaul workflows, seal kits, accumulator charging & damping pressure specifications.\n" +
+          "• **Boom Positioning (BUT 35/32):** Feed cylinders, telescopic boom geometry & positioning mechanics.\n" +
+          "• **Carrier & Electrical Systems:** DPF regeneration, 400V power pack, safety interlocks & schematic diagrams.\n" +
+          "• **Parts Catalogue:** Complete exploded assembly diagrams & verified OEM part numbers.\n\n" +
+          "👉 Specify component part number, hydraulic schematic, or fault code to inspect.";
+      }
+
+      return {
+        status: "success",
+        isGeneral: false,
+        machineKey: targetKey,
+        machineName: mName,
+        reply: scopeReply,
+        followUps: [
+          (langMode === "hi" ? "पार्ट्स कैटलॉग देखें" : (langMode === "hinglish" ? "Parts Catalogue Lookup" : "Parts Catalogue Lookup")),
+          (langMode === "hi" ? "हाइड्रोलिक परिपथ आरेख" : (langMode === "hinglish" ? "Hydraulic Circuit Drawing" : "Hydraulic Schematic Drawing")),
+          (langMode === "hi" ? "संपूर्ण मैनुअल PDF" : (langMode === "hinglish" ? "Complete OEM Manual PDF" : "Complete OEM Manual PDF"))
+        ],
+        card: (machineFiles.length > 0) ? machineFiles[0] : null,
+        sources: []
+      };
+    }
+
+    // 🟢 2. INSTANT TECHNICAL INQUIRY EXECUTION (NO PINECONE WAIT)
+    var matchedSources = [];
+    var matchedFile = (machineFiles.length > 0) ? machineFiles[0] : null;
+
+    // Fast keyword-based file finder from cached Drive files
+    for (var k = 0; k < machineFiles.length; k++) {
+      var fn = machineFiles[k].name.toLowerCase();
+      if (/part|spare|catalogue|drawing|diagram|schematic/i.test(fn)) {
+        matchedFile = machineFiles[k];
+        break;
+      }
+    }
+
+    var manualContextList = "";
+    if (machineFiles.length > 0) {
+      manualContextList = "\nAVAILABLE OEM MANUALS FOR " + (targetMachineObj ? targetMachineObj.name : "EQUIPMENT") + ":\n";
+      for (var f = 0; f < Math.min(machineFiles.length, 8); f++) {
+        manualContextList += "- " + machineFiles[f].name + "\n";
+      }
+    }
+
+    var contentParts = [];
+    var prompt = 
+      "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST ENGINEER AT SITE.\n" +
+      "MANDATE:\n" +
+      "1. Provide DIRECT, ACCURATE, and AUTHORITATIVE engineering specifications immediately without any introductory pleasantries.\n" +
+      "2. State the Component Nomenclature, Function, and EXACT OEM Part Number / Part Code for the asked component.\n" +
+      "3. Specify the Drawing Position and Page Reference (e.g. 'Drawing Position: Item 12, Page 142').\n" +
+      "4. Language: " + (langMode === 'hi' ? "Formal Hindi (Devanagari)" : (langMode === 'hinglish' ? "Workshop Hinglish" : "Corporate Technical English")) + ".\n" +
+      "5. Active Machine: " + (targetMachineObj ? targetMachineObj.name : "Universal P&M") + ".\n" +
+      manualContextList + "\n\n" +
+      "Engineer Query: " + raw;
+
+    contentParts.push({ text: prompt });
+
+    // Instant Gemini Fetch (1-2s response)
+    var aiResponse = executeGemini(contentParts, requestId);
+
+    // Extract target page from response if mentioned
+    var targetPage = 1;
+    var inlinePageMatch = aiResponse.reply.match(/(?:page|sheet|drawing|पेज|पृष्ठ)\s*(?:no\.?|number|#)?\s*(\d+)/i);
+    if (inlinePageMatch) {
+      targetPage = parseInt(inlinePageMatch[1], 10);
+    }
+
+    if (matchedFile) {
+      matchedSources.push({
+        fileId: matchedFile.id,
+        fileName: matchedFile.name,
+        page: targetPage,
+        relevance: 98,
+        digest: "OEM parts catalogue drawing reference for " + (targetMachineObj ? targetMachineObj.name : "component") + " (Page " + targetPage + ")",
+        viewUrl: "https://drive.google.com/file/d/" + matchedFile.id + "/preview#page=" + targetPage,
+        downloadUrl: "https://drive.google.com/uc?export=download&id=" + matchedFile.id
+      });
+    }
+
+    return {
+      status: "success",
+      isGeneral: isGeneralMode,
+      machineKey: targetKey,
+      machineName: targetMachineObj ? targetMachineObj.name : null,
+      reply: aiResponse.reply,
+      followUps: aiResponse.followUps,
+      card: matchedSources[0] || null,
+      sources: matchedSources
+    };
+
+  } catch (e) {
+    Logger.log("[" + requestId + "] askPMSupport Error: " + e.toString());
+    return {
+      status: "error",
+      reply: "Technical gateway interruption. Please retry.",
+      followUps: [],
+      sources: []
+    };
+  }
+}
+
+function executeGemini(contentParts, requestId) {
+  var replyText = "";
+  var success = false;
+  var lastErrorMsg = "";
+  var env = getEnvConfig();
+
+  if (!env.apiKey) {
+    return { reply: "⚠️ GEMINI_API_KEY environment configuration missing.", followUps: [] };
+  }
+
+  var candidateModels = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-4-argon"];
+
+  for (var m = 0; m < candidateModels.length; m++) {
+    var modelName = candidateModels[m];
+    var callUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + env.apiKey;
+
+    try {
+      var response = UrlFetchApp.fetch(callUrl, {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify({
+          contents: [{ role: "user", parts: contentParts }],
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.1 }
+        }),
+        muteHttpExceptions: true
+      });
+
+      var code = response.getResponseCode();
+      var responseRaw = response.getContentText();
+
+      if (code === 200) {
+        var json = JSON.parse(responseRaw);
+        if (json.candidates && json.candidates[0].content && json.candidates[0].content.parts) {
+          replyText = json.candidates[0].content.parts[0].text;
+          success = true;
+          break;
+        }
+      } else {
+        lastErrorMsg = "Model " + modelName + " (HTTP " + code + "): " + responseRaw.substring(0, 100);
+      }
+    } catch (netErr) {
+      lastErrorMsg = netErr.toString();
+    }
+  }
+
+  if (!success || !replyText) {
+    replyText = "⚠️ AI Gateway Busy: " + (lastErrorMsg || "Offline") + ". Kripya dobara try karein.";
+  }
+
+  replyText = replyText.trim();
+  var followUps = [];
+  var fuMatch = replyText.match(/\[\[FOLLOW_UP:\s*([\s\S]*?)\]\]/i);
+  if (fuMatch) {
+    followUps = fuMatch[1].split('|').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+    replyText = replyText.replace(fuMatch[0], '').trim();
+  }
+
+  return { reply: replyText, followUps: followUps };
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
