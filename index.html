@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=200">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=200">
-  <link rel="manifest" href="manifest.json?v=200">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=210">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=210">
+  <link rel="manifest" href="manifest.json?v=210">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -92,7 +92,7 @@
       gap: 8px; 
       position: relative; 
       background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=200'); 
+      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=210'); 
       background-repeat: repeat; 
       background-size: 380px auto; 
     }
@@ -119,6 +119,18 @@
     .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
     .status-tick { color: #53bdeb; font-size: 11px; }
+
+    /* 🟢 LIVE STREAMING TYPING CURSOR */
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background-color: #008069;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blinkCursor 0.8s infinite;
+    }
+    @keyframes blinkCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     /* 🟢 MULTI-SOURCE DIGEST CARDS */
     .source-digest-box { margin-top: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -165,7 +177,7 @@
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
-    /* 🟢 INLINE DRAWING & PAGE INSPECTOR (ZOOM & PAN MODAL) */
+    /* 🟢 INLINE DRAWING & PAGE INSPECTOR */
     .drawing-modal {
       position: fixed;
       inset: 0;
@@ -187,7 +199,6 @@
     .drawing-modal-title { font-size: 13px; font-weight: 600; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .drawing-tools { display: flex; align-items: center; gap: 8px; }
     .tool-btn { background: #334155; color: #ffffff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .tool-btn:active { background: #475569; }
     .tool-btn-close { background: #ef4444; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
     
     .drawing-modal-body {
@@ -224,7 +235,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=200" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=210" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3 id="uiHeaderTitle">P&amp;M Support Desk</h3>
@@ -292,7 +303,7 @@
   </div>
 </div>
 
-<!-- 🟢 INLINE DRAWING & PAGE INSPECTOR (WITH ZOOM/PAN & DOWNLOAD) -->
+<!-- 🟢 INLINE DRAWING & PAGE INSPECTOR -->
 <div class="drawing-modal" id="drawingModal">
   <div class="drawing-modal-header">
     <div class="drawing-modal-title" id="modalDocTitle">Document Inspection</div>
@@ -333,7 +344,7 @@
       deskStatus: "P&M Engineering Desk • Lead Dev: Nitin Misra",
       onboarding: "<strong>📌 P&M Engineering Desk Active</strong><br>• State equipment model, part number, schematic requirement, or fault diagnosis.<br>• 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.",
       placeholder: "Enter technical inquiry or use voice input...",
-      processing: "Processing technical inquiry... please wait",
+      processing: "Analyzing engineering specifications...",
       generalBtn: "💬 General",
       generalActiveBtn: "⚡ General ON",
       generalModeDesk: "Mode: Universal P&M Engineering Standards",
@@ -348,8 +359,6 @@
       uploadLbl2: "System / Engineering Classification:",
       cancelBtn: "Cancel",
       submitBtn: "Select PDF & Submit",
-      drawingBtn: "🎯 Inspect Drawing (Page {PAGE}) ↗",
-      downloadBtn: "⬇️ Download Manual ({SIZE})",
       speechLang: "en-US",
       netError: "⚠️ Network connection interruption occurred. Please re-state your inquiry."
     },
@@ -358,7 +367,7 @@
       deskStatus: "P&M Technical Desk • Dev: Nitin Misra",
       onboarding: "<strong>📌 P&M Technical Desk Active</strong><br>• Machine ka model, part number, hydraulic circuit ya fault poochhein.<br>• 💡 Context Threading: Kisi bhi message ya photo par ↩️ Reply daba kar context jodein.",
       placeholder: "Sawal likhein ya bolkar batayein...",
-      processing: "Technical sawal check ho raha hai... kripya rukein",
+      processing: "Technical specifications check ho rahi hain...",
       generalBtn: "💬 General",
       generalActiveBtn: "⚡ General ON",
       generalModeDesk: "Mode: Universal P&M Workshop Standards",
@@ -373,8 +382,6 @@
       uploadLbl2: "System / Note:",
       cancelBtn: "Cancel",
       submitBtn: "PDF Chunein & Submit Karein",
-      drawingBtn: "🎯 Drawing Kholein (Page {PAGE}) ↗",
-      downloadBtn: "⬇️ Poora Manual Download Karein ({SIZE})",
       speechLang: "hi-IN",
       netError: "⚠️ Network connection drop ho gaya hai. Kripya dobara try karein."
     },
@@ -383,7 +390,7 @@
       deskStatus: "पी&एम इंजीनियरिंग डेस्क • मुख्य विकासकर्ता: नितिन मिश्रा",
       onboarding: "<strong>📌 पी&एम तकनीकी सहायता सक्रिय</strong><br>• मशीन मॉडल, पुर्जा संख्या (Part No), परिपथ आरेख अथवा तकनीकी खराबी का विवरण लिखें।<br>• 💡 संदर्भ बनाए रखने हेतु किसी भी संदेश अथवा चित्र पर ↩️ उत्तर (Reply) चुनें।",
       placeholder: "तकनीकी प्रश्न लिखें अथवा बोलकर बताएं...",
-      processing: "प्रक्रिया जारी है... कृपया प्रतीक्षा करें",
+      processing: "तकनीकी विवरण का विश्लेषण जारी है...",
       generalBtn: "💬 सामान्य",
       generalActiveBtn: "⚡ सामान्य सक्रिय",
       generalModeDesk: "मोड: सार्वभौमिक पी&एम इंजीनियरिंग मानक",
@@ -398,8 +405,6 @@
       uploadLbl2: "प्रणाली / तकनीकी वर्गीकरण:",
       cancelBtn: "रद्द करें",
       submitBtn: "PDF चुनें और सबमिट करें",
-      drawingBtn: "🎯 तकनीकी आरेख खोलें (पृष्ठ {PAGE}) ↗",
-      downloadBtn: "⬇️ संपूर्ण OEM मैनुअल डाउनलोड करें ({SIZE})",
       speechLang: "hi-IN",
       netError: "⚠️ नेटवर्क संपर्क बाधित हुआ। कृपया पुनः प्रयास करें।"
     }
@@ -417,8 +422,6 @@
 
   var currentReplyingContext = null; 
   var messageHistoryStore = {};
-
-  // 🟢 Rolling Session Conversation Memory
   var conversationHistoryQueue = [];
   var currentZoomLevel = 1.0;
 
@@ -481,10 +484,35 @@
 
   function scrollToBottom() {
     var box = document.getElementById('chatBox');
-    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
+    if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 10);
   }
 
-  // 🟢 INLINE DRAWING & ZOOM VIEWER ENGINE
+  /* 🟢 ULTRA-FAST TYPEWRITER STREAMING ENGINE */
+  function streamTypewriterOutput(containerEl, fullMarkdownText, callbackOnComplete) {
+    var words = fullMarkdownText.split(' ');
+    var currentWordIndex = 0;
+    var accumulatedText = "";
+    
+    var typingTimer = setInterval(function() {
+      // Stream in 2 words per tick for high fluid pace
+      var wordsToAdd = 2;
+      for (var w = 0; w < wordsToAdd && currentWordIndex < words.length; w++) {
+        accumulatedText += (currentWordIndex === 0 ? "" : " ") + words[currentWordIndex];
+        currentWordIndex++;
+      }
+
+      containerEl.innerHTML = marked.parse(accumulatedText) + '<span class="typing-cursor"></span>';
+      scrollToBottom();
+
+      if (currentWordIndex >= words.length) {
+        clearInterval(typingTimer);
+        containerEl.innerHTML = marked.parse(fullMarkdownText);
+        scrollToBottom();
+        if (callbackOnComplete) callbackOnComplete();
+      }
+    }, 25);
+  }
+
   function openInlineDrawingViewer(fileId, title, page) {
     if (!fileId) return;
     var targetP = parseInt(page, 10) || 1;
@@ -496,7 +524,6 @@
     titleEl.innerText = title + " (Page " + targetP + ")";
     dlBtn.href = "https://drive.google.com/uc?export=download&id=" + fileId;
     
-    // Direct page view embed
     iframe.src = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP + "&zoom=120";
     currentZoomLevel = 1.0;
     iframe.style.transform = "scale(1)";
@@ -639,16 +666,6 @@
       }
       if (sendBtn) sendBtn.disabled = false;
     }
-  }
-
-  function renderRichContent(rawText) {
-    if (!rawText || !rawText.trim()) return "";
-    var parsedHtml = rawText;
-    if (window.marked) {
-      marked.setOptions({ gfm: true, breaks: true });
-      parsedHtml = marked.parse(rawText);
-    }
-    return parsedHtml;
   }
 
   function handleUniversalFile(event) {
@@ -917,7 +934,6 @@
     box.appendChild(bubbleNode);
     scrollToBottom();
 
-    // Context Queue update
     conversationHistoryQueue.push({ role: "user", text: currentText });
     if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
 
@@ -948,50 +964,60 @@
       }
 
       var rawReply = (res && res.reply) ? res.reply.trim() : "No technical response returned.";
-      var replyHtml = renderRichContent(rawReply);
-
-      // Context Queue Bot update
       conversationHistoryQueue.push({ role: "assistant", text: rawReply.substring(0, 400) });
       if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
-
-      // 🟢 MULTI-SOURCE DIGEST CARDS WITH INLINE ZOOM TRIGGER
-      var sourcesHtml = "";
-      if (res && res.sources && res.sources.length > 0) {
-        sourcesHtml = '<div class="source-digest-box"><div class="source-digest-header">📚 Matched Manual Pages (' + res.sources.length + ' Sources Verified):</div>';
-        for (var s = 0; s < res.sources.length; s++) {
-          var src = res.sources[s];
-          sourcesHtml += 
-            '<div class="source-item-card">' +
-              '<div class="source-item-top">' +
-                '<span class="source-item-title">📄 ' + escapeHtml(src.fileName) + '</span>' +
-                '<span class="source-item-tag">Page ' + src.page + ' • ' + src.relevance + '% Match</span>' +
-              '</div>' +
-              '<div class="source-item-desc">' + escapeHtml(src.digest) + '</div>' +
-              '<div class="source-item-actions">' +
-                '<button type="button" class="btn-view-inline" onclick="openInlineDrawingViewer(\'' + src.fileId + '\', \'' + escapeHtmlAttr(src.fileName) + '\', ' + src.page + ')">👁️ Inspect Page ' + src.page + '</button>' +
-                '<a href="' + src.downloadUrl + '" target="_blank" class="btn-download-page">⬇️ Download PDF</a>' +
-              '</div>' +
-            '</div>';
-        }
-        sourcesHtml += '</div>';
-      }
-
-      var fpHtml = '';
-      if (res && res.followUps && res.followUps.length > 0) {
-        fpHtml = '<div class="followup-container">';
-        for (var i = 0; i < res.followUps.length; i++) {
-          fpHtml += '<button type="button" class="followup-chip" onclick="handleFollowUp(\'' + escapeHtmlAttr(res.followUps[i]) + '\')">👉 ' + escapeHtml(res.followUps[i]) + '</button>';
-        }
-        fpHtml += '</div>';
-      }
 
       var botMsgId = "msg-" + Date.now();
       messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
       var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">' + dict.replyTrigger + '</span>';
 
-      el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + sourcesHtml + fpHtml + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
-      scrollToBottom();
-      setInputLocked(false);
+      // 🟢 Transform Bubble to Live Streaming Container
+      el.className = 'msg bot-msg';
+      el.id = botMsgId;
+      el.innerHTML = botReplyBtn + '<div class="live-stream-content"></div><div class="msg-meta">' + getFormattedTime() + '</div>';
+
+      var streamContainer = el.querySelector('.live-stream-content');
+
+      // 🟢 Execute Smooth Live Typewriter Stream
+      streamTypewriterOutput(streamContainer, rawReply, function() {
+        // Render Source Cards & Action Chips post-typing
+        var extrasContainer = document.createElement('div');
+        var sourcesHtml = "";
+
+        if (res && res.sources && res.sources.length > 0) {
+          sourcesHtml = '<div class="source-digest-box"><div class="source-digest-header">📚 Matched Manual Pages (' + res.sources.length + ' Sources Verified):</div>';
+          for (var s = 0; s < res.sources.length; s++) {
+            var src = res.sources[s];
+            sourcesHtml += 
+              '<div class="source-item-card">' +
+                '<div class="source-item-top">' +
+                  '<span class="source-item-title">📄 ' + escapeHtml(src.fileName) + '</span>' +
+                  '<span class="source-item-tag">Page ' + src.page + ' • ' + src.relevance + '% Match</span>' +
+                '</div>' +
+                '<div class="source-item-desc">' + escapeHtml(src.digest) + '</div>' +
+                '<div class="source-item-actions">' +
+                  '<button type="button" class="btn-view-inline" onclick="openInlineDrawingViewer(\'' + src.fileId + '\', \'' + escapeHtmlAttr(src.fileName) + '\', ' + src.page + ')">👁️ Inspect Page ' + src.page + '</button>' +
+                  '<a href="' + src.downloadUrl + '" target="_blank" class="btn-download-page">⬇️ Download PDF</a>' +
+                '</div>' +
+              '</div>';
+          }
+          sourcesHtml += '</div>';
+        }
+
+        var fpHtml = '';
+        if (res && res.followUps && res.followUps.length > 0) {
+          fpHtml = '<div class="followup-container">';
+          for (var i = 0; i < res.followUps.length; i++) {
+            fpHtml += '<button type="button" class="followup-chip" onclick="handleFollowUp(\'' + escapeHtmlAttr(res.followUps[i]) + '\')">👉 ' + escapeHtml(res.followUps[i]) + '</button>';
+          }
+          fpHtml += '</div>';
+        }
+
+        extrasContainer.innerHTML = sourcesHtml + fpHtml;
+        streamContainer.appendChild(extrasContainer);
+        scrollToBottom();
+        setInputLocked(false);
+      });
     })
     .catch(function(err) {
       var el = document.getElementById(typingId);
