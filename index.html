@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=150">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=150">
-  <link rel="manifest" href="manifest.json?v=150">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=170">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=170">
+  <link rel="manifest" href="manifest.json?v=170">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,7 +24,7 @@
     html, body { 
       width: 100%; 
       height: 100%; 
-      height: 100dvh; /* 🟢 Mobile Dynamic Viewport Fix */
+      height: 100dvh; 
       margin: 0; 
       padding: 0; 
       background: #efeae2; 
@@ -44,7 +44,7 @@
       padding: 0;
     }
 
-    /* 🟢 HEADER (Clean 1-Line Mobile Fit) */
+    /* 🟢 HEADER (Formal Corporate Theme) */
     .chat-header { 
       background: #008069; 
       color: #ffffff; 
@@ -80,12 +80,12 @@
       gap: 8px; 
       position: relative; 
       background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=150'); 
+      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=170'); 
       background-repeat: repeat; 
       background-size: 380px auto; 
     }
 
-    /* 🟢 DESKTOP & LAPTOP ADAPTIVE VIEW */
+    /* 🟢 DESKTOP & WORKSTATION VIEW */
     @media (min-width: 900px) {
       .chat-header { padding: 10px 24px; }
       .header-info h3 { font-size: 16px; }
@@ -112,7 +112,7 @@
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 🟢 WHATSAPP STYLE DOCUMENT ACTION CARD */
+    /* 🟢 DOCUMENT ACTION CARD */
     .wa-doc-box { margin-top: 8px; background: #f0f2f5; border: 1px solid #d1d7db; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .wa-doc-header { display: flex; align-items: center; gap: 10px; }
     .wa-doc-icon { width: 38px; height: 42px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-shrink: 0; }
@@ -147,7 +147,7 @@
     .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
     .media-opt:active { background: #f1f5f9; }
 
-    /* 🟢 CHAT INPUT BAR (Always Locked to Bottom) */
+    /* 🟢 CHAT INPUT BAR */
     .chat-input-bar { 
       padding: 6px 8px; 
       background: #f0f2f5; 
@@ -171,105 +171,6 @@
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
-    /* 🟢 IN-APP OTA UPDATE MODAL */
-    .ota-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      backdrop-filter: blur(3px);
-    }
-    .ota-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      animation: otaPop 0.25s ease-out;
-    }
-    @keyframes otaPop {
-      0% { transform: scale(0.92); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .ota-badge {
-      display: inline-block;
-      background: #dcfce7;
-      color: #15803d;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-    }
-    .ota-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 4px;
-    }
-    .ota-sub {
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 14px;
-    }
-    .ota-changelog-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 12px 14px;
-      max-height: 140px;
-      overflow-y: auto;
-      margin-bottom: 18px;
-    }
-    .ota-changelog-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 6px;
-    }
-    .ota-changelog-list {
-      padding-left: 18px;
-      font-size: 12.5px;
-      color: #475569;
-      line-height: 1.6;
-    }
-    .ota-actions {
-      display: flex;
-      gap: 10px;
-    }
-    .ota-btn-later {
-      flex: 1;
-      height: 42px;
-      background: #f1f5f9;
-      color: #475569;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13.5px;
-      cursor: pointer;
-    }
-    .ota-btn-update {
-      flex: 2;
-      height: 42px;
-      background: #008069;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13.5px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
-    }
-
     /* 🟢 UPLOAD MODAL */
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
     .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
@@ -288,11 +189,11 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=150" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=170" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
-        <h3>P&amp;M Support</h3>
-        <p id="activeMachineStatus">P&amp;M Desk • Dev: Nitin Misra</p>
+        <h3>P&amp;M Support Desk</h3>
+        <p id="activeMachineStatus">P&amp;M Engineering Desk • Lead Dev: Nitin Misra</p>
       </div>
     </div>
     <div class="header-actions">
@@ -304,19 +205,19 @@
 
   <div class="chat-messages" id="chatBox">
     <div class="onboarding-card">
-      <strong>📌 P&amp;M Technical Desk Active</strong><br>
-      • Direct machine part number, fault ya drawing reference poochhein.<br>
-      • 💡 Har message aur photo ke upar ↩️ Reply button hai jisse context wapas jud jayega.
+      <strong>📌 P&amp;M Engineering Desk Active</strong><br>
+      • State equipment model, part number, schematic requirement, or fault diagnosis.<br>
+      • 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.
     </div>
   </div>
 
-  <!-- WHATSAPP STYLE QUOTED REPLY TRAY -->
+  <!-- CONTEXT TRAY -->
   <div class="reply-context-tray" id="replyTray">
     <div class="reply-details">
-      <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Image">
+      <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Thumbnail">
       <div class="reply-texts">
-        <strong>Replying to message:</strong>
-        <span id="replySnippet">Text message...</span>
+        <strong>Replying to context:</strong>
+        <span id="replySnippet">Message snippet...</span>
       </div>
     </div>
     <button type="button" onclick="cancelReplyContext()" style="border:none;background:none;color:#ef4444;font-size:18px;font-weight:bold;cursor:pointer;">✕</button>
@@ -327,19 +228,19 @@
     <div id="trayPreviewSlot" class="tray-thumb">📎</div>
     <div class="tray-details">
       <div class="tray-title" id="attachmentFileName">file.jpg</div>
-      <div class="tray-hint">💡 Question likhein aur Send karein.</div>
+      <div class="tray-hint">Media staged. Enter inquiry description and click Send.</div>
     </div>
     <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;">✕</button>
   </div>
 
-  <!-- ACTION SHEET MENU -->
+  <!-- MEDIA ACTION SHEET -->
   <div class="media-sheet" id="mediaSheet">
     <button type="button" class="media-opt" onclick="triggerCameraCapture()">📷 Camera</button>
-    <button type="button" class="media-opt" onclick="triggerGalleryPicker()">🖼️ Photos/Gallery</button>
-    <button type="button" class="media-opt" onclick="triggerDocPicker()">📄 Document/File</button>
+    <button type="button" class="media-opt" onclick="triggerGalleryPicker()">🖼️ Photos / Gallery</button>
+    <button type="button" class="media-opt" onclick="triggerDocPicker()">📄 Document / File</button>
   </div>
 
-  <!-- CHAT INPUT BAR (Always visible at bottom) -->
+  <!-- CHAT INPUT BAR -->
   <div class="chat-input-bar" id="chatInputBar">
     <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
     
@@ -348,51 +249,29 @@
     <input type="file" id="docInput" style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.json,.xml" onchange="handleUniversalFile(event)">
     <input type="file" id="manualFileInput" style="display: none;" accept="application/pdf" onchange="executeManualUpload(event)">
     
-    <input type="text" id="userInput" placeholder="Sawal likhein ya bolkar batayein..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
-    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Bolkar Sawal Poohein">🎙️</button>
+    <input type="text" id="userInput" placeholder="Enter technical inquiry or use voice input..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
+    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input">🎙️</button>
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
-  </div>
-</div>
-
-<!-- 🟢 IN-APP OTA UPDATE MODAL -->
-<div class="ota-modal" id="otaModal">
-  <div class="ota-card">
-    <span class="ota-badge">✨ NEW UPDATE AVAILABLE</span>
-    <div class="ota-title" id="otaVersionTitle">Version Ready</div>
-    <div class="ota-sub" id="otaReleaseDate">Released on ...</div>
-    
-    <div class="ota-changelog-box">
-      <div class="ota-changelog-title">What's New:</div>
-      <ul class="ota-changelog-list" id="otaChangelogList"></ul>
-    </div>
-
-    <div class="ota-actions">
-      <button type="button" class="ota-btn-later" onclick="closeOtaModal()">Baad Mein</button>
-      <a href="#" id="otaDownloadBtn" target="_blank" class="ota-btn-update">⬇️ Update Now</a>
-    </div>
   </div>
 </div>
 
 <!-- 🟢 MANUAL UPLOAD MODAL -->
 <div class="upload-modal" id="manualUploadModal">
   <div class="upload-card">
-    <h3>📂 Upload OEM Manual for Verification</h3>
-    <label>Manual Title / Model Name:</label>
+    <h3>📂 Upload Technical Document for Indexing</h3>
+    <label>Equipment Model / Manual Title:</label>
     <input type="text" id="manualTitleInput" placeholder="e.g. Putzmeister SPM 500 Parts Manual">
-    <label>Category / System Note:</label>
-    <input type="text" id="manualCategoryInput" placeholder="e.g. Hydraulic &amp; Boom Overhaul">
+    <label>System / Engineering Classification:</label>
+    <input type="text" id="manualCategoryInput" placeholder="e.g. Hydraulic &amp; Boom Overhaul Specification">
     <div class="upload-actions">
       <button type="button" class="btn-cancel" onclick="closeManualModal()">Cancel</button>
-      <button type="button" class="btn-submit" onclick="triggerManualFilePick()">Choose PDF &amp; Submit</button>
+      <button type="button" class="btn-submit" onclick="triggerManualFilePick()">Select PDF &amp; Submit</button>
     </div>
   </div>
 </div>
 
 <script>
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
-
-  // 🟢 CURRENT APP VERSION
-  var CURRENT_CLIENT_VERSION = "1.0.0";
 
   var currentMachine = "";
   var currentMachineName = "";
@@ -418,61 +297,6 @@
     } catch(e) {}
   }
 
-  // 🟢 OTA VERSION CHECK ENGINE
-  function checkForOtaUpdate() {
-    fetch(BACKEND_API_URL, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "check_version" })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data && data.status === "success" && data.latestVersion) {
-        if (isVersionGreater(data.latestVersion, CURRENT_CLIENT_VERSION)) {
-          showOtaModal(data);
-        }
-      }
-    })
-    .catch(function(err) {});
-  }
-
-  function isVersionGreater(remote, local) {
-    var r = remote.split('.').map(Number);
-    var l = local.split('.').map(Number);
-    for (var i = 0; i < Math.max(r.length, l.length); i++) {
-      var rv = r[i] || 0;
-      var lv = l[i] || 0;
-      if (rv > lv) return true;
-      if (rv < lv) return false;
-    }
-    return false;
-  }
-
-  function showOtaModal(data) {
-    document.getElementById('otaVersionTitle').innerText = "Version " + data.latestVersion + " Available";
-    document.getElementById('otaReleaseDate').innerText = "Released on " + (data.releaseDate || "Today");
-
-    var listEl = document.getElementById('otaChangelogList');
-    listEl.innerHTML = "";
-    if (data.changelog && data.changelog.length > 0) {
-      data.changelog.forEach(function(item) {
-        var li = document.createElement('li');
-        li.innerText = item;
-        listEl.appendChild(li);
-      });
-    }
-
-    var dlBtn = document.getElementById('otaDownloadBtn');
-    dlBtn.href = data.apkDownloadUrl;
-
-    document.getElementById('otaModal').style.display = "flex";
-  }
-
-  function closeOtaModal() {
-    document.getElementById('otaModal').style.display = "none";
-  }
-
   function triggerHaptic(duration) {
     if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration || 30);
   }
@@ -492,7 +316,6 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  // 🟢 DIRECT NATIVE RAW STREAM (Bypasses Google Drive Web Player completely)
   function openDrawingViewer(fileId, title, page) {
     if (!fileId) {
       alert("Document link unavailable.");
@@ -540,7 +363,7 @@
       .then(function(res) { return res.json(); })
       .then(function(res) {
         setInputLocked(false);
-        alert(res.message || "Manual verification queue me send ho gaya hai.");
+        alert(res.message || "Document successfully submitted to verification queue.");
       })
       .catch(function(err) {
         setInputLocked(false);
@@ -589,7 +412,7 @@
       thumb.style.display = 'none';
     }
 
-    snippet.innerText = item.text || (item.dataUrl ? "[Photo]" : "[Message]");
+    snippet.innerText = item.text || (item.dataUrl ? "[Technical Media]" : "[Message]");
     tray.style.display = 'flex';
     document.getElementById('userInput').focus();
     triggerHaptic(30);
@@ -609,14 +432,14 @@
       if (bar) bar.classList.add('locked');
       if (input) {
         input.disabled = true;
-        input.placeholder = "⏳ Processing... please wait";
+        input.placeholder = "Processing technical inquiry... please wait";
       }
       if (sendBtn) sendBtn.disabled = true;
     } else {
       if (bar) bar.classList.remove('locked');
       if (input) {
         input.disabled = false;
-        input.placeholder = "Sawal likhein ya bolkar batayein...";
+        input.placeholder = "Enter technical inquiry or use voice input...";
         input.focus();
       }
       if (sendBtn) sendBtn.disabled = false;
@@ -691,7 +514,7 @@
     }
 
     var input = document.getElementById('userInput');
-    input.placeholder = "Is attachment se related sawal likhein...";
+    input.placeholder = "Describe technical inquiry for attached media...";
     input.focus();
     event.target.value = "";
   }
@@ -700,12 +523,12 @@
     activeAttachment = null;
     document.getElementById('attachmentBar').style.display = "none";
     document.getElementById('trayPreviewSlot').innerHTML = '📎';
-    document.getElementById('userInput').placeholder = "Sawal likhein ya bolkar batayein...";
+    document.getElementById('userInput').placeholder = "Enter technical inquiry or use voice input...";
   }
 
   function toggleVoiceInput() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert("Aapka browser Speech Recognition support nahi karta.");
+      alert("Speech Recognition engine not supported in this browser.");
       return;
     }
 
@@ -722,7 +545,7 @@
     speechRecognizer = new SpeechRecognition();
     speechRecognizer.continuous = false;
     speechRecognizer.interimResults = false;
-    speechRecognizer.lang = 'hi-IN';
+    speechRecognizer.lang = 'en-US';
 
     speechRecognizer.onstart = function() {
       isRecognizing = true;
@@ -758,11 +581,11 @@
       btn.innerText = "⚡ General ON";
       currentMachine = "";
       currentMachineName = "";
-      document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering";
+      document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering Standards";
     } else {
       btn.classList.remove('active');
       btn.innerText = "💬 General";
-      document.getElementById('activeMachineStatus').innerText = "P&M Desk • Dev: Nitin Misra";
+      document.getElementById('activeMachineStatus').innerText = "P&M Engineering Desk • Lead Dev: Nitin Misra";
     }
   }
 
@@ -772,8 +595,8 @@
     clearAttachment();
     cancelReplyContext();
     setInputLocked(false);
-    document.getElementById('activeMachineStatus').innerText = "P&M Desk • Dev: Nitin Misra";
-    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Naye sawal se start karein.</div>';
+    document.getElementById('activeMachineStatus').innerText = "P&M Engineering Desk • Lead Dev: Nitin Misra";
+    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Workspace cleared. State machine or inquiry to begin.</div>';
   }
 
   function handleFollowUp(text) {
@@ -797,7 +620,8 @@
     var currentText = q;
     var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
 
-    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram)$/i.test(qClean)) {
+    // 0ms Greeting Interceptor
+    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|greetings|good\s*morning|good\s*afternoon|good\s*evening)$/i.test(qClean)) {
       input.value = '';
       var box = document.getElementById('chatBox');
       var uNode = document.createElement('div');
@@ -807,7 +631,7 @@
 
       var bNode = document.createElement('div');
       bNode.className = 'msg bot-msg';
-      bNode.innerHTML = "Haan bhai, bolo! P&M desk active hai. Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein.<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
+      bNode.innerHTML = "P&M Engineering Desk active. Specify target equipment model, drawing reference, or operational fault code.<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
       box.appendChild(bNode);
       scrollToBottom();
       return;
@@ -830,7 +654,7 @@
       userBubbleThumb = activeAttachment.dataUrl;
     } else if (currentReplyingContext && currentReplyingContext.base64) {
       toSendAttach = {
-        fileName: "quoted_image.jpg",
+        fileName: "quoted_media.jpg",
         mimeType: currentReplyingContext.mimeType || "image/jpeg",
         base64: currentReplyingContext.base64
       };
@@ -864,16 +688,16 @@
     var quotedHtml = '';
     if (capturedReplySnapshot) {
       var qThumb = capturedReplySnapshot.dataUrl ? '<img src="' + capturedReplySnapshot.dataUrl + '">' : '';
-      var qTxt = capturedReplySnapshot.text || (capturedReplySnapshot.dataUrl ? "Photo" : "Message");
+      var qTxt = capturedReplySnapshot.text || (capturedReplySnapshot.dataUrl ? "Media Attachment" : "Context Reference");
       quotedHtml = '<div class="quoted-box-bubble">' + qThumb + '<div class="q-text">↩️ ' + escapeHtml(qTxt) + '</div></div>';
     }
 
     var mediaHtml = '';
     if (userBubbleThumb) {
-      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Photo" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
+      mediaHtml = '<div class="bubble-media-container"><img class="bubble-img" src="' + userBubbleThumb + '" alt="Media Attachment" onclick="setReplyContext(\'' + currentMsgId + '\')"></div>';
     }
 
-    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : '<i>[Media attached for inspection]</i>';
+    var textHtml = currentText ? escapeHtml(currentText).replace(/\n/g, '<br>') : '<i>[Technical Media Staged for Inspection]</i>';
     userNode.innerHTML = replyBtnHtml + quotedHtml + mediaHtml + textHtml + '<div class="msg-meta">' + getFormattedTime() + ' <span class="status-tick">✓✓</span></div>';
     box.appendChild(userNode);
 
@@ -909,10 +733,10 @@
         document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
       }
 
-      var rawReply = (res && res.reply) ? res.reply.trim() : "Response empty mila hai.";
+      var rawReply = (res && res.reply) ? res.reply.trim() : "No technical response returned.";
       var replyHtml = renderRichContent(rawReply);
 
-      // 🟢 SMART ACTION CARDS
+      // ACTION CARDS (Formal English)
       var cardHtml = "";
       if (res && res.card && res.card.id) {
         var c = res.card;
@@ -921,9 +745,9 @@
 
         var buttonHtml = "";
         if (c.mode === "download_only") {
-          buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download Complete PDF (' + (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'Manual') + ')</a>';
+          buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download Complete OEM Manual (' + (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'PDF') + ')</a>';
         } else {
-          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Drawing (Page ' + targetP + ') ↗</button>';
+          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Drawing Specification (Page ' + targetP + ') ↗</button>';
         }
 
         cardHtml = 
@@ -932,7 +756,7 @@
               '<div class="wa-doc-icon">PDF</div>' +
               '<div class="wa-doc-meta">' +
                 '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
-                '<div class="wa-doc-sub">' + (c.mode === "download_only" ? "Full OEM Manual • " : ("Target: <strong>Page " + targetP + "</strong> • ")) + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'Document') + '</div>' +
+                '<div class="wa-doc-sub">' + (c.mode === "download_only" ? "Complete Technical Publication • " : ("Target Specification: <strong>Page " + targetP + "</strong> • ")) + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'Document') + '</div>' +
               '</div>' +
             '</div>' +
             '<div class="wa-doc-actions">' +
@@ -961,7 +785,7 @@
     .catch(function(err) {
       var el = document.getElementById(typingId);
       if (el) {
-        el.outerHTML = '<div class="msg bot-msg">⚠️ Network connection drop ho gayi hai. Kripya dobara try karein.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+        el.outerHTML = '<div class="msg bot-msg">⚠️ Network connection interruption occurred. Please re-state your inquiry.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       }
       scrollToBottom();
       setInputLocked(false);
@@ -973,7 +797,6 @@
 
   window.addEventListener('DOMContentLoaded', function() {
     warmUpBackendInstance();
-    setTimeout(checkForOtaUpdate, 1500); // 🟢 App load hone ke 1.5s baad silent OTA check
   });
 </script>
 
