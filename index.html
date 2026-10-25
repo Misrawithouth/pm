@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=140">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=140">
-  <link rel="manifest" href="manifest.json?v=140">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=150">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=150">
+  <link rel="manifest" href="manifest.json?v=150">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,7 +24,7 @@
     html, body { 
       width: 100%; 
       height: 100%; 
-      height: 100dvh; /* 🟢 Dynamic Mobile Viewport Fix */
+      height: 100dvh; /* 🟢 Mobile Dynamic Viewport Fix */
       margin: 0; 
       padding: 0; 
       background: #efeae2; 
@@ -35,7 +35,7 @@
     #appContainer { 
       width: 100%; 
       height: 100%; 
-      height: 100dvh; /* Mobile screens par exact fit */
+      height: 100dvh;
       background: #efeae2; 
       display: flex; 
       flex-direction: column; 
@@ -44,7 +44,7 @@
       padding: 0;
     }
 
-    /* 🟢 HEADER (Mobile Optimized + No Button Cut) */
+    /* 🟢 HEADER (Clean 1-Line Mobile Fit) */
     .chat-header { 
       background: #008069; 
       color: #ffffff; 
@@ -69,7 +69,7 @@
     .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    /* 🟢 CHAT MESSAGES SCROLLER */
+    /* 🟢 CHAT MESSAGES FEED */
     .chat-messages { 
       flex: 1; 
       overflow-y: auto; 
@@ -80,12 +80,12 @@
       gap: 8px; 
       position: relative; 
       background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=140'); 
+      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=150'); 
       background-repeat: repeat; 
       background-size: 380px auto; 
     }
 
-    /* Desktop View (Screen > 900px) */
+    /* 🟢 DESKTOP & LAPTOP ADAPTIVE VIEW */
     @media (min-width: 900px) {
       .chat-header { padding: 10px 24px; }
       .header-info h3 { font-size: 16px; }
@@ -147,7 +147,7 @@
     .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
     .media-opt:active { background: #f1f5f9; }
 
-    /* 🟢 CHAT INPUT BAR (Always Locked to Visible Bottom) */
+    /* 🟢 CHAT INPUT BAR (Always Locked to Bottom) */
     .chat-input-bar { 
       padding: 6px 8px; 
       background: #f0f2f5; 
@@ -171,6 +171,105 @@
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
+    /* 🟢 IN-APP OTA UPDATE MODAL */
+    .ota-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(3px);
+    }
+    .ota-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: otaPop 0.25s ease-out;
+    }
+    @keyframes otaPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .ota-badge {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .ota-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .ota-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 14px;
+    }
+    .ota-changelog-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      max-height: 140px;
+      overflow-y: auto;
+      margin-bottom: 18px;
+    }
+    .ota-changelog-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .ota-changelog-list {
+      padding-left: 18px;
+      font-size: 12.5px;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .ota-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .ota-btn-later {
+      flex: 1;
+      height: 42px;
+      background: #f1f5f9;
+      color: #475569;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .ota-btn-update {
+      flex: 2;
+      height: 42px;
+      background: #008069;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
     /* 🟢 UPLOAD MODAL */
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
     .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
@@ -189,7 +288,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=140" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=150" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3>P&amp;M Support</h3>
@@ -255,6 +354,25 @@
   </div>
 </div>
 
+<!-- 🟢 IN-APP OTA UPDATE MODAL -->
+<div class="ota-modal" id="otaModal">
+  <div class="ota-card">
+    <span class="ota-badge">✨ NEW UPDATE AVAILABLE</span>
+    <div class="ota-title" id="otaVersionTitle">Version Ready</div>
+    <div class="ota-sub" id="otaReleaseDate">Released on ...</div>
+    
+    <div class="ota-changelog-box">
+      <div class="ota-changelog-title">What's New:</div>
+      <ul class="ota-changelog-list" id="otaChangelogList"></ul>
+    </div>
+
+    <div class="ota-actions">
+      <button type="button" class="ota-btn-later" onclick="closeOtaModal()">Baad Mein</button>
+      <a href="#" id="otaDownloadBtn" target="_blank" class="ota-btn-update">⬇️ Update Now</a>
+    </div>
+  </div>
+</div>
+
 <!-- 🟢 MANUAL UPLOAD MODAL -->
 <div class="upload-modal" id="manualUploadModal">
   <div class="upload-card">
@@ -272,6 +390,9 @@
 
 <script>
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
+
+  // 🟢 CURRENT APP VERSION
+  var CURRENT_CLIENT_VERSION = "1.0.0";
 
   var currentMachine = "";
   var currentMachineName = "";
@@ -295,6 +416,61 @@
         body: JSON.stringify({ action: "ping" })
       }).catch(function() {});
     } catch(e) {}
+  }
+
+  // 🟢 OTA VERSION CHECK ENGINE
+  function checkForOtaUpdate() {
+    fetch(BACKEND_API_URL, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "check_version" })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.status === "success" && data.latestVersion) {
+        if (isVersionGreater(data.latestVersion, CURRENT_CLIENT_VERSION)) {
+          showOtaModal(data);
+        }
+      }
+    })
+    .catch(function(err) {});
+  }
+
+  function isVersionGreater(remote, local) {
+    var r = remote.split('.').map(Number);
+    var l = local.split('.').map(Number);
+    for (var i = 0; i < Math.max(r.length, l.length); i++) {
+      var rv = r[i] || 0;
+      var lv = l[i] || 0;
+      if (rv > lv) return true;
+      if (rv < lv) return false;
+    }
+    return false;
+  }
+
+  function showOtaModal(data) {
+    document.getElementById('otaVersionTitle').innerText = "Version " + data.latestVersion + " Available";
+    document.getElementById('otaReleaseDate').innerText = "Released on " + (data.releaseDate || "Today");
+
+    var listEl = document.getElementById('otaChangelogList');
+    listEl.innerHTML = "";
+    if (data.changelog && data.changelog.length > 0) {
+      data.changelog.forEach(function(item) {
+        var li = document.createElement('li');
+        li.innerText = item;
+        listEl.appendChild(li);
+      });
+    }
+
+    var dlBtn = document.getElementById('otaDownloadBtn');
+    dlBtn.href = data.apkDownloadUrl;
+
+    document.getElementById('otaModal').style.display = "flex";
+  }
+
+  function closeOtaModal() {
+    document.getElementById('otaModal').style.display = "none";
   }
 
   function triggerHaptic(duration) {
@@ -324,7 +500,6 @@
     }
     var targetP = parseInt(page, 10) || 1;
 
-    // Clipboard auto-copy helper for quick jump
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(targetP.toString()).catch(function() {});
     }
@@ -798,6 +973,7 @@
 
   window.addEventListener('DOMContentLoaded', function() {
     warmUpBackendInstance();
+    setTimeout(checkForOtaUpdate, 1500); // 🟢 App load hone ke 1.5s baad silent OTA check
   });
 </script>
 
