@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=180">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=180">
-  <link rel="manifest" href="manifest.json?v=180">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=200">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=200">
+  <link rel="manifest" href="manifest.json?v=200">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -44,7 +44,7 @@
       padding: 0;
     }
 
-    /* 🟢 HEADER (Language Selector Integrated) */
+    /* 🟢 HEADER */
     .chat-header { 
       background: #008069; 
       color: #ffffff; 
@@ -66,7 +66,6 @@
     .header-info p { font-size: 11px; color: #a7f3d0; line-height: 1.2; margin-top: 1px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
     .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     
-    /* 🌐 Language Switcher Dropdown */
     .lang-select-btn {
       background: rgba(255, 255, 255, 0.22);
       border: 1px solid rgba(255, 255, 255, 0.35);
@@ -78,16 +77,11 @@
       outline: none;
       cursor: pointer;
     }
-    .lang-select-btn option {
-      color: #111827;
-      background: #ffffff;
-      font-weight: 600;
-    }
-
+    .lang-select-btn option { color: #111827; background: #ffffff; font-weight: 600; }
     .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 7px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
-    /* 🟢 CHAT MESSAGES FEED */
+    /* 🟢 CHAT MESSAGES */
     .chat-messages { 
       flex: 1; 
       overflow-y: auto; 
@@ -98,12 +92,11 @@
       gap: 8px; 
       position: relative; 
       background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=180'); 
+      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=200'); 
       background-repeat: repeat; 
       background-size: 380px auto; 
     }
 
-    /* 🟢 DESKTOP & WORKSTATION VIEW */
     @media (min-width: 900px) {
       .chat-header { padding: 10px 24px; }
       .header-info h3 { font-size: 16px; }
@@ -119,28 +112,25 @@
     .user-msg { align-self: flex-end; background: #d9fdd3; color: #111b21; border-top-right-radius: 0; }
 
     .msg-reply-trigger { float: right; margin-left: 8px; margin-bottom: 2px; font-size: 11px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; cursor: pointer; color: #008069; font-weight: 600; user-select: none; }
-    .msg-reply-trigger:active { background: rgba(0,0,0,0.15); }
-
     .quoted-box-bubble { background: rgba(0,0,0,0.06); border-left: 4px solid #008069; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; }
     .quoted-box-bubble img { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; }
     .quoted-box-bubble .q-text { color: #334155; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .bubble-img { display: block; width: 100%; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; cursor: pointer; }
-    .bubble-file-chip { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.06); padding: 7px 10px; border-radius: 6px; font-size: 12.5px; margin-bottom: 4px; }
     .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 10px; color: #667781; margin-top: 3px; clear: both; }
     .status-tick { color: #53bdeb; font-size: 11px; }
 
-    /* 🟢 DOCUMENT ACTION CARD */
-    .wa-doc-box { margin-top: 8px; background: #f0f2f5; border: 1px solid #d1d7db; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .wa-doc-header { display: flex; align-items: center; gap: 10px; }
-    .wa-doc-icon { width: 38px; height: 42px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-shrink: 0; }
-    .wa-doc-meta { flex: 1; overflow: hidden; }
-    .wa-doc-name { font-size: 13px; font-weight: 600; color: #111b21; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .wa-doc-sub { font-size: 11px; color: #667781; margin-top: 2px; }
-    .wa-doc-actions { display: flex; gap: 6px; margin-top: 2px; }
-    .wa-doc-btn { flex: 1; text-align: center; background: #008069; color: #fff; border: none; border-radius: 6px; padding: 9px 0; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
-    .wa-doc-btn.secondary { background: #0284c7; color: #fff; }
-    .wa-doc-btn:active { opacity: 0.85; }
+    /* 🟢 MULTI-SOURCE DIGEST CARDS */
+    .source-digest-box { margin-top: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .source-digest-header { font-size: 12px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+    .source-item-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .source-item-top { display: flex; justify-content: space-between; align-items: center; }
+    .source-item-title { font-size: 12.5px; font-weight: 600; color: #0369a1; text-decoration: none; }
+    .source-item-tag { font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
+    .source-item-desc { font-size: 11.5px; color: #475569; line-height: 1.4; }
+    .source-item-actions { display: flex; gap: 6px; margin-top: 4px; }
+    .btn-view-inline { flex: 1; padding: 6px 0; background: #008069; color: #ffffff; border: none; border-radius: 4px; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; }
+    .btn-download-page { flex: 1; padding: 6px 0; background: #0284c7; color: #ffffff; border: none; border-radius: 4px; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
 
     .wa-typing-bubble { align-self: flex-start; background: #ffffff; padding: 10px 14px; border-radius: 7.5px; border-top-left-radius: 0; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); display: inline-flex; align-items: center; gap: 5px; }
     .wa-dot { width: 7px; height: 7px; background: #008069; border-radius: 50%; opacity: 0.35; animation: waDotPulse 1.2s infinite ease-in-out; }
@@ -151,7 +141,6 @@
     .reply-context-tray { background: #f0fdf4; border-top: 1px solid #cbd5e1; border-left: 5px solid #008069; padding: 6px 10px; display: none; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; z-index: 24; }
     .reply-details { display: flex; align-items: center; gap: 8px; overflow: hidden; }
     .reply-thumb-mini { width: 34px; height: 34px; border-radius: 4px; object-fit: cover; border: 1px solid #86efac; flex-shrink: 0; }
-    .reply-texts { overflow: hidden; }
     .reply-texts strong { font-size: 11px; color: #008069; display: block; }
     .reply-texts span { font-size: 11px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
@@ -159,24 +148,11 @@
     .tray-thumb { width: 38px; height: 38px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .tray-details { flex: 1; overflow: hidden; }
     .tray-title { font-size: 12px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tray-hint { font-size: 10.5px; color: #008069; margin-top: 1px; }
 
     .media-sheet { position: absolute; bottom: 58px; left: 10px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: 1px solid #e2e8f0; padding: 6px; display: none; flex-direction: column; gap: 4px; z-index: 40; width: 175px; }
     .media-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; color: #1e293b; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
-    .media-opt:active { background: #f1f5f9; }
 
-    /* 🟢 CHAT INPUT BAR */
-    .chat-input-bar { 
-      padding: 6px 8px; 
-      background: #f0f2f5; 
-      display: flex; 
-      gap: 6px; 
-      align-items: center; 
-      flex-shrink: 0; 
-      border-top: 1px solid #e2e8f0; 
-      z-index: 30; 
-      width: 100%;
-    }
+    .chat-input-bar { padding: 6px 8px; background: #f0f2f5; display: flex; gap: 6px; align-items: center; flex-shrink: 0; border-top: 1px solid #e2e8f0; z-index: 30; width: 100%; }
     .attach-btn, .mic-btn { width: 38px; height: 40px; border-radius: 50%; background: #e2e8f0; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #54656f; flex-shrink: 0; }
     .mic-btn.listening { background: #ef4444; color: #ffffff; animation: micPulse 1.2s infinite; }
     @keyframes micPulse { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
@@ -189,7 +165,48 @@
     .followup-container { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .followup-chip { background: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
 
-    /* 🟢 UPLOAD MODAL */
+    /* 🟢 INLINE DRAWING & PAGE INSPECTOR (ZOOM & PAN MODAL) */
+    .drawing-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.92);
+      z-index: 3000;
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(4px);
+    }
+    .drawing-modal-header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .drawing-modal-title { font-size: 13px; font-weight: 600; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .drawing-tools { display: flex; align-items: center; gap: 8px; }
+    .tool-btn { background: #334155; color: #ffffff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .tool-btn:active { background: #475569; }
+    .tool-btn-close { background: #ef4444; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    
+    .drawing-modal-body {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drawing-viewport-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      transition: transform 0.15s ease-out;
+      transform-origin: center center;
+    }
+
     .upload-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 15px; }
     .upload-card { background: #fff; width: 100%; max-width: 440px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
     .upload-card h3 { color: #008069; font-size: 17px; margin-bottom: 12px; }
@@ -207,7 +224,7 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=180" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=200" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
         <h3 id="uiHeaderTitle">P&amp;M Support Desk</h3>
@@ -215,8 +232,7 @@
       </div>
     </div>
     <div class="header-actions">
-      <!-- 🌐 Language Selection Menu -->
-      <select id="langSelector" class="lang-select-btn" onchange="changeSystemLanguage(this.value)" title="Choose Language">
+      <select id="langSelector" class="lang-select-btn" onchange="changeSystemLanguage(this.value)">
         <option value="en">🇬🇧 English</option>
         <option value="hinglish">🇮🇳 Hinglish</option>
         <option value="hi">🕉️ हिन्दी</option>
@@ -236,7 +252,6 @@
     </div>
   </div>
 
-  <!-- CONTEXT TRAY -->
   <div class="reply-context-tray" id="replyTray">
     <div class="reply-details">
       <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Thumbnail">
@@ -248,7 +263,6 @@
     <button type="button" onclick="cancelReplyContext()" style="border:none;background:none;color:#ef4444;font-size:18px;font-weight:bold;cursor:pointer;">✕</button>
   </div>
 
-  <!-- ATTACHMENT PREVIEW TRAY -->
   <div class="attachment-preview-bar" id="attachmentBar">
     <div id="trayPreviewSlot" class="tray-thumb">📎</div>
     <div class="tray-details">
@@ -258,14 +272,12 @@
     <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;">✕</button>
   </div>
 
-  <!-- MEDIA ACTION SHEET -->
   <div class="media-sheet" id="mediaSheet">
     <button type="button" class="media-opt" onclick="triggerCameraCapture()"><span id="lblCam">📷 Camera</span></button>
     <button type="button" class="media-opt" onclick="triggerGalleryPicker()"><span id="lblGal">🖼️ Photos / Gallery</span></button>
     <button type="button" class="media-opt" onclick="triggerDocPicker()"><span id="lblDoc">📄 Document / File</span></button>
   </div>
 
-  <!-- CHAT INPUT BAR -->
   <div class="chat-input-bar" id="chatInputBar">
     <button type="button" class="attach-btn" id="attachBtn" onclick="toggleMediaMenu(event)" title="Attach Media">📎</button>
     
@@ -277,6 +289,23 @@
     <input type="text" id="userInput" placeholder="Enter technical inquiry or use voice input..." autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'){event.preventDefault();executeOneTapSend();}">
     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input">🎙️</button>
     <button type="button" class="send-btn" id="sendBtn" onclick="executeOneTapSend();">Send</button>
+  </div>
+</div>
+
+<!-- 🟢 INLINE DRAWING & PAGE INSPECTOR (WITH ZOOM/PAN & DOWNLOAD) -->
+<div class="drawing-modal" id="drawingModal">
+  <div class="drawing-modal-header">
+    <div class="drawing-modal-title" id="modalDocTitle">Document Inspection</div>
+    <div class="drawing-tools">
+      <button type="button" class="tool-btn" onclick="zoomDrawing(0.25)">🔍 +</button>
+      <button type="button" class="tool-btn" onclick="zoomDrawing(-0.25)">🔍 -</button>
+      <button type="button" class="tool-btn" onclick="resetZoom()">100%</button>
+      <a href="#" id="modalDirectDownloadBtn" target="_blank" class="tool-btn" style="text-decoration:none;">⬇️ Save PDF</a>
+      <button type="button" class="tool-btn-close" onclick="closeDrawingViewer()">✕</button>
+    </div>
+  </div>
+  <div class="drawing-modal-body" id="modalCanvasContainer">
+    <iframe id="drawingIframe" class="drawing-viewport-frame" src=""></iframe>
   </div>
 </div>
 
@@ -298,7 +327,6 @@
 <script>
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
 
-  // 🌐 LANGUAGE DICTIONARY FOR INSTANT DYNAMIC UI SWITCH
   var UI_STRINGS = {
     en: {
       headerTitle: "P&M Support Desk",
@@ -320,8 +348,8 @@
       uploadLbl2: "System / Engineering Classification:",
       cancelBtn: "Cancel",
       submitBtn: "Select PDF & Submit",
-      drawingBtn: "🎯 Open Drawing Specification (Page {PAGE}) ↗",
-      downloadBtn: "⬇️ Download Complete OEM Manual ({SIZE})",
+      drawingBtn: "🎯 Inspect Drawing (Page {PAGE}) ↗",
+      downloadBtn: "⬇️ Download Manual ({SIZE})",
       speechLang: "en-US",
       netError: "⚠️ Network connection interruption occurred. Please re-state your inquiry."
     },
@@ -345,15 +373,15 @@
       uploadLbl2: "System / Note:",
       cancelBtn: "Cancel",
       submitBtn: "PDF Chunein & Submit Karein",
-      drawingBtn: "🎯 Drawing Specification Kholein (Page {PAGE}) ↗",
-      downloadBtn: "⬇️ Poora OEM Manual Download Karein ({SIZE})",
+      drawingBtn: "🎯 Drawing Kholein (Page {PAGE}) ↗",
+      downloadBtn: "⬇️ Poora Manual Download Karein ({SIZE})",
       speechLang: "hi-IN",
       netError: "⚠️ Network connection drop ho gaya hai. Kripya dobara try karein."
     },
     hi: {
       headerTitle: "पी&एम तकनीकी सहायता",
       deskStatus: "पी&एम इंजीनियरिंग डेस्क • मुख्य विकासकर्ता: नितिन मिश्रा",
-      onboarding: "<strong>📌 पी&एम तकनीकी सहायता सक्रिय</strong><br>• मशीन मॉडल, पुर्जा संख्या (Part No), परिपथ आरेख अथवा तकनीकी खराबी का विवरण लिखें।<br>• 💡 संदर्भ (Context) बनाए रखने हेतु किसी भी संदेश अथवा चित्र पर ↩️ उत्तर (Reply) का चयन करें।",
+      onboarding: "<strong>📌 पी&एम तकनीकी सहायता सक्रिय</strong><br>• मशीन मॉडल, पुर्जा संख्या (Part No), परिपथ आरेख अथवा तकनीकी खराबी का विवरण लिखें।<br>• 💡 संदर्भ बनाए रखने हेतु किसी भी संदेश अथवा चित्र पर ↩️ उत्तर (Reply) चुनें।",
       placeholder: "तकनीकी प्रश्न लिखें अथवा बोलकर बताएं...",
       processing: "प्रक्रिया जारी है... कृपया प्रतीक्षा करें",
       generalBtn: "💬 सामान्य",
@@ -378,7 +406,6 @@
   };
 
   var CURRENT_LANG = localStorage.getItem("PM_LANG_PREF") || "en";
-
   var currentMachine = "";
   var currentMachineName = "";
   var isGeneral = false;
@@ -390,6 +417,10 @@
 
   var currentReplyingContext = null; 
   var messageHistoryStore = {};
+
+  // 🟢 Rolling Session Conversation Memory
+  var conversationHistoryQueue = [];
+  var currentZoomLevel = 1.0;
 
   function applyLanguage(lang) {
     CURRENT_LANG = lang;
@@ -453,19 +484,44 @@
     if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 20);
   }
 
-  function openDrawingViewer(fileId, title, page) {
-    if (!fileId) {
-      alert("Document link unavailable.");
-      return;
-    }
+  // 🟢 INLINE DRAWING & ZOOM VIEWER ENGINE
+  function openInlineDrawingViewer(fileId, title, page) {
+    if (!fileId) return;
     var targetP = parseInt(page, 10) || 1;
+    var modal = document.getElementById('drawingModal');
+    var iframe = document.getElementById('drawingIframe');
+    var titleEl = document.getElementById('modalDocTitle');
+    var dlBtn = document.getElementById('modalDirectDownloadBtn');
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(targetP.toString()).catch(function() {});
-    }
+    titleEl.innerText = title + " (Page " + targetP + ")";
+    dlBtn.href = "https://drive.google.com/uc?export=download&id=" + fileId;
+    
+    // Direct page view embed
+    iframe.src = "https://drive.google.com/file/d/" + fileId + "/preview?embedded=true#page=" + targetP + "&zoom=120";
+    currentZoomLevel = 1.0;
+    iframe.style.transform = "scale(1)";
 
-    var rawNativeUrl = "https://drive.google.com/uc?id=" + fileId + "&export=download#page=" + targetP;
-    window.open(rawNativeUrl, '_blank', 'noopener,noreferrer');
+    modal.style.display = "flex";
+    triggerHaptic(35);
+  }
+
+  function closeDrawingViewer() {
+    var modal = document.getElementById('drawingModal');
+    var iframe = document.getElementById('drawingIframe');
+    iframe.src = "";
+    modal.style.display = "none";
+  }
+
+  function zoomDrawing(delta) {
+    currentZoomLevel = Math.max(0.75, Math.min(3.0, currentZoomLevel + delta));
+    var iframe = document.getElementById('drawingIframe');
+    iframe.style.transform = "scale(" + currentZoomLevel + ")";
+  }
+
+  function resetZoom() {
+    currentZoomLevel = 1.0;
+    var iframe = document.getElementById('drawingIframe');
+    iframe.style.transform = "scale(1)";
   }
 
   function openManualModal() { document.getElementById('manualUploadModal').style.display = "flex"; }
@@ -735,6 +791,7 @@
   function resetChat() {
     currentMachine = "";
     currentMachineName = "";
+    conversationHistoryQueue = [];
     clearAttachment();
     cancelReplyContext();
     setInputLocked(false);
@@ -860,6 +917,10 @@
     box.appendChild(bubbleNode);
     scrollToBottom();
 
+    // Context Queue update
+    conversationHistoryQueue.push({ role: "user", text: currentText });
+    if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
+
     fetch(BACKEND_API_URL, {
       method: "POST",
       mode: "cors",
@@ -871,6 +932,7 @@
         isGeneral: isGeneral,
         attachment: toSendAttach,
         quotedContext: quotedContextToSend,
+        conversationHistory: conversationHistoryQueue,
         lang: CURRENT_LANG
       })
     })
@@ -888,39 +950,30 @@
       var rawReply = (res && res.reply) ? res.reply.trim() : "No technical response returned.";
       var replyHtml = renderRichContent(rawReply);
 
-      // ACTION CARDS (Multilingual Aware)
-      var cardHtml = "";
-      if (res && res.card && res.card.id) {
-        var c = res.card;
-        var targetP = c.page || 1;
-        var downloadHref = "https://drive.google.com/uc?export=download&id=" + c.id;
+      // Context Queue Bot update
+      conversationHistoryQueue.push({ role: "assistant", text: rawReply.substring(0, 400) });
+      if (conversationHistoryQueue.length > 8) conversationHistoryQueue.shift();
 
-        var buttonHtml = "";
-        if (c.mode === "download_only") {
-          var dlLabel = dict.downloadBtn.replace('{SIZE}', (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'PDF'));
-          buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">' + dlLabel + '</a>';
-        } else {
-          var drLabel = dict.drawingBtn.replace('{PAGE}', targetP);
-          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">' + drLabel + '</button>';
-        }
-
-        var docSubText = (c.mode === "download_only") ? 
-          (CURRENT_LANG === 'hi' ? "संपूर्ण तकनीकी प्रकाशन • " : (CURRENT_LANG === 'hinglish' ? "Full OEM Manual • " : "Complete Technical Publication • ")) : 
-          (CURRENT_LANG === 'hi' ? ("लक्षित पृष्ठ: <strong>पृष्ठ " + targetP + "</strong> • ") : (CURRENT_LANG === 'hinglish' ? ("Target: <strong>Page " + targetP + "</strong> • ") : ("Target Specification: <strong>Page " + targetP + "</strong> • ")));
-
-        cardHtml = 
-          '<div class="wa-doc-box">' +
-            '<div class="wa-doc-header">' +
-              '<div class="wa-doc-icon">PDF</div>' +
-              '<div class="wa-doc-meta">' +
-                '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
-                '<div class="wa-doc-sub">' + docSubText + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'Document') + '</div>' +
+      // 🟢 MULTI-SOURCE DIGEST CARDS WITH INLINE ZOOM TRIGGER
+      var sourcesHtml = "";
+      if (res && res.sources && res.sources.length > 0) {
+        sourcesHtml = '<div class="source-digest-box"><div class="source-digest-header">📚 Matched Manual Pages (' + res.sources.length + ' Sources Verified):</div>';
+        for (var s = 0; s < res.sources.length; s++) {
+          var src = res.sources[s];
+          sourcesHtml += 
+            '<div class="source-item-card">' +
+              '<div class="source-item-top">' +
+                '<span class="source-item-title">📄 ' + escapeHtml(src.fileName) + '</span>' +
+                '<span class="source-item-tag">Page ' + src.page + ' • ' + src.relevance + '% Match</span>' +
               '</div>' +
-            '</div>' +
-            '<div class="wa-doc-actions">' +
-              buttonHtml +
-            '</div>' +
-          '</div>';
+              '<div class="source-item-desc">' + escapeHtml(src.digest) + '</div>' +
+              '<div class="source-item-actions">' +
+                '<button type="button" class="btn-view-inline" onclick="openInlineDrawingViewer(\'' + src.fileId + '\', \'' + escapeHtmlAttr(src.fileName) + '\', ' + src.page + ')">👁️ Inspect Page ' + src.page + '</button>' +
+                '<a href="' + src.downloadUrl + '" target="_blank" class="btn-download-page">⬇️ Download PDF</a>' +
+              '</div>' +
+            '</div>';
+        }
+        sourcesHtml += '</div>';
       }
 
       var fpHtml = '';
@@ -936,7 +989,7 @@
       messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
       var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">' + dict.replyTrigger + '</span>';
 
-      el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + cardHtml + fpHtml + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+      el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + sourcesHtml + fpHtml + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       scrollToBottom();
       setInputLocked(false);
     })
