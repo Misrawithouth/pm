@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>P&amp;M Technical Support Desk</title>
   
-  <link rel="icon" type="image/png" href="pm-logo.png?v=170">
-  <link rel="apple-touch-icon" href="pm-logo.png?v=170">
-  <link rel="manifest" href="manifest.json?v=170">
+  <link rel="icon" type="image/png" href="pm-logo.png?v=180">
+  <link rel="apple-touch-icon" href="pm-logo.png?v=180">
+  <link rel="manifest" href="manifest.json?v=180">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -44,7 +44,7 @@
       padding: 0;
     }
 
-    /* 🟢 HEADER (Formal Corporate Theme) */
+    /* 🟢 HEADER (Language Selector Integrated) */
     .chat-header { 
       background: #008069; 
       color: #ffffff; 
@@ -55,7 +55,7 @@
       flex-shrink: 0; 
       z-index: 20; 
       box-shadow: 0 1px 3px rgba(0,0,0,0.18); 
-      gap: 6px;
+      gap: 5px;
     }
     .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; min-width: 0; flex: 1; }
     .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: #005c4b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, 0.4); }
@@ -66,7 +66,25 @@
     .header-info p { font-size: 11px; color: #a7f3d0; line-height: 1.2; margin-top: 1px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
     .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     
-    .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    /* 🌐 Language Switcher Dropdown */
+    .lang-select-btn {
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 4px 6px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+    .lang-select-btn option {
+      color: #111827;
+      background: #ffffff;
+      font-weight: 600;
+    }
+
+    .mode-btn { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; padding: 5px 7px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .mode-btn.active { background: #fbbf24; border-color: #f59e0b; color: #111827; }
 
     /* 🟢 CHAT MESSAGES FEED */
@@ -80,7 +98,7 @@
       gap: 8px; 
       position: relative; 
       background-color: #efeae2; 
-      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=170'); 
+      background-image: linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)), url('chat-bg.png?v=180'); 
       background-repeat: repeat; 
       background-size: 380px auto; 
     }
@@ -90,7 +108,7 @@
       .chat-header { padding: 10px 24px; }
       .header-info h3 { font-size: 16px; }
       .header-info p { font-size: 12px; }
-      .mode-btn { font-size: 12.5px; padding: 6px 12px; }
+      .mode-btn, .lang-select-btn { font-size: 12.5px; padding: 6px 10px; }
       .chat-messages { padding: 18px calc(50vw - 460px); }
       .chat-input-bar { padding: 10px calc(50vw - 460px) !important; }
       .reply-context-tray, .attachment-preview-bar { margin: 0 calc(50vw - 460px); }
@@ -189,14 +207,21 @@
   <div class="chat-header">
     <div class="header-left">
       <div class="header-avatar">
-        <img src="pm-logo.png?v=170" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
+        <img src="pm-logo.png?v=180" alt="P&amp;M Logo" onerror="this.outerHTML='🚜';">
       </div>
       <div class="header-info">
-        <h3>P&amp;M Support Desk</h3>
+        <h3 id="uiHeaderTitle">P&amp;M Support Desk</h3>
         <p id="activeMachineStatus">P&amp;M Engineering Desk • Lead Dev: Nitin Misra</p>
       </div>
     </div>
     <div class="header-actions">
+      <!-- 🌐 Language Selection Menu -->
+      <select id="langSelector" class="lang-select-btn" onchange="changeSystemLanguage(this.value)" title="Choose Language">
+        <option value="en">🇬🇧 English</option>
+        <option value="hinglish">🇮🇳 Hinglish</option>
+        <option value="hi">🕉️ हिन्दी</option>
+      </select>
+
       <button type="button" class="mode-btn" onclick="openManualModal()">📂 +Manual</button>
       <button type="button" class="mode-btn" id="generalModeBtn" onclick="toggleGeneralMode()">💬 General</button>
       <button type="button" class="mode-btn" onclick="resetChat()">🔄</button>
@@ -204,7 +229,7 @@
   </div>
 
   <div class="chat-messages" id="chatBox">
-    <div class="onboarding-card">
+    <div class="onboarding-card" id="onboardingCardText">
       <strong>📌 P&amp;M Engineering Desk Active</strong><br>
       • State equipment model, part number, schematic requirement, or fault diagnosis.<br>
       • 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.
@@ -216,7 +241,7 @@
     <div class="reply-details">
       <img id="replyThumb" class="reply-thumb-mini" style="display:none;" src="" alt="Replying Thumbnail">
       <div class="reply-texts">
-        <strong>Replying to context:</strong>
+        <strong id="replyTrayLabel">Replying to context:</strong>
         <span id="replySnippet">Message snippet...</span>
       </div>
     </div>
@@ -228,16 +253,16 @@
     <div id="trayPreviewSlot" class="tray-thumb">📎</div>
     <div class="tray-details">
       <div class="tray-title" id="attachmentFileName">file.jpg</div>
-      <div class="tray-hint">Media staged. Enter inquiry description and click Send.</div>
+      <div class="tray-hint" id="attachmentHintText">Media staged. Enter inquiry description and click Send.</div>
     </div>
     <button type="button" onclick="clearAttachment()" style="border:none;background:none;color:#ef4444;font-size:20px;font-weight:bold;cursor:pointer;">✕</button>
   </div>
 
   <!-- MEDIA ACTION SHEET -->
   <div class="media-sheet" id="mediaSheet">
-    <button type="button" class="media-opt" onclick="triggerCameraCapture()">📷 Camera</button>
-    <button type="button" class="media-opt" onclick="triggerGalleryPicker()">🖼️ Photos / Gallery</button>
-    <button type="button" class="media-opt" onclick="triggerDocPicker()">📄 Document / File</button>
+    <button type="button" class="media-opt" onclick="triggerCameraCapture()"><span id="lblCam">📷 Camera</span></button>
+    <button type="button" class="media-opt" onclick="triggerGalleryPicker()"><span id="lblGal">🖼️ Photos / Gallery</span></button>
+    <button type="button" class="media-opt" onclick="triggerDocPicker()"><span id="lblDoc">📄 Document / File</span></button>
   </div>
 
   <!-- CHAT INPUT BAR -->
@@ -258,20 +283,101 @@
 <!-- 🟢 MANUAL UPLOAD MODAL -->
 <div class="upload-modal" id="manualUploadModal">
   <div class="upload-card">
-    <h3>📂 Upload Technical Document for Indexing</h3>
-    <label>Equipment Model / Manual Title:</label>
+    <h3 id="uploadModalTitle">📂 Upload Technical Document for Indexing</h3>
+    <label id="uploadModalLbl1">Equipment Model / Manual Title:</label>
     <input type="text" id="manualTitleInput" placeholder="e.g. Putzmeister SPM 500 Parts Manual">
-    <label>System / Engineering Classification:</label>
+    <label id="uploadModalLbl2">System / Engineering Classification:</label>
     <input type="text" id="manualCategoryInput" placeholder="e.g. Hydraulic &amp; Boom Overhaul Specification">
     <div class="upload-actions">
-      <button type="button" class="btn-cancel" onclick="closeManualModal()">Cancel</button>
-      <button type="button" class="btn-submit" onclick="triggerManualFilePick()">Select PDF &amp; Submit</button>
+      <button type="button" class="btn-cancel" onclick="closeManualModal()"><span id="btnCancelText">Cancel</span></button>
+      <button type="button" class="btn-submit" onclick="triggerManualFilePick()"><span id="btnSubmitText">Select PDF &amp; Submit</span></button>
     </div>
   </div>
 </div>
 
 <script>
   var BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbyVKmZwc0WgbUGO4OfPMV_1kG2JyNHUORQv0E6yGcG2ihJNTHi5f56HjnzuBvtZ_lHe/exec";
+
+  // 🌐 LANGUAGE DICTIONARY FOR INSTANT DYNAMIC UI SWITCH
+  var UI_STRINGS = {
+    en: {
+      headerTitle: "P&M Support Desk",
+      deskStatus: "P&M Engineering Desk • Lead Dev: Nitin Misra",
+      onboarding: "<strong>📌 P&M Engineering Desk Active</strong><br>• State equipment model, part number, schematic requirement, or fault diagnosis.<br>• 💡 Context Threading: Use ↩️ Reply on any message or uploaded image to maintain context.",
+      placeholder: "Enter technical inquiry or use voice input...",
+      processing: "Processing technical inquiry... please wait",
+      generalBtn: "💬 General",
+      generalActiveBtn: "⚡ General ON",
+      generalModeDesk: "Mode: Universal P&M Engineering Standards",
+      resetOnboarding: "<strong>Session Reset</strong><br>Workspace cleared. State machine or inquiry to begin.",
+      replyContext: "Replying to context:",
+      replyTrigger: "↩️ Reply",
+      cam: "📷 Camera",
+      gal: "🖼️ Photos / Gallery",
+      doc: "📄 Document / File",
+      uploadTitle: "📂 Upload Technical Document for Indexing",
+      uploadLbl1: "Equipment Model / Manual Title:",
+      uploadLbl2: "System / Engineering Classification:",
+      cancelBtn: "Cancel",
+      submitBtn: "Select PDF & Submit",
+      drawingBtn: "🎯 Open Drawing Specification (Page {PAGE}) ↗",
+      downloadBtn: "⬇️ Download Complete OEM Manual ({SIZE})",
+      speechLang: "en-US",
+      netError: "⚠️ Network connection interruption occurred. Please re-state your inquiry."
+    },
+    hinglish: {
+      headerTitle: "P&M Support Desk",
+      deskStatus: "P&M Technical Desk • Dev: Nitin Misra",
+      onboarding: "<strong>📌 P&M Technical Desk Active</strong><br>• Machine ka model, part number, hydraulic circuit ya fault poochhein.<br>• 💡 Context Threading: Kisi bhi message ya photo par ↩️ Reply daba kar context jodein.",
+      placeholder: "Sawal likhein ya bolkar batayein...",
+      processing: "Technical sawal check ho raha hai... kripya rukein",
+      generalBtn: "💬 General",
+      generalActiveBtn: "⚡ General ON",
+      generalModeDesk: "Mode: Universal P&M Workshop Standards",
+      resetOnboarding: "<strong>Session Reset Ho Gaya</strong><br>Nayi machine ya sawal likhein.",
+      replyContext: "Replying to message:",
+      replyTrigger: "↩️ Reply",
+      cam: "📷 Camera",
+      gal: "🖼️ Gallery / Photos",
+      doc: "📄 Document / File",
+      uploadTitle: "📂 Verification ke liye Manual Upload Karein",
+      uploadLbl1: "Machine Model / Manual ka Naam:",
+      uploadLbl2: "System / Note:",
+      cancelBtn: "Cancel",
+      submitBtn: "PDF Chunein & Submit Karein",
+      drawingBtn: "🎯 Drawing Specification Kholein (Page {PAGE}) ↗",
+      downloadBtn: "⬇️ Poora OEM Manual Download Karein ({SIZE})",
+      speechLang: "hi-IN",
+      netError: "⚠️ Network connection drop ho gaya hai. Kripya dobara try karein."
+    },
+    hi: {
+      headerTitle: "पी&एम तकनीकी सहायता",
+      deskStatus: "पी&एम इंजीनियरिंग डेस्क • मुख्य विकासकर्ता: नितिन मिश्रा",
+      onboarding: "<strong>📌 पी&एम तकनीकी सहायता सक्रिय</strong><br>• मशीन मॉडल, पुर्जा संख्या (Part No), परिपथ आरेख अथवा तकनीकी खराबी का विवरण लिखें।<br>• 💡 संदर्भ (Context) बनाए रखने हेतु किसी भी संदेश अथवा चित्र पर ↩️ उत्तर (Reply) का चयन करें।",
+      placeholder: "तकनीकी प्रश्न लिखें अथवा बोलकर बताएं...",
+      processing: "प्रक्रिया जारी है... कृपया प्रतीक्षा करें",
+      generalBtn: "💬 सामान्य",
+      generalActiveBtn: "⚡ सामान्य सक्रिय",
+      generalModeDesk: "मोड: सार्वभौमिक पी&एम इंजीनियरिंग मानक",
+      resetOnboarding: "<strong>सत्र रीसेट हुआ</strong><br>कार्यक्षेत्र रिक्त किया गया। मशीन अथवा तकनीकी प्रश्न दर्ज करें।",
+      replyContext: "संदेश का संदर्भ:",
+      replyTrigger: "↩️ उत्तर",
+      cam: "📷 कैमरा",
+      gal: "🖼️ फोटो / गैलरी",
+      doc: "📄 दस्तावेज / फाइल",
+      uploadTitle: "📂 तकनीकी मैनुअल सत्यापन हेतु अपलोड करें",
+      uploadLbl1: "मशीन मॉडल / मैनुअल का शीर्षक:",
+      uploadLbl2: "प्रणाली / तकनीकी वर्गीकरण:",
+      cancelBtn: "रद्द करें",
+      submitBtn: "PDF चुनें और सबमिट करें",
+      drawingBtn: "🎯 तकनीकी आरेख खोलें (पृष्ठ {PAGE}) ↗",
+      downloadBtn: "⬇️ संपूर्ण OEM मैनुअल डाउनलोड करें ({SIZE})",
+      speechLang: "hi-IN",
+      netError: "⚠️ नेटवर्क संपर्क बाधित हुआ। कृपया पुनः प्रयास करें।"
+    }
+  };
+
+  var CURRENT_LANG = localStorage.getItem("PM_LANG_PREF") || "en";
 
   var currentMachine = "";
   var currentMachineName = "";
@@ -284,6 +390,37 @@
 
   var currentReplyingContext = null; 
   var messageHistoryStore = {};
+
+  function applyLanguage(lang) {
+    CURRENT_LANG = lang;
+    localStorage.setItem("PM_LANG_PREF", lang);
+    var dict = UI_STRINGS[lang] || UI_STRINGS.en;
+
+    document.getElementById('langSelector').value = lang;
+    document.getElementById('uiHeaderTitle').innerText = dict.headerTitle;
+    if (!isGeneral) {
+      document.getElementById('activeMachineStatus').innerText = currentMachineName ? (lang === 'hi' ? "सक्रिय: " : (lang === 'hinglish' ? "Active: " : "Active: ")) + currentMachineName : dict.deskStatus;
+    }
+    document.getElementById('userInput').placeholder = dict.placeholder;
+    document.getElementById('onboardingCardText').innerHTML = dict.onboarding;
+    document.getElementById('replyTrayLabel').innerText = dict.replyContext;
+    document.getElementById('lblCam').innerText = dict.cam;
+    document.getElementById('lblGal').innerText = dict.gal;
+    document.getElementById('lblDoc').innerText = dict.doc;
+    document.getElementById('uploadModalTitle').innerText = dict.uploadTitle;
+    document.getElementById('uploadModalLbl1').innerText = dict.uploadLbl1;
+    document.getElementById('uploadModalLbl2').innerText = dict.uploadLbl2;
+    document.getElementById('btnCancelText').innerText = dict.cancelBtn;
+    document.getElementById('btnSubmitText').innerText = dict.submitBtn;
+
+    var genBtn = document.getElementById('generalModeBtn');
+    genBtn.innerText = isGeneral ? dict.generalActiveBtn : dict.generalBtn;
+  }
+
+  function changeSystemLanguage(newLang) {
+    applyLanguage(newLang);
+    triggerHaptic(30);
+  }
 
   function warmUpBackendInstance() {
     try {
@@ -363,7 +500,7 @@
       .then(function(res) { return res.json(); })
       .then(function(res) {
         setInputLocked(false);
-        alert(res.message || "Document successfully submitted to verification queue.");
+        alert(res.message || "Document submitted to verification queue.");
       })
       .catch(function(err) {
         setInputLocked(false);
@@ -428,18 +565,20 @@
     var bar = document.getElementById('chatInputBar');
     var input = document.getElementById('userInput');
     var sendBtn = document.getElementById('sendBtn');
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
+
     if (locked) {
       if (bar) bar.classList.add('locked');
       if (input) {
         input.disabled = true;
-        input.placeholder = "Processing technical inquiry... please wait";
+        input.placeholder = dict.processing;
       }
       if (sendBtn) sendBtn.disabled = true;
     } else {
       if (bar) bar.classList.remove('locked');
       if (input) {
         input.disabled = false;
-        input.placeholder = "Enter technical inquiry or use voice input...";
+        input.placeholder = dict.placeholder;
         input.focus();
       }
       if (sendBtn) sendBtn.disabled = false;
@@ -514,7 +653,7 @@
     }
 
     var input = document.getElementById('userInput');
-    input.placeholder = "Describe technical inquiry for attached media...";
+    input.placeholder = (CURRENT_LANG === 'hi' ? "संलग्न मीडिया हेतु प्रश्न लिखें..." : (CURRENT_LANG === 'hinglish' ? "Attachment se related sawal likhein..." : "Describe technical inquiry for attached media..."));
     input.focus();
     event.target.value = "";
   }
@@ -523,7 +662,8 @@
     activeAttachment = null;
     document.getElementById('attachmentBar').style.display = "none";
     document.getElementById('trayPreviewSlot').innerHTML = '📎';
-    document.getElementById('userInput').placeholder = "Enter technical inquiry or use voice input...";
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
+    document.getElementById('userInput').placeholder = dict.placeholder;
   }
 
   function toggleVoiceInput() {
@@ -545,7 +685,8 @@
     speechRecognizer = new SpeechRecognition();
     speechRecognizer.continuous = false;
     speechRecognizer.interimResults = false;
-    speechRecognizer.lang = 'en-US';
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
+    speechRecognizer.lang = dict.speechLang || 'en-US';
 
     speechRecognizer.onstart = function() {
       isRecognizing = true;
@@ -576,16 +717,18 @@
   function toggleGeneralMode() {
     isGeneral = !isGeneral;
     var btn = document.getElementById('generalModeBtn');
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
+
     if (isGeneral) {
       btn.classList.add('active');
-      btn.innerText = "⚡ General ON";
+      btn.innerText = dict.generalActiveBtn;
       currentMachine = "";
       currentMachineName = "";
-      document.getElementById('activeMachineStatus').innerText = "Mode: Universal P&M Engineering Standards";
+      document.getElementById('activeMachineStatus').innerText = dict.generalModeDesk;
     } else {
       btn.classList.remove('active');
-      btn.innerText = "💬 General";
-      document.getElementById('activeMachineStatus').innerText = "P&M Engineering Desk • Lead Dev: Nitin Misra";
+      btn.innerText = dict.generalBtn;
+      document.getElementById('activeMachineStatus').innerText = dict.deskStatus;
     }
   }
 
@@ -595,13 +738,14 @@
     clearAttachment();
     cancelReplyContext();
     setInputLocked(false);
-    document.getElementById('activeMachineStatus').innerText = "P&M Engineering Desk • Lead Dev: Nitin Misra";
-    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card"><strong>Session Reset</strong><br>Workspace cleared. State machine or inquiry to begin.</div>';
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
+    document.getElementById('activeMachineStatus').innerText = dict.deskStatus;
+    document.getElementById('chatBox').innerHTML = '<div class="onboarding-card">' + dict.resetOnboarding + '</div>';
   }
 
   function handleFollowUp(text) {
     if (isBusyProcessing) return;
-    if (text.indexOf("Reset") !== -1) { resetChat(); return; }
+    if (text.indexOf("Reset") !== -1 || text.indexOf("रीसेट") !== -1) { resetChat(); return; }
     document.getElementById('userInput').value = text;
     executeOneTapSend();
   }
@@ -619,9 +763,10 @@
 
     var currentText = q;
     var qClean = currentText.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    var dict = UI_STRINGS[CURRENT_LANG] || UI_STRINGS.en;
 
     // 0ms Greeting Interceptor
-    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|greetings|good\s*morning|good\s*afternoon|good\s*evening)$/i.test(qClean)) {
+    if (!activeAttachment && !currentReplyingContext && !currentMachine && /^(hi|hello|hey|namaste|pranam|ram\s*ram|greetings|नमस्ते|प्रणाम)$/i.test(qClean)) {
       input.value = '';
       var box = document.getElementById('chatBox');
       var uNode = document.createElement('div');
@@ -631,7 +776,13 @@
 
       var bNode = document.createElement('div');
       bNode.className = 'msg bot-msg';
-      bNode.innerHTML = "P&M Engineering Desk active. Specify target equipment model, drawing reference, or operational fault code.<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
+      var greetingMsg = "P&M Support Desk active. Specify target equipment model, drawing reference, or operational fault code.";
+      if (CURRENT_LANG === 'hinglish') {
+        greetingMsg = "Haan bhai, P&M desk active hai! Kaunsi machine par kaam chal raha hai? Model ya breakdown batayein.";
+      } else if (CURRENT_LANG === 'hi') {
+        greetingMsg = "पी&एम तकनीकी सहायता सक्रिय है। कृपया उपकरण का नाम, परिपथ आरेख अथवा तकनीकी समस्या का विवरण बताएं।";
+      }
+      bNode.innerHTML = greetingMsg + "<div class=\"msg-meta\">" + getFormattedTime() + "</div>";
       box.appendChild(bNode);
       scrollToBottom();
       return;
@@ -684,7 +835,7 @@
     userNode.className = 'msg user-msg';
     userNode.id = currentMsgId;
 
-    var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">↩️ Reply</span>';
+    var replyBtnHtml = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + currentMsgId + '\')">' + dict.replyTrigger + '</span>';
     var quotedHtml = '';
     if (capturedReplySnapshot) {
       var qThumb = capturedReplySnapshot.dataUrl ? '<img src="' + capturedReplySnapshot.dataUrl + '">' : '';
@@ -719,7 +870,8 @@
         machineKey: isGeneral ? "" : currentMachine,
         isGeneral: isGeneral,
         attachment: toSendAttach,
-        quotedContext: quotedContextToSend
+        quotedContext: quotedContextToSend,
+        lang: CURRENT_LANG
       })
     })
     .then(function(res) { return res.json(); })
@@ -730,13 +882,13 @@
       if (!isGeneral && res && res.machineKey && res.machineName) {
         currentMachine = res.machineKey;
         currentMachineName = res.machineName;
-        document.getElementById('activeMachineStatus').innerText = "Active: " + res.machineName;
+        document.getElementById('activeMachineStatus').innerText = (CURRENT_LANG === 'hi' ? "सक्रिय: " : (CURRENT_LANG === 'hinglish' ? "Active: " : "Active: ")) + res.machineName;
       }
 
       var rawReply = (res && res.reply) ? res.reply.trim() : "No technical response returned.";
       var replyHtml = renderRichContent(rawReply);
 
-      // ACTION CARDS (Formal English)
+      // ACTION CARDS (Multilingual Aware)
       var cardHtml = "";
       if (res && res.card && res.card.id) {
         var c = res.card;
@@ -745,10 +897,16 @@
 
         var buttonHtml = "";
         if (c.mode === "download_only") {
-          buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">⬇️ Download Complete OEM Manual (' + (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'PDF') + ')</a>';
+          var dlLabel = dict.downloadBtn.replace('{SIZE}', (c.sizeKb > 0 ? (Math.round(c.sizeKb/1024) + ' MB') : 'PDF'));
+          buttonHtml = '<a href="' + downloadHref + '" target="_blank" class="wa-doc-btn">' + dlLabel + '</a>';
         } else {
-          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">🎯 Open Drawing Specification (Page ' + targetP + ') ↗</button>';
+          var drLabel = dict.drawingBtn.replace('{PAGE}', targetP);
+          buttonHtml = '<button type="button" class="wa-doc-btn secondary" onclick="openDrawingViewer(\'' + c.id + '\', \'' + escapeHtmlAttr(c.title) + '\', ' + targetP + ')">' + drLabel + '</button>';
         }
+
+        var docSubText = (c.mode === "download_only") ? 
+          (CURRENT_LANG === 'hi' ? "संपूर्ण तकनीकी प्रकाशन • " : (CURRENT_LANG === 'hinglish' ? "Full OEM Manual • " : "Complete Technical Publication • ")) : 
+          (CURRENT_LANG === 'hi' ? ("लक्षित पृष्ठ: <strong>पृष्ठ " + targetP + "</strong> • ") : (CURRENT_LANG === 'hinglish' ? ("Target: <strong>Page " + targetP + "</strong> • ") : ("Target Specification: <strong>Page " + targetP + "</strong> • ")));
 
         cardHtml = 
           '<div class="wa-doc-box">' +
@@ -756,7 +914,7 @@
               '<div class="wa-doc-icon">PDF</div>' +
               '<div class="wa-doc-meta">' +
                 '<div class="wa-doc-name">' + escapeHtml(c.title) + '</div>' +
-                '<div class="wa-doc-sub">' + (c.mode === "download_only" ? "Complete Technical Publication • " : ("Target Specification: <strong>Page " + targetP + "</strong> • ")) + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'Document') + '</div>' +
+                '<div class="wa-doc-sub">' + docSubText + (c.sizeKb > 0 ? (c.sizeKb + ' KB') : 'Document') + '</div>' +
               '</div>' +
             '</div>' +
             '<div class="wa-doc-actions">' +
@@ -776,7 +934,7 @@
 
       var botMsgId = "msg-" + Date.now();
       messageHistoryStore[botMsgId] = { text: rawReply, dataUrl: null };
-      var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">↩️ Reply</span>';
+      var botReplyBtn = '<span class="msg-reply-trigger" onclick="setReplyContext(\'' + botMsgId + '\')">' + dict.replyTrigger + '</span>';
 
       el.outerHTML = '<div class="msg bot-msg" id="' + botMsgId + '">' + botReplyBtn + replyHtml + cardHtml + fpHtml + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       scrollToBottom();
@@ -785,7 +943,7 @@
     .catch(function(err) {
       var el = document.getElementById(typingId);
       if (el) {
-        el.outerHTML = '<div class="msg bot-msg">⚠️ Network connection interruption occurred. Please re-state your inquiry.<div class="msg-meta">' + getFormattedTime() + '</div></div>';
+        el.outerHTML = '<div class="msg bot-msg">' + dict.netError + '<div class="msg-meta">' + getFormattedTime() + '</div></div>';
       }
       scrollToBottom();
       setInputLocked(false);
@@ -797,6 +955,7 @@
 
   window.addEventListener('DOMContentLoaded', function() {
     warmUpBackendInstance();
+    applyLanguage(CURRENT_LANG);
   });
 </script>
 
