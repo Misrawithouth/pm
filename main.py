@@ -15,7 +15,6 @@ if GEMINI_API_KEY:
 
 app = FastAPI(title="P&M Technical Support High-Speed Backend")
 
-# Enable CORS for frontend integration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,11 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize ChromaDB (Local persistent storage)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="pm_manuals")
 
-# Flexible Pydantic Model to prevent 422 errors
 class QueryRequest(BaseModel):
     query: str
     machineKey: Optional[str] = None
@@ -45,7 +42,6 @@ def ask_support(req: QueryRequest):
         raw_query = (req.query or "").strip()
         lang_mode = (req.lang or "hinglish").lower()
         
-        # 1. Generate Query Embedding for ChromaDB search if API key present
         context_text = "--- SITE TECHNICAL KNOWLEDGE BASE ---\n"
         source_cards = []
         
@@ -86,25 +82,25 @@ def ask_support(req: QueryRequest):
         if len(source_cards) == 0:
             context_text += "No indexed manual chunk matched directly. Relying on primary P&M engineering intelligence.\n"
 
-        # 2. Generate response using Gemini Flash Model
         prompt = (
             "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
-            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough, physical mechanism, and exact schematic port references without cutting off.\n"
+            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough, physical mechanism, and exact schematic port references based on the query.\n"
             f"LANGUAGE: {'Formal Hindi (Devanagari)' if lang_mode=='hi' else ('Workshop Hinglish' if lang_mode=='hinglish' else 'Technical English')}.\n"
             f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
             f"Engineer Query: {raw_query}"
         )
         
-        reply_text = "System operational. Hydraulic fluid flow path: Tank -> Suction Port S -> Main Pump -> Port P -> Main Control Valve -> Actuators -> Return Port T / Cooler."
+        reply_text = "System operational. Kripya apna sawal thoda vistaar se poochein."
         
         if GEMINI_API_KEY:
             try:
-                model = GenerativeModel("gemini-2.5-flash")
+                # Using active gemini-3.8-flash model
+                model = GenerativeModel("gemini-3.8-flash")
                 ai_resp = model.generate_content(prompt)
                 if ai_resp and ai_resp.text:
                     reply_text = ai_resp.text.strip()
             except Exception as ai_err:
-                reply_text = f"Hydraulic circuit active. AI processing notice: {str(ai_err)}"
+                reply_text = f"AI Processing Error: {str(ai_err)}"
 
         return {
             "status": "success",
