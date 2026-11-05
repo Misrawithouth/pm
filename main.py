@@ -22,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ChromaDB local persistent storage for dynamic manual indexing
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="pm_manuals")
 
@@ -33,7 +34,7 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 def health_check():
-    return {"status": "operational", "system": "P&M FastAPI + ChromaDB Gateway"}
+    return {"status": "operational", "system": "P&M FastAPI + ChromaDB Dynamic Gateway"}
 
 @app.post("/api/ask")
 def ask_support(req: QueryRequest):
@@ -41,7 +42,7 @@ def ask_support(req: QueryRequest):
         raw_query = (req.query or "").strip()
         lang_mode = (req.lang or "hinglish").lower()
         
-        # Lightning-fast casual/greeting response without hitting rate limits
+        # Lightning-fast instant response for casual greetings
         greetings = ["hi", "hello", "hey", "kaise ho", "gm", "good morning", "sup", "namaste", "hii", "helo"]
         if raw_query.lower() in greetings or (len(raw_query.split()) <= 2 and any(g in raw_query.lower() for g in ["hi", "hello", "hey"])):
             return {
@@ -56,6 +57,7 @@ def ask_support(req: QueryRequest):
         
         if GEMINI_API_KEY:
             try:
+                # Dynamic embedding generation for user query
                 query_emb_resp = embed_content(
                     model="models/text-embedding-004",
                     content=raw_query,
@@ -63,6 +65,7 @@ def ask_support(req: QueryRequest):
                 )
                 query_vector = query_emb_resp['embedding']
                 
+                # Dynamic machine filtering based on active lock toolbar
                 where_filter = {"machine": req.machineKey.lower()} if req.machineKey else None
                 results = collection.query(
                     query_embeddings=[query_vector],
@@ -131,6 +134,7 @@ async def upload_manual(
     customTitle: Optional[str] = Form(None),
     categoryDesc: Optional[str] = Form("General Equipment")
 ):
+    """Dynamic PDF processing and real-time embedding indexing into ChromaDB"""
     try:
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
@@ -192,7 +196,7 @@ async def upload_manual(
         
         return {
             "status": "success",
-            "message": f"Successfully processed {file_name} and indexed into ChromaDB!"
+            "message": f"Successfully processed {file_name} and dynamically indexed into ChromaDB!"
         }
     except Exception as e:
         return {"status": "error", "message": f"Upload indexing failed: {str(e)}"}
