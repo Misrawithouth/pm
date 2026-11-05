@@ -47,7 +47,7 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>Drive & ChromaDB Connected Active</p>
+                <p>FastAPI + ChromaDB Connected Active</p>
             </div>
         </div>
     </header>
@@ -62,7 +62,7 @@
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Machine lock karne par saare jawab Drive / Uploaded manuals se validate honge.<br>
+            • Machine lock karne par saare jawab uploaded manuals se validate honge.<br>
             • Agar manual mein data nahi mila, toh strict message milega.
             <span class="timestamp" id="init-time"></span>
         </div>
@@ -117,7 +117,7 @@
                 formData.append("customTitle", title);
                 formData.append("categoryDesc", activeMachineName);
 
-                appendMessage(`📤 Uploading and syncing into Drive & ChromaDB storage...`, 'incoming');
+                appendMessage(`📤 Uploading and indexing into ChromaDB storage...`, 'incoming');
 
                 try {
                     let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
@@ -142,7 +142,7 @@
             appendMessage(query, 'outgoing');
             inputField.value = '';
 
-            const typingId = appendMessage("⚡ Searching Drive manuals & analyzing...", 'incoming');
+            const typingId = appendMessage("⚡ Searching manual database & analyzing...", 'incoming');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/api/ask`, {
@@ -162,7 +162,7 @@
                     let replyHtml = data.reply.replace(/\n/g, '<br>');
                     
                     if (data.sources && data.sources.length > 0) {
-                        replyHtml += `<br><br><b>📁 Verified Drive Manual Sources:</b>`;
+                        replyHtml += `<br><br><b>📁 Verified Manual Sources:</b>`;
                         data.sources.forEach(src => {
                             replyHtml += `<div class="source-card">📄 <b>${src.fileName}</b> (Page ${src.page}) - Match: ${src.relevance}%<br>${src.digest}</div>`;
                         });
