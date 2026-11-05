@@ -12,7 +12,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 if GEMINI_API_KEY:
     configure(api_key=GEMINI_API_KEY)
 
-app = FastAPI(title="P&M Technical Support Desk - Complete Sync")
+app = FastAPI(title="P&M Technical Support Hub")
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,11 +32,11 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 def health_check():
-    return {"status": "operational", "system": "P&M FastAPI Gateway Active"}
+    return {"status": "operational", "system": "P&M Drive Hub Gateway"}
 
 @app.get("/api/manuals")
 def get_all_manuals():
-    """Returns synchronized list of local ChromaDB manuals and Drive Root Folder reference"""
+    """Returns local manuals and Google Drive folder items"""
     try:
         manuals_list = []
         data = collection.get()
@@ -50,11 +50,15 @@ def get_all_manuals():
                 mach = m.get("machine", "general")
                 if fname not in seen:
                     seen.add(fname)
-                    manuals_list.append({"title": fname, "category": mach, "source": "Local ChromaDB"})
+                    manuals_list.append({"title": fname, "category": mach, "source": "Local Storage"})
 
-        # Google Drive Root Folder Sync Reference
+        # Google Drive Root Folder items simulation / live link
         root_folder_id = os.environ.get("ROOT_FOLDER_ID", "1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR")
-        manuals_list.append({"title": "Google Drive P&M Manual Hub", "category": "drive-sync", "source": f"Root ID: {root_folder_id}"})
+        manuals_list.append({
+            "title": "Google Drive P&M Manuals (TWM30, Boomer & Hydraulic Circuits)", 
+            "category": "drive-folder", 
+            "source": f"Root ID: {root_folder_id}"
+        })
 
         return {"status": "success", "manuals": manuals_list}
     except Exception as e:
@@ -78,7 +82,6 @@ def ask_support(req: QueryRequest):
     try:
         raw_query = (req.query or "").strip()
         
-        # Fast greeting / emotional support handling
         greetings = ["hi", "hello", "hey", "kaise ho", "gm", "good morning", "sup", "namaste", "hii", "helo"]
         if raw_query.lower() in greetings or (len(raw_query.split()) <= 2 and any(g in raw_query.lower() for g in ["hi", "hello", "hey"])):
             return {
@@ -125,7 +128,6 @@ def ask_support(req: QueryRequest):
             except Exception:
                 pass
 
-        # Strict rule: If machine is locked but no manuals match
         if req.machineKey and len(source_cards) == 0:
             return {
                 "status": "success",
