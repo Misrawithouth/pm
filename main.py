@@ -139,12 +139,13 @@ def ask_support(req: QueryRequest):
         reply_text = "System operational."
         if GEMINI_API_KEY:
             try:
+                # Updated to latest stable gemini-3.8-flash model
                 model = GenerativeModel("gemini-3.8-flash")
                 ai_resp = model.generate_content(prompt)
                 if ai_resp and ai_resp.text:
                     reply_text = ai_resp.text.strip()
-            except Exception:
-                reply_text = "Technical analysis operational (Using direct manual records)."
+            except Exception as ex:
+                reply_text = f"Technical analysis operational (Error: {str(ex)})"
 
         return {
             "status": "success",
