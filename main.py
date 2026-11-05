@@ -7,6 +7,8 @@ from pydantic import BaseModel
 import chromadb
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 if GEMINI_API_KEY:
@@ -30,23 +32,57 @@ class QueryRequest(BaseModel):
     machineKey: Optional[str] = None
     lang: Optional[str] = "hinglish"
 
+def get_drive_service():
+    """Google Drive API client configuration using environment credentials or service account"""
+    creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+    if not creds_json:
+        return None
+    try:
+        import json
+        creds_info = json.loads(creds_json)
+        creds = service_account.Credentials.from_service_account_info(
+            creds_info, scopes=['https://www.googleapis.com/auth/drive.readonly']
+        )
+        return build('drive', 'v3', credentials=creds)
+    except Exception:
+        return None
+
 @app.get("/")
 def health_check():
-    return {"status": "operational", "system": "P&M FastAPI Gateway"}
+    return {"status": "operational", "system": "P&M FastAPI + Drive Gateway"}
 
 @app.get("/api/manuals")
 def get_all_manuals():
-    """Returns list of all already uploaded manuals with their titles and categories"""
+    """Fetches uploaded manuals from ChromaDB and optionally from Google Drive folder"""
     try:
+        manuals_list = []
+        
+        # 1. Get from ChromaDB Local Storage
         data = collection.get()
         metas = data.get("metadatas", [])
-        manuals_map = {}
+        seen = set()
         for m in metas:
             if m and "fileName" in m:
                 fname = m["fileName"]
                 mach = m.get("machine", "general")
-                manuals_map[fname] = {"title": fname, "category": mach}
-        return {"status": "success", "manuals": list(manuals_map.values())}
+                if fname not in seen:
+                    seen.add(fname)
+                    manuals_list.append({"title": fname, "category": mach, "source": "Local Upload"})
+
+        # 2. Get from Google Drive Folder if configured
+        folder_id = os.environ.get("DRIVE_FOLDER_ID") # P&M Manual folder ID
+        service = get_drive_service()
+        if service and folder_id:
+            query = f"'{folder_id}' in parents and mimeType = 'application/pdf' and trashed = false"
+            results = service.files().list(q=query, pageSize=50, fields="files(id, name)").execute()
+            items = results.get('files', [])
+            for item in items:
+                fname = item['name']
+                if fname not in seen:
+                    seen.add(fname)
+                    manuals_list.append({"title": fname, "category": "drive folder", "source": "Google Drive"})
+
+        return {"status": "success", "manuals": manuals_list}
     except Exception as e:
         return {"status": "success", "manuals": []}
 
