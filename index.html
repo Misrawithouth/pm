@@ -44,7 +44,7 @@
         /* Footer Input Area */
         footer { background-color: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; }
         #user-input { flex: 1; padding: 12px 15px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
-        #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
+        #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; z-index: 5; }
     </style>
 </head>
 <body>
@@ -60,9 +60,9 @@
     </header>
 
     <div class="toolbar">
-        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General')">🌐 General Desk</div>
-        <div class="tool-chip" id="chip-boomer" onclick="setMachine('boomer', 'Boomer Drill Jumbo')">⛏️ Boomer Jumbo</div>
-        <div class="tool-chip" id="chip-excavator" onclick="setMachine('excavator', 'Hydraulic Excavator')">🚜 Excavator / JCB</div>
+        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General', event)">🌐 General Desk</div>
+        <div class="tool-chip" id="chip-boomer" onclick="setMachine('boomer', 'Boomer Drill Jumbo', event)">⛏️ Boomer Jumbo</div>
+        <div class="tool-chip" id="chip-excavator" onclick="setMachine('excavator', 'Hydraulic Excavator', event)">🚜 Excavator / JCB</div>
         <div class="tool-chip" onclick="triggerUploadModal()">📁 +Manual Upload</div>
     </div>
 
@@ -77,7 +77,7 @@
 
     <footer>
         <input type="text" id="user-input" placeholder="Sawal likhein ya machine ka naam batayein...">
-        <button id="send-btn" onclick="sendMessage()">➤</button>
+        <button id="send-btn" type="button">➤</button>
     </footer>
 
     <script>
@@ -87,16 +87,25 @@
 
         document.getElementById('init-time').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        document.getElementById('user-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { sendMessage(); }
+        // Event listener setup for send button and input enter
+        document.getElementById('send-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            sendMessage();
         });
 
-        function setMachine(key, name) {
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function setMachine(key, name, evt) {
             activeMachineKey = key;
             activeMachineName = name;
             
             document.querySelectorAll('.tool-chip').forEach(c => c.classList.remove('active'));
-            if(event && event.target) event.target.classList.add('active');
+            if(evt && evt.target) evt.target.classList.add('active');
 
             appendMessage(`🔒 Equipment context locked to: <b>${name}</b>. Ab iska specific circuit ya fault poochein.`, 'incoming', true);
         }
