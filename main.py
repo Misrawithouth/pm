@@ -8,7 +8,7 @@ import chromadb
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
 
-GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
+GEMINI_API_KEY = "AQ.Ab8RN6KV0vfw4ADq-BnYicxXAZSRL5Z48TiPgwOiu4vvRDcGFA'
 
 if GEMINI_API_KEY:
     try:
