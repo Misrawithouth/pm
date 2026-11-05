@@ -6,27 +6,30 @@
     <title>P&M Technical Support Desk</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --chat-bg: #ffffff;
-            --primary-green: #00a884;
-            --dark-green: #008069;
+            --whatsapp-dark: #008069;
+            --whatsapp-light: #efeae2;
             --outgoing-bg: #d9fdd3;
             --incoming-bg: #ffffff;
             --text-main: #111b21;
             --text-secondary: #667781;
-            --border-color: #e9edef;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-color); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background-color: var(--whatsapp-light); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Header */
-        header { background-color: var(--dark-green); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .header-left h1 { font-size: 16px; font-weight: 500; }
-        .header-left p { font-size: 12px; opacity: 0.8; }
-        
+        /* WhatsApp Header */
+        header { background-color: var(--whatsapp-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 40px; height: 40px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+        .header-info h1 { font-size: 16px; font-weight: 500; }
+        .header-info p { font-size: 12px; opacity: 0.85; }
+
+        /* Toolbar for Machine Lock & Upload */
+        .toolbar { background: #ffffff; padding: 8px 12px; display: flex; gap: 8px; border-bottom: 1px solid #e9edef; overflow-x: auto; white-space: nowrap; }
+        .tool-chip { background: #f0f2f5; border: 1px solid #d1d7db; padding: 5px 12px; border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-main); font-weight: 500; }
+        .tool-chip.active { background: var(--whatsapp-dark); color: white; border-color: var(--whatsapp-dark); }
+
         /* Chat Container */
-        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #efeae2; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px); background-size: 24px 24px; }
         
         /* Message Bubbles */
         .message { max-width: 85%; padding: 10px 12px; border-radius: 7.5px; position: relative; font-size: 14px; line-height: 1.4; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
@@ -34,48 +37,101 @@
         .message.outgoing { background-color: var(--outgoing-bg); align-self: flex-end; border-top-right-radius: 0; color: var(--text-main); }
         .timestamp { font-size: 10px; color: var(--text-secondary); float: right; margin-top: 5px; margin-left: 10px; }
         
+        /* Source & PDF Cards */
+        .source-card { background: #f8f9fa; border-left: 4px solid var(--whatsapp-dark); padding: 8px; margin-top: 8px; font-size: 12px; border-radius: 4px; }
+        .source-card a { color: var(--whatsapp-dark); text-decoration: none; font-weight: bold; display: inline-block; margin-top: 4px; }
+
         /* Footer Input Area */
-        footer { background-color: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border-color); }
-        #user-input { flex: 1; padding: 12px 15px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; }
-        #send-btn { background-color: var(--primary-green); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
-        
-        /* Source Card */
-        .source-card { background: #f8f9fa; border-left: 4px solid var(--primary-green); padding: 8px; margin-top: 8px; font-size: 12px; border-radius: 4px; }
-        .source-card a { color: var(--dark-green); text-decoration: none; font-weight: bold; }
+        footer { background-color: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; }
+        #user-input { flex: 1; padding: 12px 15px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="header-left">
-            <div>
-                <h1>P&M Support Desk</h1>
-                <p>High-Speed ChromaDB & FastAPI Active</p>
+            <div class="avatar">⚙️</div>
+            <div class="header-info">
+                <h1>P&M Technical Desk</h1>
+                <p>FastAPI + ChromaDB High-Speed Active</p>
             </div>
         </div>
     </header>
 
+    <div class="toolbar">
+        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General')">🌐 General Desk</div>
+        <div class="tool-chip" id="chip-boomer" onclick="setMachine('boomer', 'Boomer Drill Jumbo')">⛏️ Boomer Jumbo</div>
+        <div class="tool-chip" id="chip-excavator" onclick="setMachine('excavator', 'Hydraulic Excavator')">🚜 Excavator / JCB</div>
+        <div class="tool-chip" onclick="triggerUploadModal()">📁 +Manual Upload</div>
+    </div>
+
     <div id="chat-container">
         <div class="message incoming">
-            Haan bhai, P&M high-speed desk active hai! Kaunsi machine ya circuit par kaam chal raha hai?
+            📍 <b>P&M Technical Desk Active</b><br>
+            • Machine ka model, part number, hydraulic circuit ya fault poochein.<br>
+            • Upar toolbar se specific machine lock kar sakte hain.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
 
     <footer>
-        <input type="text" id="user-input" placeholder="Sawal likhein ya machine ka naam batayein..." autofocus>
+        <input type="text" id="user-input" placeholder="Sawal likhein ya machine ka naam batayein...">
         <button id="send-btn" onclick="sendMessage()">➤</button>
     </footer>
 
     <script>
         const BACKEND_URL = "https://pm-ksm5.onrender.com"; // Render High-Speed Backend URL
         let activeMachineKey = null;
+        let activeMachineName = "General Desk";
 
         document.getElementById('init-time').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         document.getElementById('user-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') { sendMessage(); }
         });
+
+        function setMachine(key, name) {
+            activeMachineKey = key;
+            activeMachineName = name;
+            
+            document.querySelectorAll('.tool-chip').forEach(c => c.classList.remove('active'));
+            if(event && event.target) event.target.classList.add('active');
+
+            appendMessage(`🔒 Equipment context locked to: <b>${name}</b>. Ab iska specific circuit ya fault poochein.`, 'incoming', true);
+        }
+
+        function triggerUploadModal() {
+            let title = prompt("Enter Manual / Document Title (e.g., Boomer XE3 Clevis Circuit):");
+            if(!title) return;
+            let fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.pdf';
+            fileInput.onchange = async e => {
+                let file = e.target.files[0];
+                if(!file) return;
+                
+                let formData = new FormData();
+                formData.append("file", file);
+                formData.append("customTitle", title);
+                formData.append("categoryDesc", activeMachineName);
+
+                appendMessage(`📤 Uploading and indexing "${file.name}" into ChromaDB...`, 'incoming');
+
+                try {
+                    let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
+                    let data = await res.json();
+                    if(data.status === 'success') {
+                        appendMessage(`✅ Success: ${data.message}`, 'incoming', true);
+                    } else {
+                        appendMessage(`⚠️ Upload failed: ${data.message}`, 'incoming');
+                    }
+                } catch(err) {
+                    appendMessage(`⚠️ Connection error during upload.`, 'incoming');
+                }
+            };
+            fileInput.click();
+        }
 
         async function sendMessage() {
             const inputField = document.getElementById('user-input');
@@ -85,8 +141,7 @@
             appendMessage(query, 'outgoing');
             inputField.value = '';
 
-            // Show typing indicator
-            const typingId = appendMessage("Analyzing manual database...", 'incoming');
+            const typingId = appendMessage("⚡ Searching ChromaDB & analyzing via Gemini...", 'incoming');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/api/ask`, {
@@ -125,7 +180,7 @@
         function appendMessage(text, sender, isHtml = false) {
             const chatContainer = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
-            const msgId = 'msg-' + Math.random().toString(36.substring(2, 9));
+            const msgId = 'msg-' + Math.random().toString(36).substring(2, 9);
             msgDiv.id = msgId;
             msgDiv.className = `message ${sender}`;
             
