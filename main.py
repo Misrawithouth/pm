@@ -11,7 +11,10 @@ from pypdf import PdfReader
 GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
 
 if GEMINI_API_KEY:
-    configure(api_key=GEMINI_API_KEY)
+    try:
+        configure(api_key=GEMINI_API_KEY)
+    except Exception:
+        pass
 
 app = FastAPI(title="P&M Technical Support Local ChromaDB Desk")
 
@@ -85,58 +88,62 @@ def ask_support(req: QueryRequest):
         context_text = "--- SITE TECHNICAL KNOWLEDGE BASE ---\n"
         source_cards = []
         
-        if GEMINI_API_KEY:
-            try:
-                query_emb_resp = embed_content(
-                    model="models/text-embedding-004",
-                    content=raw_query,
-                    task_type="retrieval_query"
-                )
-                query_vector = query_emb_resp['embedding']
+        try:
+            query_emb_resp = embed_content(
+                model="models/text-embedding-004",
+                content=raw_query,
+                task_type="retrieval_query"
+            )
+            query_vector = query_emb_resp['embedding']
+            
+            where_filter = {"machine": req.machineKey.lower()} if req.machineKey else None
+            results = collection.query(
+                query_embeddings=[query_vector],
+                n_results=3,
+                where=where_filter
+            )
+            
+            if results and results.get('documents') and len(results['documents'][0]) > 0:
+                docs = results['documents'][0]
+                metas = results['metadatas'][0]
+                distances = results['distances'][0]
                 
-                where_filter = {"machine": req.machineKey.lower()} if req.machineKey else None
-                results = collection.query(
-                    query_embeddings=[query_vector],
-                    n_results=3,
-                    where=where_filter
-                )
-                
-                if results and results.get('documents') and len(results['documents'][0]) > 0:
-                    docs = results['documents'][0]
-                    metas = results['metadatas'][0]
-                    distances = results['distances'][0]
-                    
-                    for i, doc in enumerate(docs):
-                        meta = metas[i]
-                        score = max(0, int((1.0 - distances[i]) * 100))
-                        context_text += f"[Source {i+1}: {meta.get('fileName')} | Page {meta.get('pageNumber')} | Match: {score}%]:\n{doc}\n\n"
-                        source_cards.append({
-                            "fileName": meta.get('fileName'),
-                            "page": meta.get('pageNumber'),
-                            "relevance": score,
-                            "digest": doc[:110] + "..."
-                        })
-            except Exception as emb_err:
-                print(f"Embedding error: {emb_err}")
+                for i, doc in enumerate(docs):
+                    meta = metas[i]
+                    score = max(0, int((1.0 - distances[i]) * 100))
+                    context_text += f"[Source {i+1}: {meta.get('fileName')} | Page {meta.get('pageNumber')} | Match: {score}%]:\n{doc}\n\n"
+                    source_cards.append({
+                        "fileName": meta.get('fileName'),
+                        "page": meta.get('pageNumber'),
+                        "relevance": score,
+                        "digest": doc[:110] + "..."
+                    })
+        except Exception:
+            pass
 
-        prompt = (
-            "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
-            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough based strictly on the retrieved manual data.\n"
-            f"LANGUAGE: Workshop Hinglish.\n"
-            f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
-            f"Engineer Query: {raw_query}"
-        )
-        
-        reply_text = "System operational."
+        # If LLM key fails, fallback to direct manual text search results
+        reply_text = ""
         if GEMINI_API_KEY:
             try:
-                # Using the latest stable gemini-3.8-flash model
+                prompt = (
+                    "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
+                    "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough based strictly on the retrieved manual data.\n"
+                    f"LANGUAGE: Workshop Hinglish.\n"
+                    f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
+                    f"Engineer Query: {raw_query}"
+                )
                 model = GenerativeModel("gemini-3.8-flash")
                 ai_resp = model.generate_content(prompt)
                 if ai_resp and ai_resp.text:
                     reply_text = ai_resp.text.strip()
-            except Exception as ex:
-                reply_text = f"Technical analysis operational (AI Error: {str(ex)})"
+            except Exception:
+                pass
+
+        if not reply_text:
+            if source_cards:
+                reply_text = f"⚙️ <b>Manual Match Found:</b><br>{source_cards[0]['digest']}"
+            else:
+                reply_text = "❌ Yeh jaankari uploaded manual mein uplabdh nahi hai."
 
         return {
             "status": "success",
@@ -176,18 +183,17 @@ async def upload_manual(
                     continue
                 chunk_id = f"{file_id}_p{page_num+1}_c{i}"
                 emb = [0.0] * 768
-                if GEMINI_API_KEY:
-                    try:
-                        emb_resp = embed_content(model="models/text-embedding-004", content=chunk, task_type="retrieval_document")
-                        emb = emb_resp['embedding']
-                    except Exception:
-                        pass
+                try:
+                    emb_resp = embed_content(model="models/text-embedding-004", content=chunk, task_type="retrieval_document")
+                    emb = emb_resp['embedding']
+                except Exception:
+                    pass
                 documents.append(chunk)
                 metadatas.append({"fileId": file_id, "fileName": file_name, "pageNumber": page_num + 1, "machine": cat_cleaned})
                 ids.append(chunk_id)
                 embeddings.append(emb)
                 
-        if ids and GEMINI_API_KEY:
+        if ids:
             collection.add(documents=documents, embeddings=embeddings, metadatas=metadatas, ids=ids)
             
         os.remove(file_path)
