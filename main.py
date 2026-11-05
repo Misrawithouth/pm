@@ -1,5 +1,6 @@
 import os
 import shutil
+import time
 from typing import Optional
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +9,6 @@ import chromadb
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
 
-# Configuration from environment variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 if GEMINI_API_KEY:
     configure(api_key=GEMINI_API_KEY)
@@ -32,6 +32,22 @@ class QueryRequest(BaseModel):
     isGeneral: Optional[bool] = False
     lang: Optional[str] = "hinglish"
 
+def safe_gemini_call(prompt, retries=3, delay=2):
+    for attempt in range(retries):
+        try:
+            model = GenerativeModel("gemini-3.8-flash")
+            response = model.generate_content(prompt)
+            if response and response.text:
+                return response.text.strip()
+        except Exception as e:
+            err_str = str(e)
+            if ("429" in err_str or "quota" in err_str.lower()) and attempt < retries - 1:
+                time.sleep(delay * (attempt + 1))
+                continue
+            elif attempt == retries - 1:
+                return f"System busy hai. Kripya thoda wait karke dobara try karein."
+    return "System operational."
+
 @app.get("/")
 def health_check():
     return {"status": "operational", "system": "P&M FastAPI + ChromaDB Gateway"}
@@ -42,10 +58,14 @@ def ask_support(req: QueryRequest):
         raw_query = (req.query or "").strip()
         lang_mode = (req.lang or "hinglish").lower()
         
+        # Check if query is a greeting or casual expression
+        greetings = ["hi", "hello", "hey", "kaise ho", "gm", "good morning", "sup", "namaste"]
+        is_greeting = raw_query.lower() in greetings or len(raw_query.split()) <= 2 and any(g in raw_query.lower() for g in ["hi", "hello", "hey"])
+
         context_text = "--- SITE TECHNICAL KNOWLEDGE BASE ---\n"
         source_cards = []
         
-        if GEMINI_API_KEY:
+        if not is_greeting and GEMINI_API_KEY:
             try:
                 query_emb_resp = embed_content(
                     model="models/text-embedding-004",
@@ -76,31 +96,32 @@ def ask_support(req: QueryRequest):
                             "relevance": score,
                             "digest": doc[:110] + "..."
                         })
-            except Exception as emb_err:
-                context_text += f"Vector search notice: {str(emb_err)}\n"
+            except Exception:
+                pass
 
-        if len(source_cards) == 0:
-            context_text += "No indexed manual chunk matched directly. Relying on primary P&M engineering intelligence.\n"
-
-        prompt = (
-            "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
-            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough, physical mechanism, and exact schematic port references based on the query.\n"
-            f"LANGUAGE: {'Formal Hindi (Devanagari)' if lang_mode=='hi' else ('Workshop Hinglish' if lang_mode=='hinglish' else 'Technical English')}.\n"
-            f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
-            f"Engineer Query: {raw_query}"
-        )
+        if is_greeting:
+            prompt = (
+                "You are a friendly and helpful Plant & Machinery (P&M) Assistant at a site. "
+                "Respond naturally and warmly to the user's greeting in conversational Workshop Hinglish."
+            )
+        elif req.machineKey and len(source_cards) == 0:
+            # STRICT MANUAL-ONLY RULE ENFORCEMENT
+            return {
+                "status": "success",
+                "reply": f"❌ Yeh jaankari is machine ke uploaded manual mein uplabdh nahi hai.",
+                "sources": [],
+                "followUps": []
+            }
+        else:
+            prompt = (
+                "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
+                "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough, physical mechanism, and exact schematic port references based strictly on the retrieved manual data.\n"
+                f"LANGUAGE: {'Formal Hindi (Devanagari)' if lang_mode=='hi' else ('Workshop Hinglish' if lang_mode=='hinglish' else 'Technical English')}.\n"
+                f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
+                f"Engineer Query: {raw_query}"
+            )
         
-        reply_text = "System operational. Kripya apna sawal thoda vistaar se poochein."
-        
-        if GEMINI_API_KEY:
-            try:
-                # Using active gemini-3.8-flash model
-                model = GenerativeModel("gemini-3.8-flash")
-                ai_resp = model.generate_content(prompt)
-                if ai_resp and ai_resp.text:
-                    reply_text = ai_resp.text.strip()
-            except Exception as ai_err:
-                reply_text = f"AI Processing Error: {str(ai_err)}"
+        reply_text = safe_gemini_call(prompt) if GEMINI_API_KEY else "System active without API key."
 
         return {
             "status": "success",
