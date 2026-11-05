@@ -58,7 +58,7 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>Drive Hub & ChromaDB Sync</p>
+                <p>Drive Folder Hub Connected</p>
             </div>
         </div>
     </header>
@@ -72,8 +72,8 @@
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Root Folder ID (`1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR`) synchronized.<br>
-            • Uploaded manuals & Drive hub ready.
+            • Google Drive Folder linked (`1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR`).<br>
+            • View Manuals dabakar direct folder aur files access karein.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
@@ -172,21 +172,26 @@
         }
 
         async function showUploadedManuals() {
-            appendMessage(`📚 Fetching synced manuals from Hub...`, 'incoming');
+            appendMessage(`📚 Opening Google Drive P&M Manuals Hub...`, 'incoming');
             try {
                 let res = await fetch(`${BACKEND_URL}/api/manuals`);
                 let data = await res.json();
+                
+                // Direct Google Drive Folder Link for easy opening
+                let driveFolderUrl = "https://drive.google.com/drive/folders/1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR";
+                let listHtml = `<b>📚 P&M Manuals Hub:</b><br>`;
+                listHtml += `📂 <a href="${driveFolderUrl}" target="_blank" style="color: #008069; font-weight: bold; text-decoration: underline;">Google Drive Folder Kholein (Saare Manuals Yahan Hain)</a><br><br>`;
+                
                 if(data.status === 'success' && data.manuals.length > 0) {
-                    let listHtml = `<b>📚 Synchronized Manuals Hub:</b><br>`;
                     data.manuals.forEach((m, idx) => {
-                        listHtml += `${idx + 1}. <b>${m.title}</b> [<i>${m.source}</i>] (Category: ${m.category.toUpperCase()})<br>`;
+                        if(m.category !== 'drive-folder') {
+                            listHtml += `${idx + 1}. <b>${m.title}</b> [<i>${m.source}</i>] (Category: ${m.category.toUpperCase()})<br>`;
+                        }
                     });
-                    appendMessage(listHtml, 'incoming', true);
-                } else {
-                    appendMessage(`📁 Koi manual nahi mila.`, 'incoming');
                 }
+                appendMessage(listHtml, 'incoming', true);
             } catch(err) {
-                appendMessage(`⚠️ Could not fetch manuals list.`, 'incoming');
+                appendMessage(`⚠️ Could not fetch manuals. <a href="https://drive.google.com/drive/folders/1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR" target="_blank">Drive Folder Kholein</a>`, 'incoming', true);
             }
         }
 
