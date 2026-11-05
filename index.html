@@ -16,32 +16,25 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: var(--whatsapp-light); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* WhatsApp Header */
         header { background-color: var(--whatsapp-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .avatar { width: 40px; height: 40px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
         .header-info h1 { font-size: 16px; font-weight: 500; }
         .header-info p { font-size: 12px; opacity: 0.85; }
 
-        /* Toolbar for Machine Lock & Upload */
         .toolbar { background: #ffffff; padding: 8px 12px; display: flex; gap: 8px; border-bottom: 1px solid #e9edef; overflow-x: auto; white-space: nowrap; }
         .tool-chip { background: #f0f2f5; border: 1px solid #d1d7db; padding: 5px 12px; border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-main); font-weight: 500; }
         .tool-chip.active { background: var(--whatsapp-dark); color: white; border-color: var(--whatsapp-dark); }
 
-        /* Chat Container */
         #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px); background-size: 24px 24px; }
         
-        /* Message Bubbles */
         .message { max-width: 85%; padding: 10px 12px; border-radius: 7.5px; position: relative; font-size: 14px; line-height: 1.4; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
         .message.incoming { background-color: var(--incoming-bg); align-self: flex-start; border-top-left-radius: 0; color: var(--text-main); }
         .message.outgoing { background-color: var(--outgoing-bg); align-self: flex-end; border-top-right-radius: 0; color: var(--text-main); }
         .timestamp { font-size: 10px; color: var(--text-secondary); float: right; margin-top: 5px; margin-left: 10px; }
         
-        /* Source & PDF Cards */
         .source-card { background: #f8f9fa; border-left: 4px solid var(--whatsapp-dark); padding: 8px; margin-top: 8px; font-size: 12px; border-radius: 4px; }
-        .source-card a { color: var(--whatsapp-dark); text-decoration: none; font-weight: bold; display: inline-block; margin-top: 4px; }
 
-        /* Footer Input Area */
         footer { background-color: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; }
         #user-input { flex: 1; padding: 12px 15px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; z-index: 5; }
@@ -54,13 +47,13 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>FastAPI + ChromaDB High-Speed Active</p>
+                <p>Drive & ChromaDB Connected Active</p>
             </div>
         </div>
     </header>
 
     <div class="toolbar">
-        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General', event)">🌐 General Desk</div>
+        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General Desk', event)">🌐 General Desk</div>
         <div class="tool-chip" id="chip-boomer" onclick="setMachine('boomer', 'Boomer Drill Jumbo', event)">⛏️ Boomer Jumbo</div>
         <div class="tool-chip" id="chip-excavator" onclick="setMachine('excavator', 'Hydraulic Excavator', event)">🚜 Excavator / JCB</div>
         <div class="tool-chip" onclick="triggerUploadModal()">📁 +Manual Upload</div>
@@ -69,8 +62,8 @@
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Machine ka model, part number, hydraulic circuit ya fault poochein.<br>
-            • Upar toolbar se specific machine lock kar sakte hain.
+            • Machine lock karne par saare jawab Drive / Uploaded manuals se validate honge.<br>
+            • Agar manual mein data nahi mila, toh strict message milega.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
@@ -81,13 +74,12 @@
     </footer>
 
     <script>
-        const BACKEND_URL = "https://pm-ksm5.onrender.com"; // Render High-Speed Backend URL
+        const BACKEND_URL = "https://pm-ksm5.onrender.com";
         let activeMachineKey = null;
         let activeMachineName = "General Desk";
 
         document.getElementById('init-time').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Event listener setup for send button and input enter
         document.getElementById('send-btn').addEventListener('click', function(e) {
             e.preventDefault();
             sendMessage();
@@ -107,7 +99,7 @@
             document.querySelectorAll('.tool-chip').forEach(c => c.classList.remove('active'));
             if(evt && evt.target) evt.target.classList.add('active');
 
-            appendMessage(`🔒 Equipment context locked to: <b>${name}</b>. Ab iska specific circuit ya fault poochein.`, 'incoming', true);
+            appendMessage(`🔒 Equipment context locked to: <b>${name}</b> (Status: Active). Ab iska specific circuit ya fault poochein.`, 'incoming', true);
         }
 
         function triggerUploadModal() {
@@ -125,7 +117,7 @@
                 formData.append("customTitle", title);
                 formData.append("categoryDesc", activeMachineName);
 
-                appendMessage(`📤 Uploading and indexing "${file.name}" into ChromaDB...`, 'incoming');
+                appendMessage(`📤 Uploading and syncing into Drive & ChromaDB storage...`, 'incoming');
 
                 try {
                     let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
@@ -150,7 +142,7 @@
             appendMessage(query, 'outgoing');
             inputField.value = '';
 
-            const typingId = appendMessage("⚡ Searching ChromaDB & analyzing via Gemini...", 'incoming');
+            const typingId = appendMessage("⚡ Searching Drive manuals & analyzing...", 'incoming');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/api/ask`, {
@@ -170,7 +162,7 @@
                     let replyHtml = data.reply.replace(/\n/g, '<br>');
                     
                     if (data.sources && data.sources.length > 0) {
-                        replyHtml += `<br><br><b>📁 Verified Manual Sources:</b>`;
+                        replyHtml += `<br><br><b>📁 Verified Drive Manual Sources:</b>`;
                         data.sources.forEach(src => {
                             replyHtml += `<div class="source-card">📄 <b>${src.fileName}</b> (Page ${src.page}) - Match: ${src.relevance}%<br>${src.digest}</div>`;
                         });
