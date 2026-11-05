@@ -35,6 +35,16 @@
         
         .source-card { background: #f8f9fa; border-left: 4px solid var(--whatsapp-dark); padding: 8px; margin-top: 8px; font-size: 12px; border-radius: 4px; }
 
+        /* Modal Overlay */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-card { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 12px; }
+        .modal-card h3 { font-size: 16px; color: var(--whatsapp-dark); }
+        .modal-card input, .modal-card select { width: 100%; padding: 10px; border: 1px solid #d1d7db; border-radius: 8px; font-size: 14px; outline: none; }
+        .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 5px; }
+        .modal-btns button { padding: 8px 16px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; }
+        .btn-cancel { background: #f0f2f5; color: var(--text-main); }
+        .btn-submit { background: var(--whatsapp-dark); color: white; }
+
         footer { background-color: #f0f2f5; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; flex-shrink: 0; width: 100%; }
         #user-input { flex: 1; padding: 10px 14px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; flex-shrink: 0; }
@@ -47,22 +57,37 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>General Chat & Manuals Active</p>
+                <p>Drive & Manuals Hub</p>
             </div>
         </div>
     </header>
 
     <div class="toolbar" id="toolbar">
         <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General Desk', event)">🌐 General Desk</div>
-        <div class="tool-chip" onclick="triggerUploadModal()">📁 +Manual Upload</div>
+        <div class="tool-chip" onclick="openUploadModal()">📁 +Manual Upload</div>
+        <div class="tool-chip" onclick="showUploadedManuals()">📚 View Manuals</div>
     </div>
 
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • General chat mode mein aap normal baat kar sakte hain.<br>
-            • Manuals keval wahi active honge jo uploaded hain.
+            • Naye manuals upload karne ke liye <b>+Manual Upload</b> dabayein.<br>
+            • Pehle se uploaded manuals dekhne ke liye <b>View Manuals</b> dabayein.
             <span class="timestamp" id="init-time"></span>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="modal-overlay">
+        <div class="modal-card">
+            <h3>📁 Upload New Manual</h3>
+            <input type="text" id="manual-title" placeholder="Manual Name (e.g., Boomer 282 Circuit)">
+            <input type="text" id="manual-category" placeholder="Category/Machine (e.g., boomer)">
+            <input type="file" id="manual-file" accept=".pdf" style="padding: 5px 0;">
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeUploadModal()">Cancel</button>
+                <button class="btn-submit" onclick="submitUpload()">Upload & Index</button>
+            </div>
         </div>
     </div>
 
@@ -78,14 +103,12 @@
 
         document.getElementById('init-time').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Load dynamic categories available in database
         async function loadCategories() {
             try {
                 let res = await fetch(`${BACKEND_URL}/api/categories`);
                 let data = await res.json();
                 if(data.status === 'success' && data.categories.length > 0) {
                     const toolbar = document.getElementById('toolbar');
-                    // Keep General Desk and Upload buttons, clear middle items
                     toolbar.innerHTML = `
                         <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General Desk', event)">🌐 General Desk</div>
                     `;
@@ -98,15 +121,73 @@
                             toolbar.appendChild(chip);
                         }
                     });
-                    let uploadChip = document.createElement('div');
-                    uploadChip.className = 'tool-chip';
-                    uploadChip.innerText = '📁 +Manual Upload';
-                    uploadChip.onclick = triggerUploadModal;
-                    toolbar.appendChild(uploadChip);
+                    toolbar.innerHTML += `
+                        <div class="tool-chip" onclick="openUploadModal()">📁 +Manual Upload</div>
+                        <div class="tool-chip" onclick="showUploadedManuals()">📚 View Manuals</div>
+                    `;
                 }
             } catch(e) {}
         }
         loadCategories();
+
+        function openUploadModal() { document.getElementById('modal-overlay').style.display = 'flex'; }
+        function closeUploadModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
+        async function submitUpload() {
+            let title = document.getElementById('manual-title').value.trim();
+            let category = document.getElementById('manual-category').value.trim().toLowerCase();
+            let fileInput = document.getElementById('manual-file');
+            let file = fileInput.files[0];
+
+            if(!title || !category || !file) {
+                alert("Kripya sabhi fields bharein aur file select karein!");
+                return;
+            }
+
+            closeUploadModal();
+            appendMessage(`📤 Uploading '${title}' under '${category}'...`, 'incoming');
+
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("customTitle", title);
+            formData.append("categoryDesc", category);
+
+            try {
+                let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
+                let data = await res.json();
+                if(data.status === 'success') {
+                    appendMessage(`✅ Success: ${data.message}`, 'incoming', true);
+                    loadCategories();
+                } else {
+                    appendMessage(`⚠️ Upload failed: ${data.message}`, 'incoming');
+                }
+            } catch(err) {
+                appendMessage(`⚠️ Connection error during upload.`, 'incoming');
+            }
+
+            document.getElementById('manual-title').value = '';
+            document.getElementById('manual-category').value = '';
+            fileInput.value = '';
+        }
+
+        async function showUploadedManuals() {
+            appendMessage(`📚 Fetching list of uploaded manuals from Drive & ChromaDB storage...`, 'incoming');
+            try {
+                let res = await fetch(`${BACKEND_URL}/api/manuals`);
+                let data = await res.json();
+                if(data.status === 'success' && data.manuals.length > 0) {
+                    let listHtml = `<b>📚 Already Uploaded Manuals:</b><br>`;
+                    data.manuals.forEach((m, idx) => {
+                        listHtml += `${idx + 1}. <b>${m.title}</b> (Category: <i>${m.category.toUpperCase()}</i>)<br>`;
+                    });
+                    appendMessage(listHtml, 'incoming', true);
+                } else {
+                    appendMessage(`📁 Abhi tak koi manual uploaded nahi hai.`, 'incoming');
+                }
+            } catch(err) {
+                appendMessage(`⚠️ Could not fetch manuals list.`, 'incoming');
+            }
+        }
 
         document.getElementById('send-btn').addEventListener('click', (e) => { e.preventDefault(); sendMessage(); });
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
@@ -117,40 +198,6 @@
             document.querySelectorAll('.tool-chip').forEach(c => c.classList.remove('active'));
             if(evt && evt.target) evt.target.classList.add('active');
             appendMessage(`🔒 Context locked to: <b>${name}</b>.`, 'incoming', true);
-        }
-
-        function triggerUploadModal() {
-            let title = prompt("Enter Manual Title (e.g., Boomer Jumbo Circuit):");
-            if(!title) return;
-            let category = prompt("Enter Equipment / Machine Category (e.g., boomer):", "boomer");
-            if(!category) return;
-
-            let fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = '.pdf';
-            fileInput.onchange = async e => {
-                let file = e.target.files[0];
-                if(!file) return;
-                let formData = new FormData();
-                formData.append("file", file);
-                formData.append("customTitle", title);
-                formData.append("categoryDesc", category);
-
-                appendMessage(`📤 Uploading and indexing...`, 'incoming');
-                try {
-                    let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
-                    let data = await res.json();
-                    if(data.status === 'success') {
-                        appendMessage(`✅ Success: ${data.message}`, 'incoming', true);
-                        loadCategories();
-                    } else {
-                        appendMessage(`⚠️ Upload failed: ${data.message}`, 'incoming');
-                    }
-                } catch(err) {
-                    appendMessage(`⚠️ Connection error.`, 'incoming');
-                }
-            };
-            fileInput.click();
         }
 
         async function sendMessage() {
