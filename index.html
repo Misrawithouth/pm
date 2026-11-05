@@ -14,30 +14,30 @@
             --text-secondary: #667781;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--whatsapp-light); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        html, body { width: 100%; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--whatsapp-light); }
         
-        header { background-color: var(--whatsapp-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10; }
+        header { background-color: var(--whatsapp-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10; flex-shrink: 0; }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 40px; height: 40px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-        .header-info h1 { font-size: 16px; font-weight: 500; }
-        .header-info p { font-size: 12px; opacity: 0.85; }
+        .avatar { width: 38px; height: 38px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .header-info h1 { font-size: 15px; font-weight: 500; }
+        .header-info p { font-size: 11px; opacity: 0.85; }
 
-        .toolbar { background: #ffffff; padding: 8px 12px; display: flex; gap: 8px; border-bottom: 1px solid #e9edef; overflow-x: auto; white-space: nowrap; }
-        .tool-chip { background: #f0f2f5; border: 1px solid #d1d7db; padding: 5px 12px; border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-main); font-weight: 500; }
+        .toolbar { background: #ffffff; padding: 8px 10px; display: flex; gap: 8px; border-bottom: 1px solid #e9edef; overflow-x: auto; white-space: nowrap; flex-shrink: 0; }
+        .tool-chip { background: #f0f2f5; border: 1px solid #d1d7db; padding: 6px 14px; border-radius: 16px; font-size: 13px; cursor: pointer; color: var(--text-main); font-weight: 500; flex-shrink: 0; }
         .tool-chip.active { background: var(--whatsapp-dark); color: white; border-color: var(--whatsapp-dark); }
 
-        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px); background-size: 24px 24px; }
+        #chat-container { flex: 1; width: 100%; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px); background-size: 24px 24px; }
         
-        .message { max-width: 85%; padding: 10px 12px; border-radius: 7.5px; position: relative; font-size: 14px; line-height: 1.4; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
+        .message { max-width: 88%; padding: 10px 12px; border-radius: 7.5px; position: relative; font-size: 14px; line-height: 1.4; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
         .message.incoming { background-color: var(--incoming-bg); align-self: flex-start; border-top-left-radius: 0; color: var(--text-main); }
         .message.outgoing { background-color: var(--outgoing-bg); align-self: flex-end; border-top-right-radius: 0; color: var(--text-main); }
-        .timestamp { font-size: 10px; color: var(--text-secondary); float: right; margin-top: 5px; margin-left: 10px; }
+        .timestamp { font-size: 10px; color: var(--text-secondary); float: right; margin-top: 4px; margin-left: 8px; }
         
         .source-card { background: #f8f9fa; border-left: 4px solid var(--whatsapp-dark); padding: 8px; margin-top: 8px; font-size: 12px; border-radius: 4px; }
 
-        footer { background-color: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; }
-        #user-input { flex: 1; padding: 12px 15px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
-        #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; z-index: 5; }
+        footer { background-color: #f0f2f5; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; flex-shrink: 0; width: 100%; }
+        #user-input { flex: 1; padding: 10px 14px; border: none; border-radius: 24px; outline: none; font-size: 14px; background: white; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -47,29 +47,27 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>FastAPI + ChromaDB Dynamic Active</p>
+                <p>General Chat & Manuals Active</p>
             </div>
         </div>
     </header>
 
-    <div class="toolbar">
+    <div class="toolbar" id="toolbar">
         <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General Desk', event)">🌐 General Desk</div>
-        <div class="tool-chip" id="chip-boomer" onclick="setMachine('boomer', 'Boomer Drill Jumbo', event)">⛏️ Boomer Jumbo</div>
-        <div class="tool-chip" id="chip-excavator" onclick="setMachine('excavator', 'Hydraulic Excavator', event)">🚜 Excavator / JCB</div>
         <div class="tool-chip" onclick="triggerUploadModal()">📁 +Manual Upload</div>
     </div>
 
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Machine lock karne par saare jawab dynamically manuals se validate honge.<br>
-            • Agar manual mein data nahi mila, toh strict message milega.
+            • General chat mode mein aap normal baat kar sakte hain.<br>
+            • Manuals keval wahi active honge jo uploaded hain.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
 
     <footer>
-        <input type="text" id="user-input" placeholder="Sawal likhein ya machine ka naam batayein...">
+        <input type="text" id="user-input" placeholder="Sawal likhein...">
         <button id="send-btn" type="button">➤</button>
     </footer>
 
@@ -80,55 +78,76 @@
 
         document.getElementById('init-time').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        document.getElementById('send-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            sendMessage();
-        });
+        // Load dynamic categories available in database
+        async function loadCategories() {
+            try {
+                let res = await fetch(`${BACKEND_URL}/api/categories`);
+                let data = await res.json();
+                if(data.status === 'success' && data.categories.length > 0) {
+                    const toolbar = document.getElementById('toolbar');
+                    // Keep General Desk and Upload buttons, clear middle items
+                    toolbar.innerHTML = `
+                        <div class="tool-chip active" id="chip-general" onclick="setMachine(null, 'General Desk', event)">🌐 General Desk</div>
+                    `;
+                    data.categories.forEach(cat => {
+                        if(cat && cat !== 'general') {
+                            let chip = document.createElement('div');
+                            chip.className = 'tool-chip';
+                            chip.innerText = `⚙️ ${cat.toUpperCase()}`;
+                            chip.onclick = (e) => setMachine(cat, cat, e);
+                            toolbar.appendChild(chip);
+                        }
+                    });
+                    let uploadChip = document.createElement('div');
+                    uploadChip.className = 'tool-chip';
+                    uploadChip.innerText = '📁 +Manual Upload';
+                    uploadChip.onclick = triggerUploadModal;
+                    toolbar.appendChild(uploadChip);
+                }
+            } catch(e) {}
+        }
+        loadCategories();
 
-        document.getElementById('user-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        document.getElementById('send-btn').addEventListener('click', (e) => { e.preventDefault(); sendMessage(); });
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
 
         function setMachine(key, name, evt) {
             activeMachineKey = key;
             activeMachineName = name;
-            
             document.querySelectorAll('.tool-chip').forEach(c => c.classList.remove('active'));
             if(evt && evt.target) evt.target.classList.add('active');
-
-            appendMessage(`🔒 Equipment context locked to: <b>${name}</b> (Status: Active). Ab iska specific circuit ya fault poochein.`, 'incoming', true);
+            appendMessage(`🔒 Context locked to: <b>${name}</b>.`, 'incoming', true);
         }
 
         function triggerUploadModal() {
-            let title = prompt("Enter Manual / Document Title (e.g., Boomer XE3 Clevis Circuit):");
+            let title = prompt("Enter Manual Title (e.g., Boomer Jumbo Circuit):");
             if(!title) return;
+            let category = prompt("Enter Equipment / Machine Category (e.g., boomer):", "boomer");
+            if(!category) return;
+
             let fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = '.pdf';
             fileInput.onchange = async e => {
                 let file = e.target.files[0];
                 if(!file) return;
-                
                 let formData = new FormData();
                 formData.append("file", file);
                 formData.append("customTitle", title);
-                formData.append("categoryDesc", activeMachineName);
+                formData.append("categoryDesc", category);
 
-                appendMessage(`📤 Uploading and dynamically indexing into ChromaDB...`, 'incoming');
-
+                appendMessage(`📤 Uploading and indexing...`, 'incoming');
                 try {
                     let res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
                     let data = await res.json();
                     if(data.status === 'success') {
                         appendMessage(`✅ Success: ${data.message}`, 'incoming', true);
+                        loadCategories();
                     } else {
                         appendMessage(`⚠️ Upload failed: ${data.message}`, 'incoming');
                     }
                 } catch(err) {
-                    appendMessage(`⚠️ Connection error during upload.`, 'incoming');
+                    appendMessage(`⚠️ Connection error.`, 'incoming');
                 }
             };
             fileInput.click();
@@ -141,18 +160,13 @@
 
             appendMessage(query, 'outgoing');
             inputField.value = '';
-
             const typingId = appendMessage("Typing...", 'incoming');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/api/ask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        query: query,
-                        machineKey: activeMachineKey,
-                        lang: "hinglish"
-                    })
+                    body: JSON.stringify({ query: query, machineKey: activeMachineKey, lang: "hinglish" })
                 });
 
                 const data = await response.json();
@@ -160,21 +174,19 @@
 
                 if (data.status === 'success') {
                     let replyHtml = data.reply.replace(/\n/g, '<br>');
-                    
                     if (data.sources && data.sources.length > 0) {
-                        replyHtml += `<br><br><b>📁 Verified Manual Sources:</b>`;
+                        replyHtml += `<br><br><b>📁 Verified Sources:</b>`;
                         data.sources.forEach(src => {
                             replyHtml += `<div class="source-card">📄 <b>${src.fileName}</b> (Page ${src.page}) - Match: ${src.relevance}%<br>${src.digest}</div>`;
                         });
                     }
-
                     appendMessage(replyHtml, 'incoming', true);
                 } else {
                     appendMessage("⚠️ Gateway error: " + data.reply, 'incoming');
                 }
             } catch (err) {
                 removeMessage(typingId);
-                appendMessage("⚠️ Connection error with Render backend. Kripya dobara try karein.", 'incoming');
+                appendMessage("⚠️ Connection error. Try again.", 'incoming');
             }
         }
 
@@ -184,7 +196,6 @@
             const msgId = 'msg-' + Math.random().toString(36).substring(2, 9);
             msgDiv.id = msgId;
             msgDiv.className = `message ${sender}`;
-            
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             if (isHtml) {
@@ -196,7 +207,6 @@
                 span.innerText = timeStr;
                 msgDiv.appendChild(span);
             }
-
             chatContainer.appendChild(msgDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             return msgId;
