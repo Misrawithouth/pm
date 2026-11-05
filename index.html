@@ -14,7 +14,7 @@
             --text-secondary: #667781;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        html, body { width: 100%; height: 100%; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--whatsapp-light); }
+        html, body { width: 100%; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--whatsapp-light); }
         
         header { background-color: var(--whatsapp-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10; flex-shrink: 0; }
         .header-left { display: flex; align-items: center; gap: 12px; }
@@ -45,7 +45,7 @@
         .btn-cancel { background: #f0f2f5; color: var(--text-main); }
         .btn-submit { background: var(--whatsapp-dark); color: white; }
 
-        /* Footer Input Area - Fixed Flex for Send Button */
+        /* Footer Input Area - Fixed Send Button */
         footer { background-color: #f0f2f5; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #e9edef; flex-shrink: 0; width: 100%; }
         #user-input { flex: 1; padding: 10px 14px; border: 1px solid #d1d7db; border-radius: 24px; outline: none; font-size: 14px; background: white; }
         #send-btn { background-color: var(--whatsapp-dark); color: white; border: none; width: 42px; height: 42px; min-width: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; flex-shrink: 0; }
@@ -58,7 +58,7 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>Drive & Manuals Hub</p>
+                <p>Root Folder Synchronized</p>
             </div>
         </div>
     </header>
@@ -72,8 +72,8 @@
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Naye manuals upload karne ke liye <b>+Manual Upload</b> dabayein.<br>
-            • Pehle se uploaded manuals dekhne ke liye <b>View Manuals</b> dabayein.
+            • Root Folder ID (`1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR`) linked.<br>
+            • View Manuals dabakar status check karein.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
@@ -172,18 +172,18 @@
         }
 
         async function showUploadedManuals() {
-            appendMessage(`📚 Fetching list of uploaded manuals...`, 'incoming');
+            appendMessage(`📚 Fetching manuals storage info...`, 'incoming');
             try {
                 let res = await fetch(`${BACKEND_URL}/api/manuals`);
                 let data = await res.json();
                 if(data.status === 'success' && data.manuals.length > 0) {
-                    let listHtml = `<b>📚 Already Uploaded Manuals:</b><br>`;
+                    let listHtml = `<b>📚 Connected Manuals Hub:</b><br>`;
                     data.manuals.forEach((m, idx) => {
-                        listHtml += `${idx + 1}. <b>${m.title}</b> (Category: <i>${m.category.toUpperCase()}</i>)<br>`;
+                        listHtml += `${idx + 1}. <b>${m.title}</b> [<i>${m.source}</i>] (Category: ${m.category.toUpperCase()})<br>`;
                     });
                     appendMessage(listHtml, 'incoming', true);
                 } else {
-                    appendMessage(`📁 Abhi tak koi manual uploaded nahi hai.`, 'incoming');
+                    appendMessage(`📁 Koi manual nahi mila.`, 'incoming');
                 }
             } catch(err) {
                 appendMessage(`⚠️ Could not fetch manuals list.`, 'incoming');
