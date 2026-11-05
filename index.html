@@ -58,7 +58,7 @@
             <div class="avatar">⚙️</div>
             <div class="header-info">
                 <h1>P&M Technical Desk</h1>
-                <p>Root Folder Synchronized</p>
+                <p>Drive Hub & ChromaDB Sync</p>
             </div>
         </div>
     </header>
@@ -72,8 +72,8 @@
     <div id="chat-container">
         <div class="message incoming">
             📍 <b>P&M Technical Desk Active</b><br>
-            • Root Folder ID (`1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR`) linked.<br>
-            • View Manuals dabakar status check karein.
+            • Root Folder ID (`1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR`) synchronized.<br>
+            • Uploaded manuals & Drive hub ready.
             <span class="timestamp" id="init-time"></span>
         </div>
     </div>
@@ -172,12 +172,12 @@
         }
 
         async function showUploadedManuals() {
-            appendMessage(`📚 Fetching manuals storage info...`, 'incoming');
+            appendMessage(`📚 Fetching synced manuals from Hub...`, 'incoming');
             try {
                 let res = await fetch(`${BACKEND_URL}/api/manuals`);
                 let data = await res.json();
                 if(data.status === 'success' && data.manuals.length > 0) {
-                    let listHtml = `<b>📚 Connected Manuals Hub:</b><br>`;
+                    let listHtml = `<b>📚 Synchronized Manuals Hub:</b><br>`;
                     data.manuals.forEach((m, idx) => {
                         listHtml += `${idx + 1}. <b>${m.title}</b> [<i>${m.source}</i>] (Category: ${m.category.toUpperCase()})<br>`;
                     });
