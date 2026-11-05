@@ -1,6 +1,8 @@
 fastapi
 uvicorn
-chromadb
-google-generativeai
+pymongo
+numpy
 pypdf
+google-generativeai
+requests
 python-multipart
