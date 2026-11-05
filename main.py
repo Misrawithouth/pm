@@ -34,9 +34,24 @@ class QueryRequest(BaseModel):
 def health_check():
     return {"status": "operational", "system": "P&M FastAPI Gateway"}
 
+@app.get("/api/manuals")
+def get_all_manuals():
+    """Returns list of all already uploaded manuals with their titles and categories"""
+    try:
+        data = collection.get()
+        metas = data.get("metadatas", [])
+        manuals_map = {}
+        for m in metas:
+            if m and "fileName" in m:
+                fname = m["fileName"]
+                mach = m.get("machine", "general")
+                manuals_map[fname] = {"title": fname, "category": mach}
+        return {"status": "success", "manuals": list(manuals_map.values())}
+    except Exception as e:
+        return {"status": "success", "manuals": []}
+
 @app.get("/api/categories")
 def get_categories():
-    """Dynamically returns categories/machines that actually have uploaded manuals"""
     try:
         data = collection.get()
         metas = data.get("metadatas", [])
@@ -54,7 +69,6 @@ def ask_support(req: QueryRequest):
         raw_query = (req.query or "").strip()
         lang_mode = (req.lang or "hinglish").lower()
         
-        # Fast greeting handling
         greetings = ["hi", "hello", "hey", "kaise ho", "gm", "good morning", "sup", "namaste", "hii", "helo"]
         if raw_query.lower() in greetings or (len(raw_query.split()) <= 2 and any(g in raw_query.lower() for g in ["hi", "hello", "hey"])):
             return {
@@ -101,7 +115,6 @@ def ask_support(req: QueryRequest):
             except Exception:
                 pass
 
-        # Strict check: If a specific machine is locked but no manual chunks match
         if req.machineKey and len(source_cards) == 0:
             return {
                 "status": "success",
