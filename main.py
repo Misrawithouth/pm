@@ -1,6 +1,5 @@
 import os
 import shutil
-import requests
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,14 +8,12 @@ import chromadb
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
 
-# Hardcoded API Key & Root Folder ID as requested
 GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
-ROOT_FOLDER_ID = "1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR"
 
 if GEMINI_API_KEY:
     configure(api_key=GEMINI_API_KEY)
 
-app = FastAPI(title="P&M Technical Support Auto-Sync Hub")
+app = FastAPI(title="P&M Technical Support Local ChromaDB Desk")
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,18 +33,17 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 def health_check():
-    return {"status": "operational", "system": "P&M Drive Auto-Sync Active"}
+    return {"status": "operational", "system": "ChromaDB Local Storage Active"}
 
 @app.get("/api/manuals")
 def get_all_manuals():
-    """Fetches local manuals and attempts public sync with Google Drive folder"""
+    """Returns list of all manuals stored in ChromaDB local storage"""
     try:
         manuals_list = []
-        seen = set()
-        
-        # 1. Local ChromaDB Manuals
         data = collection.get()
         metas = data.get("metadatas", [])
+        seen = set()
+        
         for m in metas:
             if m and "fileName" in m:
                 fname = m["fileName"]
@@ -55,21 +51,6 @@ def get_all_manuals():
                 if fname not in seen:
                     seen.add(fname)
                     manuals_list.append({"title": fname, "category": mach, "source": "Local ChromaDB"})
-
-        # 2. Public Google Drive Folder Sync via API Key (No Billing Needed)
-        if GEMINI_API_KEY and ROOT_FOLDER_ID:
-            url = f"https://www.googleapis.com/drive/v3/files?q='{ROOT_FOLDER_ID}' in parents and mimeType='application/pdf' and trashed=false&key={GEMINI_API_KEY}"
-            resp = requests.get(url, timeout=5)
-            if resp.status_code == 200:
-                files = resp.json().get("files", [])
-                for f in files:
-                    fname = f.get("name")
-                    if fname and fname not in seen:
-                        seen.add(fname)
-                        manuals_list.append({"title": fname, "category": "drive sync", "source": "Google Drive (Public)"})
-
-        if not manuals_list:
-            manuals_list.append({"title": "Google Drive P&M Folder", "category": "sync", "source": f"Root ID: {ROOT_FOLDER_ID}"})
 
         return {"status": "success", "manuals": manuals_list}
     except Exception as e:
