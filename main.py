@@ -8,7 +8,7 @@ import chromadb
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
 
-GEMINI_API_KEY = "AQ.Ab8RN6KmgsvwRXNtKFiljy2BTsTFla65OsD1pjpldjvhNrTTZw"
+GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
 
 if GEMINI_API_KEY:
     configure(api_key=GEMINI_API_KEY)
@@ -37,7 +37,6 @@ def health_check():
 
 @app.get("/api/manuals")
 def get_all_manuals():
-    """Returns list of all manuals stored in ChromaDB local storage"""
     try:
         manuals_list = []
         data = collection.get()
@@ -117,16 +116,8 @@ def ask_support(req: QueryRequest):
                             "relevance": score,
                             "digest": doc[:110] + "..."
                         })
-            except Exception:
-                pass
-
-        if req.machineKey and len(source_cards) == 0:
-            return {
-                "status": "success",
-                "reply": f"❌ Yeh jaankari is machine ke uploaded manual mein uplabdh nahi hai.",
-                "sources": [],
-                "followUps": []
-            }
+            except Exception as emb_err:
+                print(f"Embedding error: {emb_err}")
 
         prompt = (
             "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
@@ -139,13 +130,13 @@ def ask_support(req: QueryRequest):
         reply_text = "System operational."
         if GEMINI_API_KEY:
             try:
-                # Updated to latest stable gemini-3.8-flash model
+                # Using the latest stable gemini-3.8-flash model
                 model = GenerativeModel("gemini-3.8-flash")
                 ai_resp = model.generate_content(prompt)
                 if ai_resp and ai_resp.text:
                     reply_text = ai_resp.text.strip()
             except Exception as ex:
-                reply_text = f"Technical analysis operational (Error: {str(ex)})"
+                reply_text = f"Technical analysis operational (AI Error: {str(ex)})"
 
         return {
             "status": "success",
