@@ -16,7 +16,7 @@ from googleapiclient.http import MediaFileUpload
 
 # Configurations
 GEMINI_API_KEY = ""
-MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jaimataki22@@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority"
+MONGO_URI = ""
 
 # Optional: Google Drive Folder ID where manuals will be saved (Create a folder in Drive and paste its ID here if needed)
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("https:1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR", "")
