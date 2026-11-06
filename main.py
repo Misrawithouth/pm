@@ -18,28 +18,10 @@ from googleapiclient.http import MediaFileUpload
 
 # Configurations via Environment Variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-RAW_MONGO_URI = os.environ.get("MONGO_URI", "").strip()
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
-# Safe URI builder
-def get_safe_mongo_uri(uri):
-    if not uri:
-        return ""
-    try:
-        if "@" in uri and "://" in uri:
-            scheme, rest = uri.split("://", 1)
-            if "@" in rest:
-                auth_part, host_part = rest.rsplit("@", 1)
-                if ":" in auth_part:
-                    user, pwd = auth_part.split(":", 1)
-                    # Agar password already URL encoded nahi hai toh encode kar do
-                    escaped_pwd = urllib.parse.quote_plus(pwd)
-                    return f"{scheme}://{user}:{escaped_pwd}@{host_part}"
-    except Exception as e:
-        print(f"URI Parsing Error: {e}")
-    return uri
-
-MONGO_URI = get_safe_mongo_uri(RAW_MONGO_URI)
+# Direct Secure URI to bypass Render Env reading issue completely
+RAW_MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jalnawlakji22aa@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
 
 if GEMINI_API_KEY:
     try:
@@ -57,22 +39,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize MongoDB Connection safely with detailed error log
+# Initialize MongoDB Connection safely
 manuals_collection = None
 mongo_init_error = "Not initialized"
 
 try:
-    if MONGO_URI:
-        mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-        db = mongo_client["pm_technical_desk"]
-        manuals_collection = db["manual_chunks"]
-        mongo_client.admin.command('ping')
-        print("Successfully connected to MongoDB Atlas!")
-    else:
-        mongo_init_error = "MONGO_URI is empty in environment variables."
+    mongo_client = MongoClient(RAW_MONGO_URI, serverSelectionTimeoutMS=5000)
+    db = mongo_client["pm_technical_desk"]
+    manuals_collection = db["manual_chunks"]
+    mongo_client.admin.command('ping')
+    print("Successfully connected to MongoDB Atlas!")
 except Exception as e:
-        mongo_init_error = str(e)
-        print(f"Detailed MongoDB Connection Error: {e}")
+    mongo_init_error = str(e)
+    print(f"Detailed MongoDB Connection Error: {e}")
 
 def get_drive_service():
     try:
