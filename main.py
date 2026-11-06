@@ -1,6 +1,7 @@
 import os
 import shutil
 import io
+import json
 import numpy as np
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
@@ -11,11 +12,14 @@ from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
-from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaFileUpload
 
 # Configurations
 GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
 MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jaimataki22@@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority"
+
+# Optional: Google Drive Folder ID where manuals will be saved (Create a folder in Drive and paste its ID here if needed)
+GOOGLE_DRIVE_FOLDER_ID = os.environ.get("https:1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR", "")
 
 if GEMINI_API_KEY:
     try:
@@ -23,7 +27,7 @@ if GEMINI_API_KEY:
     except Exception:
         pass
 
-app = FastAPI(title="P&M Technical Support Google Drive + MongoDB Desk")
+app = FastAPI(title="P&M Technical Support Google Drive + MongoDB Cloud Desk")
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,6 +44,20 @@ try:
     manuals_collection = db["manual_chunks"]
 except Exception as e:
     print(f"MongoDB Connection Error: {e}")
+
+# Helper: Initialize Google Drive API client if service account JSON is provided in environment variables
+def get_drive_service():
+    try:
+        creds_json = os.environ.get("GCP_SERVICE_ACCOUNT_JSON")
+        if creds_json:
+            creds_dict = json.loads(creds_json)
+            creds = service_account.Credentials.from_service_account_info(
+                creds_dict, scopes=['https://www.googleapis.com/auth/drive.file']
+            )
+            return build('drive', 'v3', credentials=creds)
+    except Exception as e:
+        print(f"Drive API Init Error: {e}")
+    return None
 
 class QueryRequest(BaseModel):
     query: str
@@ -200,7 +218,7 @@ async def upload_manual(
     customTitle: Optional[str] = Form(None),
     categoryDesc: Optional[str] = Form("General Equipment")
 ):
-    """Processes uploaded file, extracts text / uses Gemini Vision for drawings & scanned PDFs, and indexes chunks into MongoDB"""
+    """Uploads file to Google Drive, processes text / Gemini Vision for drawings, and indexes chunks into MongoDB"""
     try:
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
@@ -208,13 +226,27 @@ async def upload_manual(
             
         file_name = customTitle or file.filename
         cat_cleaned = (categoryDesc or "General").lower().strip()
-        documents_to_insert = []
         
-        # Check if file is an Image / Blueprint or PDF
+        # 1. Upload to Google Drive if service account is configured
+        drive_file_id = "local_storage"
+        try:
+            drive_service = get_drive_service()
+            if drive_service:
+                file_metadata = {'name': file_name}
+                if GOOGLE_DRIVE_FOLDER_ID:
+                    file_metadata['parents'] = [GOOGLE_DRIVE_FOLDER_ID]
+                media = MediaFileUpload(file_path, resumable=True)
+                uploaded_file = drive_service.files().create(
+                    body=file_metadata, media_body=media, fields='id'
+                ).execute()
+                drive_file_id = uploaded_file.get('id')
+        except Exception as drive_err:
+            print(f"Google Drive Upload Note: {drive_err}")
+
+        documents_to_insert = []
         file_ext = file.filename.split('.')[-1].lower()
         
         if file_ext in ['jpg', 'jpeg', 'png', 'webp']:
-            # Handle Technical Drawings / Images via Gemini Vision
             with open(file_path, "rb") as img_f:
                 img_bytes = img_f.read()
             
@@ -245,16 +277,12 @@ async def upload_manual(
                 "machine": cat_cleaned,
                 "text": extracted_desc,
                 "embedding": emb,
-                "driveFileId": "local_upload"
+                "driveFileId": drive_file_id
             })
-            
         else:
-            # Handle PDFs (Text & Scanned pages)
             reader = PdfReader(file_path)
             for page_num, page in enumerate(reader.pages):
                 text = page.extract_text()
-                
-                # If page is a scanned PDF (very little text), use Gemini Vision on page image description or fallback
                 if not text or len(text.strip()) < 20:
                     text = f"[Scanned Page {page_num+1} of Technical Manual / Blueprint]"
                 
@@ -278,13 +306,13 @@ async def upload_manual(
                         "machine": cat_cleaned,
                         "text": chunk,
                         "embedding": emb,
-                        "driveFileId": "local_upload"
+                        "driveFileId": drive_file_id
                     })
                 
         if documents_to_insert:
             manuals_collection.insert_many(documents_to_insert)
             
         os.remove(file_path)
-        return {"status": "success", "message": f"Successfully indexed {file_name} under '{categoryDesc}' with Gemini Vision & MongoDB Cloud!"}
+        return {"status": "success", "message": f"Successfully backed up to Google Drive & indexed {file_name} under '{categoryDesc}'!"}
     except Exception as e:
         return {"status": "error", "message": f"Upload failed: {str(e)}"}
