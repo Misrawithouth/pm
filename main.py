@@ -16,27 +16,27 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload
 
-# Configurations via Environment Variables (Secure)
+# Configurations via Environment Variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-RAW_MONGO_URI = os.environ.get("MONGO_URI", "")
+RAW_MONGO_URI = os.environ.get("MONGO_URI", "").strip()
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
-# Fix special characters in MongoDB URI password automatically
+# Safe URI builder
 def get_safe_mongo_uri(uri):
+    if not uri:
+        return ""
     try:
         if "@" in uri and "://" in uri:
-            # Parse and escape password automatically if special chars exist
-            parts = uri.split("://")
-            scheme = parts[0]
-            rest = parts[1]
+            scheme, rest = uri.split("://", 1)
             if "@" in rest:
                 auth_part, host_part = rest.rsplit("@", 1)
                 if ":" in auth_part:
                     user, pwd = auth_part.split(":", 1)
+                    # Agar password already URL encoded nahi hai toh encode kar do
                     escaped_pwd = urllib.parse.quote_plus(pwd)
                     return f"{scheme}://{user}:{escaped_pwd}@{host_part}"
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"URI Parsing Error: {e}")
     return uri
 
 MONGO_URI = get_safe_mongo_uri(RAW_MONGO_URI)
@@ -57,19 +57,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize MongoDB Connection safely
+# Initialize MongoDB Connection safely with detailed error log
+manuals_collection = None
+mongo_init_error = "Not initialized"
+
 try:
     if MONGO_URI:
         mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
         db = mongo_client["pm_technical_desk"]
         manuals_collection = db["manual_chunks"]
-        # Test connection
         mongo_client.admin.command('ping')
+        print("Successfully connected to MongoDB Atlas!")
     else:
-        manuals_collection = None
+        mongo_init_error = "MONGO_URI is empty in environment variables."
 except Exception as e:
-    print(f"MongoDB Connection Error: {e}")
-    manuals_collection = None
+        mongo_init_error = str(e)
+        print(f"Detailed MongoDB Connection Error: {e}")
 
 def get_drive_service():
     try:
@@ -236,7 +239,7 @@ async def upload_manual(
 ):
     try:
         if manuals_collection is None:
-            return {"status": "error", "message": "MongoDB connection not initialized due to URI/Password format issue."}
+            return {"status": "error", "message": f"MongoDB not initialized. Error: {mongo_init_error}"}
 
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
