@@ -20,8 +20,8 @@ from googleapiclient.http import MediaFileUpload
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
-# Direct Secure URI with certifi support
-RAW_MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jalnawlakji22aa@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+# Updated MongoDB URI with new password & SSL support
+RAW_MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jaimataki22@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
 
 if GEMINI_API_KEY:
     try:
@@ -253,7 +253,7 @@ async def upload_manual(
             with open(file_path, "rb") as img_f:
                 img_bytes = img_f.read()
             
-            vision_model =GenerativeModel("gemini-3.8-flash")
+            vision_model = GenerativeModel("gemini-3.8-flash")
             vision_prompt = (
                 "You are an expert P&M Chief Engineer. Analyze this technical drawing, blueprint, or machine component image in detail. "
                 "Extract all visible part numbers, valve names, circuit connections, specifications, and layout descriptions so it can be indexed for workshop troubleshooting."
