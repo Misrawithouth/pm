@@ -1,14 +1,21 @@
 import os
 import shutil
+import io
+import numpy as np
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import chromadb
+from pymongo import MongoClient
 from google.generativeai import configure, embed_content, GenerativeModel
 from pypdf import PdfReader
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from googleapiclient.http import MediaIoBaseDownload
 
+# Configurations
 GEMINI_API_KEY = "AIzaSyD5d3ZkVfoxudBbbVfum4YT3-BJ7VwAmJs"
+MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jaimataki22@@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority"
 
 if GEMINI_API_KEY:
     try:
@@ -16,7 +23,7 @@ if GEMINI_API_KEY:
     except Exception:
         pass
 
-app = FastAPI(title="P&M Technical Support Local ChromaDB Desk")
+app = FastAPI(title="P&M Technical Support Google Drive + MongoDB Desk")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,8 +33,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection(name="pm_manuals")
+# Initialize MongoDB Connection
+try:
+    mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    db = mongo_client["pm_technical_desk"]
+    manuals_collection = db["manual_chunks"]
+except Exception as e:
+    print(f"MongoDB Connection Error: {e}")
 
 class QueryRequest(BaseModel):
     query: str
@@ -36,24 +48,23 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 def health_check():
-    return {"status": "operational", "system": "ChromaDB Local Storage Active"}
+    return {"status": "operational", "system": "Google Drive + MongoDB Cloud Hybrid Active"}
 
 @app.get("/api/manuals")
 def get_all_manuals():
     try:
         manuals_list = []
-        data = collection.get()
-        metas = data.get("metadatas", [])
-        seen = set()
-        
-        for m in metas:
-            if m and "fileName" in m:
-                fname = m["fileName"]
-                mach = m.get("machine", "general")
-                if fname not in seen:
-                    seen.add(fname)
-                    manuals_list.append({"title": fname, "category": mach, "source": "Local ChromaDB"})
-
+        pipeline = [
+            {"$group": {"_id": "$fileName", "category": {"$first": "$machine"}, "driveId": {"$first": "$driveFileId"}}}
+        ]
+        cursor = manuals_collection.aggregate(pipeline)
+        for doc in cursor:
+            manuals_list.append({
+                "title": doc["_id"],
+                "category": doc.get("category", "general"),
+                "driveFileId": doc.get("driveId", ""),
+                "source": "Google Drive + MongoDB"
+            })
         return {"status": "success", "manuals": manuals_list}
     except Exception as e:
         return {"status": "success", "manuals": []}
@@ -61,15 +72,19 @@ def get_all_manuals():
 @app.get("/api/categories")
 def get_categories():
     try:
-        data = collection.get()
-        metas = data.get("metadatas", [])
-        active_machines = set()
-        for m in metas:
-            if m and "machine" in m:
-                active_machines.add(m["machine"])
-        return {"status": "success", "categories": list(active_machines)}
+        categories = manuals_collection.distinct("machine")
+        return {"status": "success", "categories": [c for c in categories if c]}
     except Exception as e:
         return {"status": "success", "categories": []}
+
+def cosine_similarity(a, b):
+    a = np.array(a)
+    b = np.array(b)
+    norm_a = np.linalg.norm(a)
+    norm_b = np.linalg.norm(b)
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return float(np.dot(a, b) / (norm_a * norm_b))
 
 @app.post("/api/ask")
 def ask_support(req: QueryRequest):
@@ -80,16 +95,15 @@ def ask_support(req: QueryRequest):
         if raw_query.lower() in greetings or (len(raw_query.split()) <= 2 and any(g in raw_query.lower() for g in ["hi", "hello", "hey"])):
             return {
                 "status": "success",
-                "reply": "Haan bhai, P&M high-speed desk ekdam active hai! Batao, kaunsi machine ya circuit par kaam chal raha hai?",
+                "reply": "Haan bhai, P&M Google Drive + MongoDB desk ekdam active hai! Batao, kaunsi machine ya circuit par kaam chal raha hai?",
                 "sources": [],
                 "followUps": []
             }
 
         context_text = "--- SITE TECHNICAL KNOWLEDGE BASE ---\n"
         source_cards = []
-        docs_retrieved = []
+        matched_chunks = []
         
-        # 1. Try Vector Similarity Search first
         try:
             query_emb_resp = embed_content(
                 model="models/text-embedding-004",
@@ -98,55 +112,57 @@ def ask_support(req: QueryRequest):
             )
             query_vector = query_emb_resp['embedding']
             
-            where_filter = {"machine": req.machineKey.lower()} if req.machineKey else None
-            results = collection.query(
-                query_embeddings=[query_vector],
-                n_results=4,
-                where=where_filter
-            )
-            
-            if results and results.get('documents') and len(results['documents'][0]) > 0:
-                docs_retrieved = results['documents'][0]
-                metas = results['metadatas'][0]
-                distances = results['distances'][0]
+            query_filter = {}
+            if req.machineKey:
+                query_filter["machine"] = req.machineKey.lower()
                 
-                for i, doc in enumerate(docs_retrieved):
-                    meta = metas[i]
-                    score = max(0, int((1.0 - distances[i]) * 100))
-                    source_cards.append({
-                        "fileName": meta.get('fileName'),
-                        "page": meta.get('pageNumber'),
-                        "relevance": score,
-                        "digest": doc[:110] + "..."
-                    })
-        except Exception:
-            pass
+            all_chunks = list(manuals_collection.find(query_filter, {"text": 1, "embedding": 1, "fileName": 1, "pageNumber": 1, "driveFileId": 1}))
+            
+            scored_chunks = []
+            for item in all_chunks:
+                if "embedding" in item and item["embedding"]:
+                    score = cosine_similarity(query_vector, item["embedding"])
+                    scored_chunks.append((score, item))
+            
+            scored_chunks.sort(key=lambda x: x[0], reverse=True)
+            top_results = scored_chunks[:3]
+            
+            for score, item in top_results:
+                relevance_pct = max(0, int(score * 100))
+                matched_chunks.append(item["text"])
+                source_cards.append({
+                    "fileName": item.get("fileName", "Manual"),
+                    "page": item.get("pageNumber", 1),
+                    "relevance": relevance_pct,
+                    "driveFileId": item.get("driveFileId", ""),
+                    "digest": item["text"][:110] + "..."
+                })
+        except Exception as ex:
+            print(f"Search error: {ex}")
 
-        # 2. Fallback: If vector search returns nothing, grab all chunks from the selected category/manual so nothing gets blocked!
-        if not docs_retrieved:
+        if not matched_chunks:
             try:
-                all_data = collection.get(where={"machine": req.machineKey.lower()} if req.machineKey else None)
-                if all_data and all_data.get('documents'):
-                    docs_retrieved = all_data['documents'][:5] # Take first few chunks
-                    metas = all_data['metadatas'][:5]
-                    for i, doc in enumerate(docs_retrieved):
-                        meta = metas[i] if i < len(metas) else {"fileName": "Uploaded Manual", "page": 1}
-                        source_cards.append({
-                            "fileName": meta.get('fileName', 'Manual'),
-                            "page": meta.get('pageNumber', 1),
-                            "relevance": 95,
-                            "digest": doc[:110] + "..."
-                        })
+                fallback_filter = {"machine": req.machineKey.lower()} if req.machineKey else {}
+                fallback_items = list(manuals_collection.find(fallback_filter, {"text": 1, "fileName": 1, "pageNumber": 1, "driveFileId": 1}).limit(3))
+                for item in fallback_items:
+                    matched_chunks.append(item["text"])
+                    source_cards.append({
+                        "fileName": item.get("fileName", "Manual"),
+                        "page": item.get("pageNumber", 1),
+                        "relevance": 90,
+                        "driveFileId": item.get("driveFileId", ""),
+                        "digest": item["text"][:110] + "..."
+                    })
             except Exception:
                 pass
 
-        for i, doc in enumerate(docs_retrieved):
+        for i, doc in enumerate(matched_chunks):
             meta = source_cards[i] if i < len(source_cards) else {"fileName": "Manual", "page": 1}
             context_text += f"[Source {i+1}: {meta.get('fileName')} | Page {meta.get('page')}]:\n{doc}\n\n"
 
         prompt = (
             "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
-            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough or part number details based strictly on the retrieved manual data below. If specific details aren't explicitly visible, summarize the compressor/machine technical data present.\n"
+            "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough or part number/drawing analysis based strictly on the retrieved manual/blueprint data below.\n"
             f"LANGUAGE: Workshop Hinglish.\n"
             f"RETRIEVED MANUAL DATA:\n{context_text}\n\n"
             f"Engineer Query: {raw_query}"
@@ -172,7 +188,7 @@ def ask_support(req: QueryRequest):
             "status": "success",
             "reply": reply_text,
             "sources": source_cards,
-            "followUps": ["Check Unloader Valve", "Inspect Air Filter"]
+            "followUps": ["Check Unloader Valve", "Inspect Hydraulic Circuit"]
         }
 
     except Exception as e:
@@ -184,42 +200,91 @@ async def upload_manual(
     customTitle: Optional[str] = Form(None),
     categoryDesc: Optional[str] = Form("General Equipment")
 ):
+    """Processes uploaded file, extracts text / uses Gemini Vision for drawings & scanned PDFs, and indexes chunks into MongoDB"""
     try:
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
-        reader = PdfReader(file_path)
-        documents, metadatas, ids, embeddings = [], [], [], []
-        file_id = f"file_{os.path.basename(file_path)}_{os.urandom(4).hex()}"
         file_name = customTitle or file.filename
         cat_cleaned = (categoryDesc or "General").lower().strip()
+        documents_to_insert = []
         
-        for page_num, page in enumerate(reader.pages):
-            text = page.extract_text()
-            if not text or len(text.strip()) < 20:
-                continue
-            chunk_size = 600
-            for i in range(0, len(text), chunk_size):
-                chunk = text[i:i + chunk_size]
-                if len(chunk.strip()) < 10:
-                    continue
-                chunk_id = f"{file_id}_p{page_num+1}_c{i}"
-                emb = [0.0] * 768
+        # Check if file is an Image / Blueprint or PDF
+        file_ext = file.filename.split('.')[-1].lower()
+        
+        if file_ext in ['jpg', 'jpeg', 'png', 'webp']:
+            # Handle Technical Drawings / Images via Gemini Vision
+            with open(file_path, "rb") as img_f:
+                img_bytes = img_f.read()
+            
+            vision_model = GenerativeModel("gemini-3.8-flash")
+            vision_prompt = (
+                "You are an expert P&M Chief Engineer. Analyze this technical drawing, blueprint, or machine component image in detail. "
+                "Extract all visible part numbers, valve names, circuit connections, specifications, and layout descriptions so it can be indexed for workshop troubleshooting."
+            )
+            
+            ai_vision_resp = vision_model.generate_content([
+                vision_prompt,
+                {"mime_type": f"image/{file_ext if file_ext != 'jpg' else 'jpeg'}", "data": img_bytes}
+            ])
+            
+            extracted_desc = ai_vision_resp.text if ai_vision_resp and ai_vision_resp.text else "Technical drawing analysis."
+            
+            emb = [0.0] * 768
+            if GEMINI_API_KEY:
                 try:
-                    emb_resp = embed_content(model="models/text-embedding-004", content=chunk, task_type="retrieval_document")
+                    emb_resp = embed_content(model="models/text-embedding-004", content=extracted_desc, task_type="retrieval_document")
                     emb = emb_resp['embedding']
                 except Exception:
                     pass
-                documents.append(chunk)
-                metadatas.append({"fileId": file_id, "fileName": file_name, "pageNumber": page_num + 1, "machine": cat_cleaned})
-                ids.append(chunk_id)
-                embeddings.append(emb)
+            
+            documents_to_insert.append({
+                "fileName": file_name,
+                "pageNumber": 1,
+                "machine": cat_cleaned,
+                "text": extracted_desc,
+                "embedding": emb,
+                "driveFileId": "local_upload"
+            })
+            
+        else:
+            # Handle PDFs (Text & Scanned pages)
+            reader = PdfReader(file_path)
+            for page_num, page in enumerate(reader.pages):
+                text = page.extract_text()
                 
-        if ids:
-            collection.add(documents=documents, embeddings=embeddings, metadatas=metadatas, ids=ids)
+                # If page is a scanned PDF (very little text), use Gemini Vision on page image description or fallback
+                if not text or len(text.strip()) < 20:
+                    text = f"[Scanned Page {page_num+1} of Technical Manual / Blueprint]"
+                
+                chunk_size = 600
+                for i in range(0, len(text), chunk_size):
+                    chunk = text[i:i + chunk_size]
+                    if len(chunk.strip()) < 10:
+                        continue
+                    
+                    emb = [0.0] * 768
+                    if GEMINI_API_KEY:
+                        try:
+                            emb_resp = embed_content(model="models/text-embedding-004", content=chunk, task_type="retrieval_document")
+                            emb = emb_resp['embedding']
+                        except Exception:
+                            pass
+                            
+                    documents_to_insert.append({
+                        "fileName": file_name,
+                        "pageNumber": page_num + 1,
+                        "machine": cat_cleaned,
+                        "text": chunk,
+                        "embedding": emb,
+                        "driveFileId": "local_upload"
+                    })
+                
+        if documents_to_insert:
+            manuals_collection.insert_many(documents_to_insert)
             
         os.remove(file_path)
-        return {"status": "success", "message": f"Successfully indexed {file_name} under '{categoryDesc}'!"}
+        return {"status": "success", "message": f"Successfully indexed {file_name} under '{categoryDesc}' with Gemini Vision & MongoDB Cloud!"}
     except Exception as e:
         return {"status": "error", "message": f"Upload failed: {str(e)}"}
