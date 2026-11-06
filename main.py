@@ -2,8 +2,8 @@ import os
 import shutil
 import io
 import json
-import urllib.parse
 import numpy as np
+import certifi
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,8 +20,8 @@ from googleapiclient.http import MediaFileUpload
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
-# Direct Secure URI to bypass Render Env reading issue completely
-RAW_MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jaimataki22@@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+# Direct Secure URI with certifi support
+RAW_MONGO_URI = "mongodb+srv://nitinmisra22_db_user:Jalnawlakji22aa@support.zyahtkz.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
 
 if GEMINI_API_KEY:
     try:
@@ -39,16 +39,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize MongoDB Connection safely
+# Initialize MongoDB Connection safely using certifi certificates
 manuals_collection = None
 mongo_init_error = "Not initialized"
 
 try:
-    mongo_client = MongoClient(RAW_MONGO_URI, serverSelectionTimeoutMS=5000)
+    mongo_client = MongoClient(
+        RAW_MONGO_URI, 
+        serverSelectionTimeoutMS=5000,
+        tlsCAFile=certifi.where()
+    )
     db = mongo_client["pm_technical_desk"]
     manuals_collection = db["manual_chunks"]
     mongo_client.admin.command('ping')
-    print("Successfully connected to MongoDB Atlas!")
+    print("Successfully connected to MongoDB Atlas with Certifi SSL!")
 except Exception as e:
     mongo_init_error = str(e)
     print(f"Detailed MongoDB Connection Error: {e}")
@@ -249,7 +253,7 @@ async def upload_manual(
             with open(file_path, "rb") as img_f:
                 img_bytes = img_f.read()
             
-            vision_model = GenerativeModel("gemini-3.8-flash")
+            vision_model =GenerativeModel("gemini-3.8-flash")
             vision_prompt = (
                 "You are an expert P&M Chief Engineer. Analyze this technical drawing, blueprint, or machine component image in detail. "
                 "Extract all visible part numbers, valve names, circuit connections, specifications, and layout descriptions so it can be indexed for workshop troubleshooting."
