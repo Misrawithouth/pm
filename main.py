@@ -2,6 +2,7 @@ import os
 import shutil
 import io
 import json
+import urllib.parse
 import numpy as np
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
@@ -17,8 +18,28 @@ from googleapiclient.http import MediaFileUpload
 
 # Configurations via Environment Variables (Secure)
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-MONGO_URI = os.environ.get("MONGO_URI", "")
+RAW_MONGO_URI = os.environ.get("MONGO_URI", "")
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
+
+# Fix special characters in MongoDB URI password automatically
+def get_safe_mongo_uri(uri):
+    try:
+        if "@" in uri and "://" in uri:
+            # Parse and escape password automatically if special chars exist
+            parts = uri.split("://")
+            scheme = parts[0]
+            rest = parts[1]
+            if "@" in rest:
+                auth_part, host_part = rest.rsplit("@", 1)
+                if ":" in auth_part:
+                    user, pwd = auth_part.split(":", 1)
+                    escaped_pwd = urllib.parse.quote_plus(pwd)
+                    return f"{scheme}://{user}:{escaped_pwd}@{host_part}"
+    except Exception:
+        pass
+    return uri
+
+MONGO_URI = get_safe_mongo_uri(RAW_MONGO_URI)
 
 if GEMINI_API_KEY:
     try:
@@ -36,16 +57,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize MongoDB Connection & Collections Properly
+# Initialize MongoDB Connection safely
 try:
-    mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-    db = mongo_client["pm_technical_desk"]
-    manuals_collection = db["manual_chunks"]
+    if MONGO_URI:
+        mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        db = mongo_client["pm_technical_desk"]
+        manuals_collection = db["manual_chunks"]
+        # Test connection
+        mongo_client.admin.command('ping')
+    else:
+        manuals_collection = None
 except Exception as e:
     print(f"MongoDB Connection Error: {e}")
     manuals_collection = None
 
-# Helper: Initialize Google Drive API client if service account JSON is provided
 def get_drive_service():
     try:
         creds_json = os.environ.get("GCP_SERVICE_ACCOUNT_JSON")
@@ -66,7 +91,6 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 async def serve_frontend():
-    """Serves index.html frontend directly if available, else health status"""
     if os.path.exists("index.html"):
         return FileResponse("index.html")
     return {"status": "operational", "system": "Google Drive - MongoDB Cloud Hybrid Active"}
@@ -166,6 +190,10 @@ def ask_support(req: QueryRequest):
             except Exception as ex:
                 print(f"Search error: {ex}")
 
+        for i, doc in enumerate(matched_chunks):
+            meta = source_cards[i] if i < len(source_cards) else {"fileName": "Manual", "page": 1}
+            context_text += f"[Source {i+1}: {meta.get('fileName')} | Page {meta.get('page')}]:\n{doc}\n\n"
+
         prompt = (
             "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
             "MANDATE: Provide a complete step-by-step fluid or electrical circuit flow walkthrough or part number/drawing analysis based strictly on the retrieved manual/blueprint data below.\n"
@@ -206,10 +234,9 @@ async def upload_manual(
     customTitle: Optional[str] = Form(None),
     categoryDesc: Optional[str] = Form("General Equipment")
 ):
-    """Uploads file to Google Drive, processes text / Gemini Vision for drawings, and indexes chunks into MongoDB"""
     try:
         if manuals_collection is None:
-            return {"status": "error", "message": "MongoDB connection not initialized."}
+            return {"status": "error", "message": "MongoDB connection not initialized due to URI/Password format issue."}
 
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
