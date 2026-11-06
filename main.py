@@ -6,6 +6,7 @@ import numpy as np
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from google.generativeai import configure, embed_content, GenerativeModel
@@ -14,12 +15,10 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload
 
-# Configurations
-GEMINI_API_KEY = ""
-MONGO_URI = ""
-
-# Optional: Google Drive Folder ID where manuals will be saved (Create a folder in Drive and paste its ID here if needed)
-GOOGLE_DRIVE_FOLDER_ID = os.environ.get("https:1u5SZbdl860PDPg4jIZnTDzaoruB6AgTR", "")
+# Configurations via Environment Variables (Secure)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+MONGO_URI = os.environ.get("MONGO_URI", "")
+GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
 if GEMINI_API_KEY:
     try:
@@ -45,7 +44,7 @@ try:
 except Exception as e:
     print(f"MongoDB Connection Error: {e}")
 
-# Helper: Initialize Google Drive API client if service account JSON is provided in environment variables
+# Helper: Initialize Google Drive API client if service account JSON is provided
 def get_drive_service():
     try:
         creds_json = os.environ.get("GCP_SERVICE_ACCOUNT_JSON")
@@ -65,8 +64,11 @@ class QueryRequest(BaseModel):
     lang: Optional[str] = "hinglish"
 
 @app.get("/")
-def health_check():
-    return {"status": "operational", "system": "Google Drive + MongoDB Cloud Hybrid Active"}
+async def serve_frontend():
+    """Serves index.html frontend directly if available, else health status"""
+    if os.path.exists("index.html"):
+        return FileResponse("index.html")
+    return {"status": "operational", "system": "Google Drive - MongoDB Cloud Hybrid Active"}
 
 @app.get("/api/manuals")
 def get_all_manuals():
@@ -227,7 +229,6 @@ async def upload_manual(
         file_name = customTitle or file.filename
         cat_cleaned = (categoryDesc or "General").lower().strip()
         
-        # 1. Upload to Google Drive if service account is configured
         drive_file_id = "local_storage"
         try:
             drive_service = get_drive_service()
