@@ -36,13 +36,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize MongoDB Connection
+# Initialize MongoDB Connection & Collections Properly
 try:
     mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
     db = mongo_client["pm_technical_desk"]
     manuals_collection = db["manual_chunks"]
 except Exception as e:
     print(f"MongoDB Connection Error: {e}")
+    manuals_collection = None
 
 # Helper: Initialize Google Drive API client if service account JSON is provided
 def get_drive_service():
@@ -73,6 +74,8 @@ async def serve_frontend():
 @app.get("/api/manuals")
 def get_all_manuals():
     try:
+        if manuals_collection is None:
+            return {"status": "success", "manuals": []}
         manuals_list = []
         pipeline = [
             {"$group": {"_id": "$fileName", "category": {"$first": "$machine"}, "driveId": {"$first": "$driveFileId"}}}
@@ -92,6 +95,8 @@ def get_all_manuals():
 @app.get("/api/categories")
 def get_categories():
     try:
+        if manuals_collection is None:
+            return {"status": "success", "categories": []}
         categories = manuals_collection.distinct("machine")
         return {"status": "success", "categories": [c for c in categories if c]}
     except Exception as e:
@@ -124,61 +129,42 @@ def ask_support(req: QueryRequest):
         source_cards = []
         matched_chunks = []
         
-        try:
-            query_emb_resp = embed_content(
-                model="models/text-embedding-004",
-                content=raw_query,
-                task_type="retrieval_query"
-            )
-            query_vector = query_emb_resp['embedding']
-            
-            query_filter = {}
-            if req.machineKey:
-                query_filter["machine"] = req.machineKey.lower()
-                
-            all_chunks = list(manuals_collection.find(query_filter, {"text": 1, "embedding": 1, "fileName": 1, "pageNumber": 1, "driveFileId": 1}))
-            
-            scored_chunks = []
-            for item in all_chunks:
-                if "embedding" in item and item["embedding"]:
-                    score = cosine_similarity(query_vector, item["embedding"])
-                    scored_chunks.append((score, item))
-            
-            scored_chunks.sort(key=lambda x: x[0], reverse=True)
-            top_results = scored_chunks[:3]
-            
-            for score, item in top_results:
-                relevance_pct = max(0, int(score * 100))
-                matched_chunks.append(item["text"])
-                source_cards.append({
-                    "fileName": item.get("fileName", "Manual"),
-                    "page": item.get("pageNumber", 1),
-                    "relevance": relevance_pct,
-                    "driveFileId": item.get("driveFileId", ""),
-                    "digest": item["text"][:110] + "..."
-                })
-        except Exception as ex:
-            print(f"Search error: {ex}")
-
-        if not matched_chunks:
+        if manuals_collection is not None:
             try:
-                fallback_filter = {"machine": req.machineKey.lower()} if req.machineKey else {}
-                fallback_items = list(manuals_collection.find(fallback_filter, {"text": 1, "fileName": 1, "pageNumber": 1, "driveFileId": 1}).limit(3))
-                for item in fallback_items:
+                query_emb_resp = embed_content(
+                    model="models/text-embedding-004",
+                    content=raw_query,
+                    task_type="retrieval_query"
+                )
+                query_vector = query_emb_resp['embedding']
+                
+                query_filter = {}
+                if req.machineKey:
+                    query_filter["machine"] = req.machineKey.lower()
+                    
+                all_chunks = list(manuals_collection.find(query_filter, {"text": 1, "embedding": 1, "fileName": 1, "pageNumber": 1, "driveFileId": 1}))
+                
+                scored_chunks = []
+                for item in all_chunks:
+                    if "embedding" in item and item["embedding"]:
+                        score = cosine_similarity(query_vector, item["embedding"])
+                        scored_chunks.append((score, item))
+                
+                scored_chunks.sort(key=lambda x: x[0], reverse=True)
+                top_results = scored_chunks[:3]
+                
+                for score, item in top_results:
+                    relevance_pct = max(0, int(score * 100))
                     matched_chunks.append(item["text"])
                     source_cards.append({
                         "fileName": item.get("fileName", "Manual"),
                         "page": item.get("pageNumber", 1),
-                        "relevance": 90,
+                        "relevance": relevance_pct,
                         "driveFileId": item.get("driveFileId", ""),
                         "digest": item["text"][:110] + "..."
                     })
-            except Exception:
-                pass
-
-        for i, doc in enumerate(matched_chunks):
-            meta = source_cards[i] if i < len(source_cards) else {"fileName": "Manual", "page": 1}
-            context_text += f"[Source {i+1}: {meta.get('fileName')} | Page {meta.get('page')}]:\n{doc}\n\n"
+            except Exception as ex:
+                print(f"Search error: {ex}")
 
         prompt = (
             "YOU ARE A LEAD PLANT & MACHINERY (P&M) SPECIALIST CHIEF ENGINEER AT SITE.\n"
@@ -222,6 +208,9 @@ async def upload_manual(
 ):
     """Uploads file to Google Drive, processes text / Gemini Vision for drawings, and indexes chunks into MongoDB"""
     try:
+        if manuals_collection is None:
+            return {"status": "error", "message": "MongoDB connection not initialized."}
+
         file_path = f"./temp_{file.filename}"
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -316,4 +305,6 @@ async def upload_manual(
         os.remove(file_path)
         return {"status": "success", "message": f"Successfully backed up to Google Drive & indexed {file_name} under '{categoryDesc}'!"}
     except Exception as e:
+        if os.path.exists(file_path):
+            os.remove(file_path)
         return {"status": "error", "message": f"Upload failed: {str(e)}"}
